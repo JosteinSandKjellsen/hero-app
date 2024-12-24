@@ -1,0 +1,36 @@
+export interface GenerateImageParams {
+  prompt: string;
+  negativePrompt?: string;
+  modelId?: string;
+  width?: number;
+  height?: number;
+  numImages?: number;
+  scheduler?:
+    | 'EULER_DISCRETE'
+    | 'EULER_ANCESTRAL'
+    | 'HEUN'
+    | 'DPM_SOLVER'
+    | 'LCM';
+  seed?: number;
+  public?: boolean;
+}
+
+export interface GenerationResponse {
+  sdGenerationJob: {
+    generationId: string;
+  };
+}
+
+export interface GenerationStatusResponse {
+  generations_by_pk: {
+    status: 'PENDING' | 'COMPLETE' | 'FAILED';
+    generated_images: Array<{
+      url: string;
+    }>;
+  };
+}
+
+export interface LeonardoError extends Error {
+  status?: number;
+  code?: string;
+}
