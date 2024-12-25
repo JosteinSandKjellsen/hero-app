@@ -19,7 +19,7 @@ export async function generateHeroImage(
       yellow: 'A superhero wearing a soft, flowing yellow cape that shimmers like a warm morning glow. Hero logo is a sun symbol. The suit is primarily yellow with white and gold accents, featuring a radiant sun symbol glowing gently on the chest. Face is fully visible, radiating warmth and positivity with a strong, confident smile. Hero stands powerfully, arms slightly extended as if uplifting and inspiring those around the hero. Gentle golden light emanates from the hero, casting a soft, warm glow in all directions. The background is a futuristic urban skyline bathed in sunlight, with vibrant energy waves spreading outward, symbolizing the heroes power to heal and inspire. Hero exudes optimism, kindness, and a sense of unity, standing as a beacon of hope and energy. Image in comic art style of Alex Ross.',
     } as const;
 
-    const prompt = `Create a ${gender} comic book style superhero portrait. ${
+    const prompt = `Create a ${gender} comic book style superhero portrait. Make sure the hero is a ${gender} character. ${
       heroPrompts[color] ?? 'classic superhero colors with bold primary tones'
     }`;
 

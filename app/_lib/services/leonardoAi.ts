@@ -31,6 +31,19 @@ export class LeonardoAiService {
           prompt: params.prompt,
           nsfw: false,
           negative_prompt: params.negativePrompt,
+          contrast: 1.3,
+          controlnets:[],
+          elements: [],
+          guidance_scale: 7,
+          highContrast: false,
+          num_inference_steps: 10,
+          photoReal: false,
+          scheduler: "LEONARDO",
+          tiling: false,
+          transparency: "disabled",
+          ultra: false,
+          userElements: [],
+          weighting: 0.75
         }),
       });
 
