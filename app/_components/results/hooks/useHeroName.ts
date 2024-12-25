@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { generateHeroName } from '@/app/actions/generateHeroName';
-import type { HeroColor } from '@/app/_types/api';
 
 interface UseHeroNameProps {
   personality: string;
@@ -10,7 +8,13 @@ interface UseHeroNameProps {
   color: string;
 }
 
-export function useHeroName({ personality, gender, color }: UseHeroNameProps) {
+interface UseHeroNameReturn {
+  heroName: string | null;
+  isLoading: boolean;
+  error: string | null;
+}
+
+export function useHeroName({ personality, gender, color }: UseHeroNameProps): UseHeroNameReturn {
   const [heroName, setHeroName] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -18,7 +22,7 @@ export function useHeroName({ personality, gender, color }: UseHeroNameProps) {
   useEffect(() => {
     let isMounted = true;
 
-    async function getHeroName() {
+    async function getHeroName(): Promise<void> {
       if (!personality || !gender || !color) return;
       
       try {

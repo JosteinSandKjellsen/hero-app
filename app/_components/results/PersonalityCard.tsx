@@ -1,14 +1,14 @@
 'use client';
 
-import { PersonalityType } from '@/app/_types';
-import { getPersonalityIcon } from '@/app/_utils/personalityIcons';
+import { PersonalityType } from '../../_lib/types/personality';
+import { getPersonalityIcon } from '../../_utils/personalityIcons';
 
 interface PersonalityCardProps {
   personality: PersonalityType;
   percentage: number;
 }
 
-export function PersonalityCard({ personality, percentage }: PersonalityCardProps) {
+export function PersonalityCard({ personality, percentage }: PersonalityCardProps): JSX.Element {
   return (
     <div className="bg-white rounded-lg shadow-lg p-6">
       <div className="flex items-center gap-3 mb-4">

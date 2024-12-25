@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import type { HeroColor } from '@/app/_types/api';
 
 export const heroNameRequestSchema = z.object({
   personality: z.string().min(1, 'Personality is required'),

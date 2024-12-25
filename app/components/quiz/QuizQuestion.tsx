@@ -1,11 +1,15 @@
-import type { QuizQuestion as QuestionType } from '@/types';
+import { FC } from 'react';
+import type { QuizQuestion as QuestionType } from '../../_types';
 
 interface QuizQuestionProps {
   question: QuestionType;
   onAnswer: (type: 'red' | 'yellow' | 'green' | 'blue') => void;
 }
 
-export function QuizQuestion({ question, onAnswer }: QuizQuestionProps) {
+export const QuizQuestion: FC<QuizQuestionProps> = ({ 
+  question, 
+  onAnswer 
+}): JSX.Element => {
   const shuffledOptions = [...question.options].sort(() => Math.random() - 0.5);
 
   return (
@@ -26,4 +30,4 @@ export function QuizQuestion({ question, onAnswer }: QuizQuestionProps) {
       </div>
     </div>
   );
-}
+};

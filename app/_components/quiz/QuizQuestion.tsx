@@ -1,13 +1,13 @@
 'use client';
 
-import type { QuizQuestion as QuestionType } from '@/app/_types';
+import type { QuizQuestion as QuestionType } from '../../_lib/types/quiz';
 
 interface QuizQuestionProps {
   question: QuestionType;
   onAnswer: (type: 'red' | 'yellow' | 'green' | 'blue') => void;
 }
 
-export function QuizQuestion({ question, onAnswer }: QuizQuestionProps) {
+export function QuizQuestion({ question, onAnswer }: QuizQuestionProps): JSX.Element {
   const shuffledOptions = [...question.options].sort(() => Math.random() - 0.5);
 
   return (

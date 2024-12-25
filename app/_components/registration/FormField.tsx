@@ -5,7 +5,7 @@ interface FormFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string;
 }
 
-export function FormField({ label, error, ...props }: FormFieldProps) {
+export function FormField({ label, error, ...props }: FormFieldProps): JSX.Element {
   return (
     <div>
       <label htmlFor={props.id} className="block text-sm font-medium text-white mb-1">

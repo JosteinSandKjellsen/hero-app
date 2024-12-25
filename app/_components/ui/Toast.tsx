@@ -5,10 +5,9 @@ import { AlertCircle, X } from 'lucide-react';
 interface ToastProps {
   message: string;
   onClose: () => void;
-  duration?: number;
 }
 
-export function Toast({ message, onClose, duration = 5000 }: ToastProps) {
+export function Toast({ message, onClose }: ToastProps): JSX.Element {
   return (
     <div className="fixed top-4 right-4 z-50 animate-fadeIn">
       <div className="bg-red-50 text-red-800 px-4 py-3 rounded-lg shadow-lg border border-red-200 max-w-md flex items-start gap-3">

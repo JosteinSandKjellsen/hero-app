@@ -8,7 +8,7 @@ interface CameraCaptureProps {
   onPhotoTaken: (photoUrl: string) => void;
 }
 
-export function CameraCapture({ onPhotoTaken }: CameraCaptureProps) {
+export function CameraCapture({ onPhotoTaken }: CameraCaptureProps): JSX.Element {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -18,7 +18,7 @@ export function CameraCapture({ onPhotoTaken }: CameraCaptureProps) {
     return () => stopCamera();
   }, []);
 
-  const startCamera = async () => {
+  const startCamera = async (): Promise<void> => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
@@ -47,14 +47,14 @@ export function CameraCapture({ onPhotoTaken }: CameraCaptureProps) {
     }
   };
 
-  const stopCamera = () => {
+  const stopCamera = (): void => {
     if (videoRef.current?.srcObject) {
       const stream = videoRef.current.srcObject as MediaStream;
       stream.getTracks().forEach(track => track.stop());
     }
   };
 
-  const takePhoto = () => {
+  const takePhoto = (): void => {
     if (!videoRef.current) return;
 
     const canvas = document.createElement('canvas');

@@ -9,8 +9,8 @@ interface ResultsActionsProps {
   onReset: () => void;
 }
 
-export function ResultsActions({ cardRef, heroName, onReset }: ResultsActionsProps) {
-  const handleDownload = async () => {
+export function ResultsActions({ cardRef, heroName, onReset }: ResultsActionsProps): JSX.Element {
+  const handleDownload = async (): Promise<void> => {
     if (!cardRef.current) return;
 
     try {

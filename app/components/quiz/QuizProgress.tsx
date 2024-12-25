@@ -1,9 +1,14 @@
+import { FC } from 'react';
+
 interface QuizProgressProps {
   currentQuestion: number;
   totalQuestions: number;
 }
 
-export function QuizProgress({ currentQuestion, totalQuestions }: QuizProgressProps) {
+export const QuizProgress: FC<QuizProgressProps> = ({ 
+  currentQuestion, 
+  totalQuestions 
+}): JSX.Element => {
   const progress = (currentQuestion / totalQuestions) * 100;
 
   return (
@@ -17,4 +22,4 @@ export function QuizProgress({ currentQuestion, totalQuestions }: QuizProgressPr
       </div>
     </div>
   );
-}
+};

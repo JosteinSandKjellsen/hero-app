@@ -8,11 +8,18 @@ interface UseFormProps<T> {
   onSubmit: (values: T) => void;
 }
 
-export function useForm<T>({ initialValues, validate, onSubmit }: UseFormProps<T>) {
+interface UseFormReturn<T> {
+  values: T;
+  errors: Partial<Record<keyof T, string>>;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSubmit: (e: React.FormEvent) => void;
+}
+
+export function useForm<T>({ initialValues, validate, onSubmit }: UseFormProps<T>): UseFormReturn<T> {
   const [values, setValues] = useState<T>(initialValues);
   const [errors, setErrors] = useState<Partial<Record<keyof T, string>>>({});
 
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
     setValues(prev => ({ ...prev, [name]: value }));
     // Clear error when user starts typing
@@ -21,7 +28,7 @@ export function useForm<T>({ initialValues, validate, onSubmit }: UseFormProps<T
     }
   }, [errors]);
 
-  const handleSubmit = useCallback((e: React.FormEvent) => {
+  const handleSubmit = useCallback((e: React.FormEvent): void => {
     e.preventDefault();
     const newErrors = validate(values);
     

@@ -1,6 +1,6 @@
 'use client';
 
-import { PersonalityType } from '@/app/_types';
+import { PersonalityType } from '../../_lib/types/personality';
 import { PersonalityCard } from './PersonalityCard';
 import { MatchingTip } from './MatchingTip';
 
@@ -8,7 +8,7 @@ interface PersonalityProfileProps {
   results: (PersonalityType & { percentage: number })[];
 }
 
-export function PersonalityProfile({ results }: PersonalityProfileProps) {
+export function PersonalityProfile({ results }: PersonalityProfileProps): JSX.Element {
   const dominantPersonality = results[0];
 
   return (

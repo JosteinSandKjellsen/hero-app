@@ -2,7 +2,13 @@
 
 import { useState, useCallback } from 'react';
 
-export function useToast() {
+interface ToastHook {
+  toast: { message: string } | null;
+  showToast: (message: string) => void;
+  hideToast: () => void;
+}
+
+export function useToast(): ToastHook {
   const [toast, setToast] = useState<{ message: string } | null>(null);
 
   const showToast = useCallback((message: string) => {

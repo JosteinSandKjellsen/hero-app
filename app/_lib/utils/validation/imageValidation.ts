@@ -14,7 +14,7 @@ export const base64ImageSchema = z.string()
   .refine(
     (data) => {
       const mimeType = data.split(';')[0].split(':')[1];
-      return ALLOWED_MIME_TYPES.includes(mimeType as any);
+      return ALLOWED_MIME_TYPES.includes(mimeType as typeof ALLOWED_MIME_TYPES[number]);
     },
     'Invalid image type - must be JPEG or PNG'
   )

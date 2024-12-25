@@ -1,9 +1,15 @@
-interface FormFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
+import { FC, InputHTMLAttributes } from 'react';
+
+interface FormFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: string;
 }
 
-export function FormField({ label, error, ...props }: FormFieldProps) {
+export const FormField: FC<FormFieldProps> = ({ 
+  label, 
+  error, 
+  ...props 
+}): JSX.Element => {
   return (
     <div>
       <label htmlFor={props.id} className="block text-sm font-medium text-white mb-1">
@@ -20,4 +26,4 @@ export function FormField({ label, error, ...props }: FormFieldProps) {
       )}
     </div>
   );
-}
+};

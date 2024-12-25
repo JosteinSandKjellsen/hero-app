@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { useToast } from './useToast';
-import { questions } from '@/app/_data/questions';
-import { personalities } from '@/app/_data/personalities';
-import { AppError, ValidationError } from '@/app/_lib/errors';
-import { photoSchema } from '@/app/_lib/utils/validation/photoValidation';
-import type { QuizResult, UserData, PersonalityType } from '@/app/_types';
+import { questions } from '../_data/questions';
+import { personalities } from '../_data/personalities';
+import { AppError, ValidationError } from '../_lib/errors';
+import { photoSchema } from '../_lib/utils/validation/photoValidation';
+import type { QuizResult, UserData, PersonalityType } from '../_lib/types';
 
 const initialResult: QuizResult = {
   red: 0,
@@ -15,7 +15,23 @@ const initialResult: QuizResult = {
   blue: 0,
 };
 
-export function useQuiz() {
+interface UseQuizReturn {
+  userData: UserData | null;
+  currentQuestion: number;
+  showCamera: boolean;
+  showResults: boolean;
+  photoUrl: string | null;
+  heroName: string | null;
+  isGeneratingImage: boolean;
+  isGeneratingName: boolean;
+  handleRegistration: (data: UserData) => void;
+  handleAnswer: (type: 'red' | 'yellow' | 'green' | 'blue') => void;
+  handlePhotoTaken: (photo: string) => Promise<void>;
+  calculateResults: () => (PersonalityType & { percentage: number })[];
+  resetQuiz: () => void;
+}
+
+export function useQuiz(): UseQuizReturn {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<QuizResult>(initialResult);
@@ -28,12 +44,12 @@ export function useQuiz() {
   
   const { showToast } = useToast();
 
-  const handleRegistration = (data: UserData) => {
+  const handleRegistration = (data: UserData): void => {
     setUserData(data);
   };
 
-  const handleAnswer = (type: 'red' | 'yellow' | 'green' | 'blue') => {
-    setAnswers(prev => ({ ...prev, [type]: prev[type] + 1 }));
+  const handleAnswer = (type: 'red' | 'yellow' | 'green' | 'blue'): void => {
+    setAnswers((prev: QuizResult) => ({ ...prev, [type]: prev[type] + 1 }));
 
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(prev => prev + 1);
@@ -42,7 +58,7 @@ export function useQuiz() {
     }
   };
 
-  const handlePhotoTaken = async (photo: string) => {
+  const handlePhotoTaken = async (photo: string): Promise<void> => {
     if (!userData) {
       showToast('Brukerdata mangler. Vennligst start på nytt.');
       return;
@@ -57,7 +73,10 @@ export function useQuiz() {
       try {
         photoSchema.parse(photo);
       } catch (error) {
-        throw new ValidationError('Ugyldig bildeformat. Vennligst prøv igjen.');
+        if (error instanceof Error) {
+          throw new ValidationError('Ugyldig bildeformat. Vennligst prøv igjen.');
+        }
+        throw error;
       }
 
       const results = calculateResults();
@@ -125,16 +144,16 @@ export function useQuiz() {
   };
 
   const calculateResults = (): (PersonalityType & { percentage: number })[] => {
-    const total = Object.values(answers).reduce((a, b) => a + b, 0);
+    const total = Object.values(answers).reduce((a: number, b: number) => a + b, 0);
     return personalities
-      .map(personality => ({
+      .map((personality: PersonalityType) => ({
         ...personality,
         percentage: Math.round((answers[personality.color as keyof QuizResult] / total) * 100),
       }))
       .sort((a, b) => b.percentage - a.percentage);
   };
 
-  const resetQuiz = () => {
+  const resetQuiz = (): void => {
     setUserData(null);
     setCurrentQuestion(0);
     setAnswers(initialResult);

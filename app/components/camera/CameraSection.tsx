@@ -6,7 +6,7 @@ interface CameraSectionProps {
   onPhotoTaken: (photoUrl: string) => void;
 }
 
-export function CameraSection({ onPhotoTaken }: CameraSectionProps) {
+export function CameraSection({ onPhotoTaken }: CameraSectionProps): JSX.Element {
   return (
     <div className="bg-white/10 backdrop-blur-md rounded-xl shadow-lg p-6 md:p-8 border border-white/20">
       <h2 className="text-2xl font-bold text-white mb-4">

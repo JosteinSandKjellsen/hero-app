@@ -5,7 +5,7 @@ const matchingColors = {
   green: 'yellow',
 } as const;
 
-export function getMatchingColor(color: keyof typeof matchingColors) {
+export function getMatchingColor(color: keyof typeof matchingColors): (typeof matchingColors)[keyof typeof matchingColors] {
   return matchingColors[color];
 }
 

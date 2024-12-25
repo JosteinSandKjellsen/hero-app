@@ -4,9 +4,9 @@ import { Header } from './Header';
 import { Footer } from './Footer';
 import { Background } from './Background';
 import { HeroBackground } from './HeroBackground';
-import type { LayoutProps } from '@/app/_types/layout';
+import type { LayoutProps } from '../../_lib/types/layout';
 
-export function QuizLayout({ children, showBackground = false, variant = 'quiz' }: LayoutProps) {
+export function QuizLayout({ children, showBackground = false, variant = 'quiz' }: LayoutProps): JSX.Element {
   return (
     <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 relative">
       {showBackground ? <HeroBackground /> : <Background variant={variant} />}

@@ -1,14 +1,14 @@
 'use client';
 
-import { PersonalityType } from '@/types';
-import { getPersonalityIcon } from '@/utils/personalityIcons';
+import { PersonalityType } from '../../_lib/types/personality';
+import { getPersonalityIcon } from '../../_utils/personalityIcons';
 
 interface PersonalityCardProps {
   personality: PersonalityType;
   percentage: number;
 }
 
-export function PersonalityCard({ personality, percentage }: PersonalityCardProps) {
+export function PersonalityCard({ personality, percentage }: PersonalityCardProps): JSX.Element {
   return (
     <div className="bg-white rounded-lg shadow-lg p-6">
       <div className={`${personality.bgClass} rounded-full w-12 h-12 flex items-center justify-center mb-4`}>
@@ -31,7 +31,7 @@ export function PersonalityCard({ personality, percentage }: PersonalityCardProp
       </div>
       <p className="text-gray-600 mb-4">{personality.description}</p>
       <div className="flex flex-wrap gap-2">
-        {personality.traits.map((trait, index) => (
+        {personality.traits.map((trait: string, index: number) => (
           <span
             key={index}
             className={`${personality.bgClass} text-white px-3 py-1 rounded-full text-sm`}

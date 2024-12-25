@@ -1,13 +1,14 @@
 'use client';
 
+import { FC } from 'react';
 import { Sparkles } from 'lucide-react';
-import type { LayoutVariant } from '@/types/layout';
+import type { LayoutVariant } from '../../_types/layout';
 
 interface HeaderProps {
   variant?: LayoutVariant;
 }
 
-export function Header({ variant = 'quiz' }: HeaderProps) {
+export const Header: FC<HeaderProps> = ({ variant = 'quiz' }): JSX.Element => {
   const textColor = variant === 'results' ? 'text-gray-900' : 'text-white';
 
   return (
@@ -25,4 +26,4 @@ export function Header({ variant = 'quiz' }: HeaderProps) {
       </p>
     </div>
   );
-}
+};

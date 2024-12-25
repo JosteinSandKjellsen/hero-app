@@ -5,10 +5,10 @@ import { z } from 'zod';
 const requestSchema = z.object({
   personality: z.string().min(1, 'Personality is required'),
   gender: z.enum(['male', 'female'] as const),
-  color: z.string().min(1, 'Color is required'),
+  color: z.enum(['red', 'yellow', 'green', 'blue'] as const),
 });
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const body = await request.json();
     
@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     const name = await generateHeroName(
       validatedData.personality,
       validatedData.gender,
-      validatedData.color as any // TODO: Improve type safety
+      validatedData.color
     );
 
     return NextResponse.json({ name });

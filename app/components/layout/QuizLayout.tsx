@@ -1,12 +1,17 @@
 'use client';
 
+import { FC } from 'react';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { Background } from './Background';
 import { HeroBackground } from './HeroBackground';
-import type { LayoutProps } from '@/types/layout';
+import type { LayoutProps } from '../../_types/layout';
 
-export function QuizLayout({ children, showBackground = false, variant = 'quiz' }: LayoutProps) {
+export const QuizLayout: FC<LayoutProps> = ({ 
+  children, 
+  showBackground = false, 
+  variant = 'quiz' 
+}): JSX.Element => {
   return (
     <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 relative">
       {showBackground ? <HeroBackground /> : <Background variant={variant} />}
@@ -17,4 +22,4 @@ export function QuizLayout({ children, showBackground = false, variant = 'quiz' 
       <Footer />
     </div>
   );
-}
+};

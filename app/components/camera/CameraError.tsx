@@ -5,7 +5,7 @@ interface CameraErrorProps {
   onRetry: () => void;
 }
 
-export function CameraError({ error, onRetry }: CameraErrorProps) {
+export function CameraError({ error, onRetry }: CameraErrorProps): JSX.Element {
   return (
     <div className="text-center p-4">
       <AlertCircle className="w-8 h-8 text-red-300 mx-auto mb-2" />

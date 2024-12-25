@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import Image from 'next/image';
 import { getRandomIndex } from '@/app/_lib/utils/random';
 import { heroImages } from '@/app/_lib/constants/images';
 
@@ -25,12 +26,15 @@ export function HeroImageCarousel(): JSX.Element {
   return (
     <div className="w-32 h-32 mx-auto mb-8 rounded-full overflow-hidden relative">
       {heroImages.map((src, index) => (
-        <img
+        <Image
           key={src}
           src={src}
           alt="Superhero"
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000
+          className={`object-cover transition-opacity duration-1000
                      ${index === currentImageIndex ? 'opacity-100' : 'opacity-0'}`}
+          fill
+          sizes="(max-width: 128px) 100vw, 128px"
+          priority={index === 0}
         />
       ))}
     </div>

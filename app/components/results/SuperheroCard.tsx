@@ -1,7 +1,8 @@
 'use client';
 
-import { PersonalityType, UserData } from '@/app/_types';
-import { getPersonalityIcon } from '@/app/_utils/personalityIcons';
+import Image from 'next/image';
+import { PersonalityType, UserData } from '../../_lib/types';
+import { getPersonalityIcon } from '../../_utils/personalityIcons';
 
 interface SuperheroCardProps {
   photoUrl: string;
@@ -9,7 +10,7 @@ interface SuperheroCardProps {
   userData: UserData;
 }
 
-export function SuperheroCard({ photoUrl, personality, userData }: SuperheroCardProps) {
+export function SuperheroCard({ photoUrl, personality, userData }: SuperheroCardProps): JSX.Element {
   return (
     <div 
       data-card-clone
@@ -31,11 +32,13 @@ export function SuperheroCard({ photoUrl, personality, userData }: SuperheroCard
       </div>
 
       <div className="relative aspect-[3/4]">
-        <img
+        <Image
           src={photoUrl}
           alt="Din superhelt-selfie"
-          className="w-full h-full object-cover"
+          fill
+          style={{ objectFit: 'cover' }}
           crossOrigin="anonymous"
+          unoptimized // Since this is a local camera capture, we don't need optimization
         />
       </div>
 

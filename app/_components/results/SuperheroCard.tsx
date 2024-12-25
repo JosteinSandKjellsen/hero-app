@@ -1,7 +1,9 @@
 'use client';
 
-import { PersonalityType, UserData } from '@/app/_types';
-import { getPersonalityIcon } from '@/app/_utils/personalityIcons';
+import Image from 'next/image';
+import { PersonalityType } from '../../_lib/types/personality';
+import { UserData } from '../../_lib/types';
+import { getPersonalityIcon } from '../../_utils/personalityIcons';
 
 interface SuperheroCardProps {
   photoUrl: string;
@@ -10,8 +12,8 @@ interface SuperheroCardProps {
   results?: { color: string; percentage: number }[];
 }
 
-export function SuperheroCard({ photoUrl, personality, userData, results = [] }: SuperheroCardProps) {
-  const getBorderColorClass = () => {
+export function SuperheroCard({ photoUrl, personality, userData, results = [] }: SuperheroCardProps): JSX.Element {
+  const getBorderColorClass = (): string => {
     switch (personality.color) {
       case 'red': return 'border-red-600';
       case 'yellow': return 'border-yellow-500';
@@ -21,7 +23,7 @@ export function SuperheroCard({ photoUrl, personality, userData, results = [] }:
     }
   };
 
-  const getScoreCircleClasses = (color: string) => {
+  const getScoreCircleClasses = (color: string): string => {
     switch (color) {
       case 'red': return 'bg-red-600';
       case 'yellow': return 'bg-yellow-500';
@@ -52,10 +54,12 @@ export function SuperheroCard({ photoUrl, personality, userData, results = [] }:
       </div>
 
       <div className="relative aspect-[3/4]">
-        <img
+        <Image
           src={photoUrl}
           alt="Din superhelt-selfie"
-          className="w-full h-full object-cover"
+          className="object-cover"
+          fill
+          sizes="(max-width: 600px) 100vw, 600px"
           crossOrigin="anonymous"
         />
       </div>

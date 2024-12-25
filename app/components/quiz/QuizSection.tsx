@@ -1,15 +1,19 @@
 'use client';
 
+import { FC } from 'react';
 import { QuizProgress } from './QuizProgress';
 import { QuizQuestion } from './QuizQuestion';
-import { questions } from '@/data/questions';
+import { questions } from '../../_data/questions';
 
 interface QuizSectionProps {
   currentQuestion: number;
   onAnswer: (type: 'red' | 'yellow' | 'green' | 'blue') => void;
 }
 
-export function QuizSection({ currentQuestion, onAnswer }: QuizSectionProps) {
+export const QuizSection: FC<QuizSectionProps> = ({ 
+  currentQuestion, 
+  onAnswer 
+}): JSX.Element => {
   return (
     <div className="bg-white/10 backdrop-blur-md rounded-xl shadow-lg p-6 md:p-8 border border-white/20">
       <QuizProgress
@@ -22,4 +26,4 @@ export function QuizSection({ currentQuestion, onAnswer }: QuizSectionProps) {
       />
     </div>
   );
-}
+};

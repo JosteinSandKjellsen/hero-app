@@ -1,12 +1,12 @@
 'use client';
 
-import type { LayoutVariant } from '@/app/_types/layout';
+import type { LayoutVariant } from '../../_lib/types/layout';
 
 interface BackgroundProps {
   variant: LayoutVariant;
 }
 
-export function Background({ variant }: BackgroundProps) {
+export function Background({ variant }: BackgroundProps): JSX.Element | null {
   switch (variant) {
     case 'quiz':
       return (

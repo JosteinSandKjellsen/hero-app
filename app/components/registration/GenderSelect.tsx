@@ -1,6 +1,8 @@
+import { FC, ChangeEvent } from 'react';
+
 interface GenderSelectProps {
   value: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   error?: string;
 }
 
@@ -9,7 +11,11 @@ const genderOptions = [
   { value: 'female', label: 'Kvinne' },
 ];
 
-export function GenderSelect({ value, onChange, error }: GenderSelectProps) {
+export const GenderSelect: FC<GenderSelectProps> = ({ 
+  value, 
+  onChange, 
+  error 
+}): JSX.Element => {
   return (
     <div>
       <label className="block text-sm font-medium text-white mb-1">
@@ -35,4 +41,4 @@ export function GenderSelect({ value, onChange, error }: GenderSelectProps) {
       )}
     </div>
   );
-}
+};

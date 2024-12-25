@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
-import { PersonalityType, UserData } from '@/app/_types';
+import { PersonalityType, UserData } from '../../_lib/types';
 import { SuperheroCard } from './SuperheroCard';
 import { PersonalityProfile } from './PersonalityProfile';
 import { ResultsActions } from './ResultsActions';
@@ -13,7 +13,7 @@ interface ResultsSectionProps {
   onReset: () => void;
 }
 
-export function ResultsSection({ results, photoUrl, userData, onReset }: ResultsSectionProps) {
+export function ResultsSection({ results, photoUrl, userData, onReset }: ResultsSectionProps): JSX.Element {
   const cardRef = useRef<HTMLDivElement>(null);
   const dominantPersonality = results[0];
 

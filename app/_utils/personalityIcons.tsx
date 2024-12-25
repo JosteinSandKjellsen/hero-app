@@ -1,6 +1,6 @@
 import { Flame, Sun, Leaf, Brain } from 'lucide-react';
 
-export function getPersonalityIcon(color: string) {
+export function getPersonalityIcon(color: 'red' | 'yellow' | 'green' | 'blue'): React.ReactElement | null {
   switch (color) {
     case 'red':
       return <Flame className="w-6 h-6 text-white" />;

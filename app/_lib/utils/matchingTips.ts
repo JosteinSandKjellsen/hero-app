@@ -1,11 +1,9 @@
-import type { 
-  HeroColor,
+import type {
   ColorMapping,
   ColorTranslation,
   ColorClass,
-  MatchingDescription,
   MatchingDescriptions
-} from '@/app/_lib/types/matching';
+} from '../types/matching';
 
 export const matchingColors: ColorMapping = {
   red: 'green',

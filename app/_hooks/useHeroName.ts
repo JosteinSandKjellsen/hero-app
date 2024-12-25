@@ -1,21 +1,26 @@
 'use client';
 
 import { useState } from 'react';
-import { defaultHeroNames } from '@/app/_lib/constants/defaultNames';
-import type { HeroColor } from '@/app/_lib/constants/defaultNames';
+import { defaultHeroNames } from '../_lib/constants/defaultNames';
+import type { HeroColor } from '../_lib/types/api';
 
 interface HeroNameResponse {
   name: string;
   error?: string;
 }
 
-export function useHeroName() {
+interface UseHeroNameReturn {
+  generateHeroName: (personality: string, gender: 'male' | 'female', color: HeroColor) => Promise<string>;
+  isGenerating: boolean;
+}
+
+export function useHeroName(): UseHeroNameReturn {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const generateHeroName = async (
     personality: string,
     gender: 'male' | 'female',
-    color: string
+    color: HeroColor
   ): Promise<string> => {
     setIsGenerating(true);
     try {
@@ -37,10 +42,10 @@ export function useHeroName() {
         throw new Error(data.error);
       }
 
-      return data.name || defaultHeroNames[color as HeroColor];
+      return data.name || defaultHeroNames[color];
     } catch (error) {
       console.error('Error generating hero name:', error);
-      return defaultHeroNames[color as HeroColor];
+      return defaultHeroNames[color];
     } finally {
       setIsGenerating(false);
     }

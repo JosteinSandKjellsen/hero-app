@@ -4,7 +4,7 @@ interface LoadingSpinnerProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
-export function LoadingSpinner({ size = 'md' }: LoadingSpinnerProps) {
+export function LoadingSpinner({ size = 'md' }: LoadingSpinnerProps): JSX.Element {
   const sizeClasses = {
     sm: 'w-5 h-5',
     md: 'w-8 h-8',

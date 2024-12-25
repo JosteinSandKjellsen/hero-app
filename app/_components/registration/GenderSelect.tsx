@@ -11,7 +11,7 @@ const genderOptions = [
   { value: 'female', label: 'Kvinne' },
 ];
 
-export function GenderSelect({ value, onChange, error }: GenderSelectProps) {
+export function GenderSelect({ value, onChange, error }: GenderSelectProps): JSX.Element {
   return (
     <div>
       <label className="block text-sm font-medium text-white mb-1">

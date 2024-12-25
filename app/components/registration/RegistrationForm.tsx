@@ -1,16 +1,17 @@
 'use client';
 
-import { useForm } from '@/hooks/useForm';
+import { FC } from 'react';
+import { useForm } from '../../_hooks/useForm';
 import { FormField } from './FormField';
 import { GenderSelect } from './GenderSelect';
 import { SubmitButton } from './SubmitButton';
-import type { UserData } from '@/types/common';
+import type { UserData } from '../../_types';
 
 interface RegistrationFormProps {
   onSubmit: (data: UserData) => void;
 }
 
-export function RegistrationForm({ onSubmit }: RegistrationFormProps) {
+export const RegistrationForm: FC<RegistrationFormProps> = ({ onSubmit }): JSX.Element => {
   const { values, errors, handleChange, handleSubmit } = useForm<UserData>({
     initialValues: {
       name: '',
@@ -56,4 +57,4 @@ export function RegistrationForm({ onSubmit }: RegistrationFormProps) {
       </form>
     </div>
   );
-}
+};

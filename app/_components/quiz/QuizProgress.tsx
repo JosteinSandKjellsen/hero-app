@@ -5,7 +5,7 @@ interface QuizProgressProps {
   totalQuestions: number;
 }
 
-export function QuizProgress({ currentQuestion, totalQuestions }: QuizProgressProps) {
+export function QuizProgress({ currentQuestion, totalQuestions }: QuizProgressProps): JSX.Element {
   const progress = (currentQuestion / totalQuestions) * 100;
 
   return (

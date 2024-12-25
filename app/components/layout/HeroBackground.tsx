@@ -1,4 +1,7 @@
-export function HeroBackground() {
+import { FC } from 'react';
+import Image from 'next/image';
+
+export const HeroBackground: FC = (): JSX.Element => {
   const images = [
     '/images/superheroes/red-man.jpeg',
     '/images/superheroes/blue-woman.jpeg',
@@ -14,9 +17,11 @@ export function HeroBackground() {
       <div className="grid grid-cols-2 md:grid-cols-4 h-full gap-1 opacity-50">
         {images.map((image, index) => (
           <div key={index} className="relative overflow-hidden group">
-            <img
+            <Image
               src={image}
               alt="Superhero"
+              width={500}
+              height={800}
               className="w-full h-full object-cover scale-105 transition-transform duration-5000 group-hover:scale-110"
             />
           </div>
@@ -24,4 +29,4 @@ export function HeroBackground() {
       </div>
     </div>
   );
-}
+};
