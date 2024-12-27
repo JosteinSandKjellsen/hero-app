@@ -1,12 +1,8 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { defaultHeroNames, type HeroColor } from '../_lib/constants/defaultNames';
-import { env } from '../_lib/config/env';
+import { getGeminiApiKey } from '../_lib/config/env';
 
-if (!env.GEMINI_API_KEY) {
-  throw new Error('GEMINI_API_KEY is required');
-}
-
-const genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY);
+const genAI = new GoogleGenerativeAI(getGeminiApiKey());
 const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
 export async function generateHeroName(
