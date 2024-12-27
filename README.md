@@ -20,6 +20,8 @@
 
 3. Make sure `.env` is in your `.gitignore` to prevent exposing sensitive information.
 
+Note: These API keys are used server-side only and are not exposed to the client browser.
+
 ## Development
 
 1. Install dependencies:
@@ -50,4 +52,4 @@ The application will be available at [http://localhost:3000](http://localhost:30
    - Netlify will automatically deploy when you push to your main branch
    - You can also trigger manual deploys from the Netlify dashboard
 
-Note: Make sure both API keys are properly set in Netlify's environment variables before deploying. The application requires these keys for hero name generation and image creation features.
+Note: The API keys are used securely in server-side API routes and are never exposed to the client browser. Make sure both keys are properly set in Netlify's environment variables before deploying.
