@@ -7,6 +7,7 @@ import { personalities } from '../_data/personalities';
 import { AppError, ValidationError } from '../_lib/errors';
 import { photoSchema } from '../_lib/utils/validation/photoValidation';
 import type { QuizResult, UserData, PersonalityType } from '../_lib/types';
+import type { GenerationStep } from '../_lib/types/loading';
 
 const initialResult: QuizResult = {
   red: 0,
@@ -24,6 +25,7 @@ interface UseQuizReturn {
   heroName: string | null;
   isGeneratingImage: boolean;
   isGeneratingName: boolean;
+  generationStep: GenerationStep;
   handleRegistration: (data: UserData) => void;
   handleAnswer: (type: 'red' | 'yellow' | 'green' | 'blue') => void;
   handlePhotoTaken: (photo: string) => Promise<void>;
@@ -41,6 +43,7 @@ export function useQuiz(): UseQuizReturn {
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [isGeneratingName, setIsGeneratingName] = useState(false);
   const [heroName, setHeroName] = useState<string | null>(null);
+  const [generationStep, setGenerationStep] = useState<GenerationStep>('upload');
   
   const { showToast } = useToast();
 
@@ -68,6 +71,7 @@ export function useQuiz(): UseQuizReturn {
       setIsGeneratingImage(true);
       setIsGeneratingName(true);
       setShowCamera(false);
+      setGenerationStep('upload');
       
       // Validate photo
       try {
@@ -101,6 +105,8 @@ export function useQuiz(): UseQuizReturn {
 
       const nameData = await nameResponse.json();
       
+      setGenerationStep('process');
+
       // Generate AI image
       const imageResponse = await fetch('/api/hero-image', {
         method: 'POST',
@@ -119,6 +125,8 @@ export function useQuiz(): UseQuizReturn {
         throw new AppError('Kunne ikke generere superhelt-bilde');
       }
 
+      setGenerationStep('generate');
+
       const imageData = await imageResponse.json();
       
       if (!imageData.imageUrl) {
@@ -127,6 +135,7 @@ export function useQuiz(): UseQuizReturn {
 
       setPhotoUrl(imageData.imageUrl);
       setHeroName(nameData.name);
+      setGenerationStep('complete');
       setShowResults(true);
     } catch (error) {
       console.error('Error processing photo:', error);
@@ -163,6 +172,7 @@ export function useQuiz(): UseQuizReturn {
     setHeroName(null);
     setIsGeneratingImage(false);
     setIsGeneratingName(false);
+    setGenerationStep('upload');
   };
 
   return {
@@ -174,6 +184,7 @@ export function useQuiz(): UseQuizReturn {
     heroName,
     isGeneratingImage,
     isGeneratingName,
+    generationStep,
     handleRegistration,
     handleAnswer,
     handlePhotoTaken,

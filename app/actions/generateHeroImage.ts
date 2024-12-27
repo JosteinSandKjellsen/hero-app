@@ -7,7 +7,8 @@ import type { HeroColor } from '../_types/api';
 export async function generateHeroImage(
   personality: string,
   gender: 'male' | 'female',
-  color: HeroColor
+  color: HeroColor,
+  photoBase64?: string
 ): Promise<string> {
   try {
     const leonardoService = new LeonardoAiService();
@@ -26,14 +27,43 @@ export async function generateHeroImage(
     const negativePrompt =
       'blurry, low quality, distorted, bad anatomy, text, watermark, signature, deformed, ugly, duplicate, morbid, mutilated, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, extra limbs, extra legs, extra arms, disfigured, bad anatomy, bad proportions, gross proportions, malformed limbs, missing arms, missing legs, extra digit, fewer digits, mask, superman logo, batman logo, spiderman logo, sexual content, bare skin, large breasts';
 
-    const generationId = await leonardoService.generateImage({
-      prompt,
-      negativePrompt,
-      width: 512,
-      height: 768,
-    });
+    let initImageId: string | undefined;
+    let uploadSuccessful = false;
 
-    return await leonardoService.getGeneratedImage(generationId);
+    try {
+      if (photoBase64) {
+        initImageId = await leonardoService.uploadImage(photoBase64);
+        uploadSuccessful = true;
+      }
+
+      const generationId = await leonardoService.generateImage({
+        prompt,
+        negativePrompt,
+        width: 512,
+        height: 768,
+        initImageId,
+      });
+
+      // Wait for the generated image to be available
+      const imageUrl = await leonardoService.getGeneratedImage(generationId);
+
+      // Only delete the initial image if it was successfully uploaded and used
+      if (uploadSuccessful && initImageId) {
+        // Add a small delay to ensure the image was used
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        await leonardoService.deleteImage(initImageId, 'initial');
+      }
+
+      return imageUrl;
+    } catch (error) {
+      // Only attempt to delete if the upload was successful
+      if (uploadSuccessful && initImageId) {
+        // Add a small delay to ensure the image was used
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        await leonardoService.deleteImage(initImageId, 'initial');
+      }
+      throw error;
+    }
   } catch (error) {
     console.error('Error generating hero image:', error);
     if (error instanceof ApiError) {

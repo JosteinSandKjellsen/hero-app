@@ -1,3 +1,10 @@
+export interface ControlNet {
+  preprocessorId: number;
+  initImageType: 'UPLOADED';
+  initImageId: string;
+  strengthType: 'High' | 'Medium' | 'Low';
+}
+
 export interface GenerateImageParams {
   prompt: string;
   negativePrompt?: string;
@@ -13,6 +20,8 @@ export interface GenerateImageParams {
     | 'LCM';
   seed?: number;
   public?: boolean;
+  controlnets?: ControlNet[];
+  initImageId?: string;
 }
 
 export interface GenerationResponse {

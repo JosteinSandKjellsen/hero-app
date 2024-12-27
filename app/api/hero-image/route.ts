@@ -11,7 +11,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const imageUrl = await generateHeroImage(
       validatedData.personality,
       validatedData.gender,
-      validatedData.color
+      validatedData.color,
+      validatedData.originalPhoto
     );
 
     return NextResponse.json({ imageUrl });

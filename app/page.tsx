@@ -20,6 +20,7 @@ export default function Home(): JSX.Element {
     heroName,
     isGeneratingImage,
     isGeneratingName,
+    generationStep,
     handleRegistration,
     handleAnswer,
     handlePhotoTaken,
@@ -41,10 +42,7 @@ export default function Home(): JSX.Element {
   if (isGeneratingImage || isGeneratingName) {
     return (
       <QuizLayout variant="camera">
-        <LoadingState 
-          message="Genererer ditt superhelt-bilde..."
-          subMessage="Dette kan ta opptil ett minutt"
-        />
+        <LoadingState currentStep={generationStep} />
       </QuizLayout>
     );
   }
