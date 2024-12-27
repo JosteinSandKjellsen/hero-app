@@ -39,6 +39,12 @@ export interface GenerationStatusResponse {
   };
 }
 
+export interface UploadUrlResponse {
+  id: string;
+  url: string;
+  fields: Record<string, string>;
+}
+
 export interface LeonardoError extends Error {
   status?: number;
   code?: string;

@@ -7,7 +7,7 @@ interface ProgressBulletsProps {
 }
 
 export function ProgressBullets({ currentStep }: ProgressBulletsProps): JSX.Element {
-  const getCurrentStepIndex = () => {
+  const getCurrentStepIndex = (): number => {
     return GENERATION_STEPS.findIndex(step => step.step === currentStep);
   };
 

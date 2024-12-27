@@ -2,7 +2,7 @@ import { env } from '../config/env';
 import { API_CONFIG } from '../config/api';
 import { sleep } from '../utils/async';
 import { ApiError } from '../errors';
-import type { GenerateImageParams } from '../types/leonardo';
+import type { GenerateImageParams, UploadUrlResponse } from '../types/leonardo';
 
 export class LeonardoAiService {
   private readonly headers: HeadersInit;
@@ -21,7 +21,7 @@ export class LeonardoAiService {
     };
   }
 
-  private async getUploadUrl(): Promise<{ id: string; url: string; fields: any }> {
+  private async getUploadUrl(): Promise<UploadUrlResponse> {
     const response = await fetch('https://cloud.leonardo.ai/api/rest/v1/init-image', {
       method: 'POST',
       headers: this.headers,
