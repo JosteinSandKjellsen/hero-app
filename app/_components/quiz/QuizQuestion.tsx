@@ -12,7 +12,7 @@ export function QuizQuestion({ question, onAnswer }: QuizQuestionProps): JSX.Ele
 
   return (
     <div className="animate-fadeIn">
-      <h2 className="text-2xl font-bold text-white mb-6">{question.text}</h2>
+      <div className="text-2xl font-bold text-white mb-6">{question.text}</div>
       <div className="space-y-4">
         {shuffledOptions.map((option, index) => (
           <button
