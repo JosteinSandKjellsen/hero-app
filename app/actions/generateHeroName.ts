@@ -1,36 +1,51 @@
-'use server';
-
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { defaultHeroNames } from '../_lib/constants/defaultNames';
-import type { HeroColor } from '../_types/api';
+import { defaultHeroNames, type HeroColor } from '../_lib/constants/defaultNames';
+import { env } from '../_lib/config/env';
 
-const genAI = new GoogleGenerativeAI('AIzaSyAm0VLbDu1RsYM2U32GOp-vnN70FBocQUM');
+if (!env.GEMINI_API_KEY) {
+  throw new Error('GEMINI_API_KEY is required');
+}
+
+const genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
 export async function generateHeroName(
   personality: string,
-  gender: 'male' | 'female',
-  color: HeroColor
+  gender: string,
+  color: string
 ): Promise<string> {
   try {
-    console.log('Generating hero name for:', { personality, gender, color });
-
-    const prompt = `Generate a short, memorable superhero name (2-3 words) for a ${gender} hero with ${color} as their primary color and this personality: ${personality}. The name should be appropriate for all ages.`;
+    const prompt = `Generate a superhero name based on the following characteristics:
+      - Personality: ${personality}
+      - Gender: ${gender}
+      - Color theme: ${color}
+      
+      Rules:
+      - The name should be short (1-3 words)
+      - Should not include common superhero names like "man", "woman", "boy", "girl"
+      - Should be creative and unique
+      - Should reflect the personality and color theme
+      - Return ONLY the superhero name, nothing else
+      `;
 
     const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const heroName = response.text().trim();
+    const response = result.response;
+    const text = response.text();
 
-    console.log('Generated hero name:', heroName);
-
-    if (!heroName) {
-      console.warn('Generated hero name was empty, using default');
-      return defaultHeroNames[color];
+    if (!text) {
+      console.error('No hero name generated');
+      return getRandomDefaultName();
     }
 
-    return heroName;
+    return text.trim();
   } catch (error) {
     console.error('Error generating hero name:', error);
-    return defaultHeroNames[color];
+    return getRandomDefaultName();
   }
+}
+
+function getRandomDefaultName(): string {
+  const colors = Object.keys(defaultHeroNames) as HeroColor[];
+  const randomColor = colors[Math.floor(Math.random() * colors.length)];
+  return defaultHeroNames[randomColor];
 }
