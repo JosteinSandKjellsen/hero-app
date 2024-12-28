@@ -1,12 +1,13 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import { Camera } from 'lucide-react';
 import { CameraError } from './CameraError';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
+import { CameraPermissionState } from './CameraPermissionState';
 
 interface CameraCaptureProps {
-  onPhotoTaken: (photoUrl: string) => void;
+  onPhotoTaken: (photoUrl: string | null) => void;
   isGenerating?: boolean;
 }
 
@@ -15,17 +16,19 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
   const [isStreaming, setIsStreaming] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hasPermission, setHasPermission] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(false);
 
-  useEffect((): (() => void) => {
-    startCamera();
-    return () => stopCamera();
-  }, []);
-
-  const startCamera = async (): Promise<void> => {
+  const startCamera = async (fromPermissionGrant = false): Promise<void> => {
+    if (!fromPermissionGrant && !hasPermission) return;
+    setIsInitializing(true);
     try {
+      // Check if device is mobile
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          facingMode: 'user',
+          facingMode: isMobile ? 'environment' : 'user', // Use back camera on mobile
           width: { ideal: 1280 },
           height: { ideal: 720 }
         }
@@ -92,12 +95,34 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
     }
   };
 
+  const handlePermissionGranted = () => {
+    setHasPermission(true);
+    startCamera(true);
+  };
+
+  if (!hasPermission) {
+    return (
+      <CameraPermissionState 
+        onPermissionGranted={handlePermissionGranted}
+        onSkip={() => onPhotoTaken(null)}
+      />
+    );
+  }
+
   if (error) {
-    return <CameraError error={error} onRetry={startCamera} />;
+    return <CameraError error={error} onRetry={() => startCamera(true)} />;
   }
 
   return (
     <div className="relative max-w-md mx-auto h-[70vh]">
+      {isInitializing && !isStreaming && (
+        <div className="absolute inset-0 flex items-center justify-center bg-purple-900/30 backdrop-blur-sm rounded-lg">
+          <div className="text-center">
+            <LoadingSpinner size="lg" />
+            <p className="text-white mt-4">Starter kamera...</p>
+          </div>
+        </div>
+      )}
       <video
         ref={videoRef}
         autoPlay
@@ -105,7 +130,7 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
         className="w-full h-full object-cover rounded-lg border-4 border-purple-600 shadow-xl"
       />
       {isStreaming && (
-        <div className="absolute inset-x-0 bottom-4 flex justify-center">
+        <div className="absolute inset-x-0 bottom-4 flex flex-col items-center space-y-3">
           <button
             onClick={takePhoto}
             disabled={isCapturing || isGenerating}
@@ -117,14 +142,24 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
             {isCapturing ? (
               <>
                 <LoadingSpinner size="sm" />
-                <span>Tar bilde...</span>
+                <span>Tar bildet...</span>
               </>
             ) : (
               <>
                 <Camera className="w-6 h-6" />
-                <span>Ta bildet</span>
+                <span>Ta bilde</span>
               </>
             )}
+          </button>
+          <button
+            onClick={() => {
+              stopCamera();
+              onPhotoTaken(null);
+            }}
+            className="text-white/70 text-sm hover:text-white/90 transition-colors
+                     underline underline-offset-2 focus:outline-none focus:text-white"
+          >
+            Fortsett uten bilde
           </button>
         </div>
       )}

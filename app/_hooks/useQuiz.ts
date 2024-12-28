@@ -28,7 +28,7 @@ interface UseQuizReturn {
   generationStep: GenerationStep;
   handleRegistration: (data: UserData) => void;
   handleAnswer: (type: 'red' | 'yellow' | 'green' | 'blue') => void;
-  handlePhotoTaken: (photo: string) => Promise<void>;
+  handlePhotoTaken: (photo: string | null) => Promise<void>;
   calculateResults: () => (PersonalityType & { percentage: number })[];
   resetQuiz: () => void;
 }
@@ -61,7 +61,7 @@ export function useQuiz(): UseQuizReturn {
     }
   };
 
-  const handlePhotoTaken = async (photo: string): Promise<void> => {
+  const handlePhotoTaken = async (photo: string | null): Promise<void> => {
     if (!userData) {
       showToast('Brukerdata mangler. Vennligst start på nytt.');
       return;
@@ -73,17 +73,19 @@ export function useQuiz(): UseQuizReturn {
       setShowCamera(false);
       setGenerationStep('upload');
       
-      // Validate photo
-      try {
-        photoSchema.parse(photo);
-      } catch (error) {
-        if (error instanceof Error) {
-          throw new ValidationError('Ugyldig bildeformat. Vennligst prøv igjen.');
-        }
-        throw error;
-      }
-
       const results = calculateResults();
+
+      // Only validate photo if one was provided
+      if (photo !== null) {
+        try {
+          photoSchema.parse(photo);
+        } catch (error) {
+          if (error instanceof Error) {
+            throw new ValidationError('Ugyldig bildeformat. Vennligst prøv igjen.');
+          }
+          throw error;
+        }
+      }
       const dominantPersonality = results[0];
 
       // Generate hero name
@@ -117,7 +119,7 @@ export function useQuiz(): UseQuizReturn {
           personality: dominantPersonality.name,
           gender: userData.gender,
           color: dominantPersonality.color,
-          originalPhoto: photo,
+          originalPhoto: photo || undefined,
         }),
       });
 
