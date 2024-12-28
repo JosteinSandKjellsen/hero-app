@@ -1,0 +1,54 @@
+/* Base styles */
+html, body {
+  background-color: white !important;
+  margin: 0;
+  padding: 0;
+}
+
+/* Print-specific styles */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+  
+  html, body {
+    background-color: white !important;
+    margin: 0;
+    padding: 0;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  /* Remove shadows */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* White backgrounds only for main containers */
+  html, body, .min-h-screen, [data-card-clone] {
+    background-color: white !important;
+  }
+
+  /* Ensure SVG icons are visible */
+  svg {
+    visibility: visible !important;
+    display: block !important;
+    color: white !important;
+  }
+
+  /* Remove hover effects */
+  .hover\:scale-\[1\.02\] {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  /* Force background colors to print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+}

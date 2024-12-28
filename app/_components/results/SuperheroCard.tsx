@@ -13,6 +13,16 @@ interface SuperheroCardProps {
 }
 
 export function SuperheroCard({ photoUrl, personality, userData, results = [] }: SuperheroCardProps): JSX.Element {
+  const getColorValue = (color: string): string => {
+    switch (color) {
+      case 'red': return 'rgb(220, 38, 38)'; // text-red-600
+      case 'yellow': return 'rgb(234, 179, 8)'; // text-yellow-500
+      case 'green': return 'rgb(22, 163, 74)'; // text-green-600
+      case 'blue': return 'rgb(37, 99, 235)'; // text-blue-600
+      default: return 'rgb(147, 51, 234)'; // text-purple-600
+    }
+  };
+
   const getBorderColorClass = (): string => {
     switch (personality.color) {
       case 'red': return 'border-red-600';
@@ -23,24 +33,30 @@ export function SuperheroCard({ photoUrl, personality, userData, results = [] }:
     }
   };
 
-  const getScoreCircleClasses = (color: string): string => {
-    switch (color) {
-      case 'red': return 'bg-red-600';
-      case 'yellow': return 'bg-yellow-500';
-      case 'green': return 'bg-green-600';
-      case 'blue': return 'bg-blue-600';
-      default: return 'bg-gray-600';
-    }
-  };
-
   return (
     <div 
       data-card-clone
-      className={`rounded-xl overflow-hidden border-[10px] ${getBorderColorClass()} shadow-2xl bg-white transform hover:scale-[1.02] transition-transform duration-300`}
-      style={{ width: '100%', maxWidth: '600px', margin: '0 auto' }}
+      className={`rounded-xl overflow-hidden border-[10px] ${getBorderColorClass()} transform hover:scale-[1.02] transition-transform duration-300 print:transform-none print:transition-none`}
+      style={{ 
+        width: '100%', 
+        maxWidth: '600px', 
+        margin: '0 auto',
+        backgroundColor: 'white',
+        boxShadow: 'none',
+        WebkitPrintColorAdjust: 'exact',
+        printColorAdjust: 'exact',
+        colorAdjust: 'exact'
+      }}
     >
-      <div className="h-20 flex items-center gap-3 px-4 border-b-2 border-opacity-20">
-        <div className={`${personality.bgClass} w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center`}>
+      <div 
+        className="h-20 flex items-center gap-3 px-4 border-b-2 border-opacity-20"
+        style={{ backgroundColor: 'white' }}
+      >
+        <div 
+          className="w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center"
+          data-color-bg="true"
+          style={{ backgroundColor: getColorValue(personality.color) }}
+        >
           {getPersonalityIcon(personality.color)}
         </div>
         <div className="flex-1 flex flex-col justify-center -mt-0.5 py-2">
@@ -64,7 +80,10 @@ export function SuperheroCard({ photoUrl, personality, userData, results = [] }:
         />
       </div>
 
-      <div className="p-3 border-t-2 border-opacity-20 flex justify-between items-center">
+      <div 
+        className="p-3 border-t-2 border-opacity-20 flex justify-between items-center"
+        style={{ backgroundColor: 'white' }}
+      >
         <div className="text-sm font-bangers tracking-wide text-gray-700 px-4">
           {userData.name.toUpperCase()}
         </div>
@@ -75,7 +94,9 @@ export function SuperheroCard({ photoUrl, personality, userData, results = [] }:
             return (
               <div 
                 key={color}
-                className={`w-8 h-8 rounded-full ${getScoreCircleClasses(color)} flex items-center justify-center`}
+                className="w-8 h-8 rounded-full flex items-center justify-center"
+                data-color-bg="true"
+                style={{ backgroundColor: getColorValue(color) }}
               >
                 <span className="text-xs font-bold text-white">{score}</span>
               </div>

@@ -1,6 +1,5 @@
 'use client';
 
-import { useRef } from 'react';
 import { PersonalityType } from '../../_lib/types/personality';
 import { UserData } from '../../_lib/types';
 import { SuperheroCard } from './SuperheroCard';
@@ -16,7 +15,6 @@ interface ResultsSectionProps {
 }
 
 export function ResultsSection({ results, photoUrl, userData, onReset, heroName }: ResultsSectionProps): JSX.Element {
-  const cardRef = useRef<HTMLDivElement>(null);
   const dominantPersonality = results[0];
 
   const scoreResults = results.map(r => ({
@@ -33,26 +31,20 @@ export function ResultsSection({ results, photoUrl, userData, onReset, heroName 
           userData={userData}
           results={scoreResults}
         />
-        
-        <div 
-          ref={cardRef}
-          className="fixed left-[-9999px] opacity-0 pointer-events-none"
-          aria-hidden="true"
-        >
-          <SuperheroCard
-            photoUrl={photoUrl}
-            personality={{ ...dominantPersonality, heroName }}
-            userData={userData}
-            results={scoreResults}
-          />
-        </div>
       </div>
 
       <PersonalityProfile results={results} />
 
       <ResultsActions 
-        cardRef={cardRef}
-        heroName={heroName}
+        printData={{
+          photoUrl,
+          name: userData.name,
+          gender: userData.gender,
+          heroName,
+          personalityName: dominantPersonality.name,
+          color: dominantPersonality.color,
+          scores: scoreResults
+        }}
         onReset={onReset}
       />
     </div>
