@@ -30,7 +30,7 @@ export function CameraPermissionState({ onPermissionGranted, onSkip }: CameraPer
     }
   }, []);
 
-  const requestPermission = async () => {
+  const requestPermission = async (): Promise<void> => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
       stream.getTracks().forEach(track => track.stop()); // Clean up
@@ -41,7 +41,7 @@ export function CameraPermissionState({ onPermissionGranted, onSkip }: CameraPer
     }
   };
 
-  const getBrowserInstructions = () => {
+  const getBrowserInstructions = (): string => {
     switch (browserName) {
       case 'Chrome':
         return 'Klikk på kamera-ikonet i adressefeltet ➜ Tillat';

@@ -95,7 +95,7 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
     }
   };
 
-  const handlePermissionGranted = () => {
+  const handlePermissionGranted = (): void => {
     setHasPermission(true);
     startCamera(true);
   };
