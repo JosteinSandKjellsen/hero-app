@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { Camera } from 'lucide-react';
+import { Camera, FlipHorizontal } from 'lucide-react';
 import { CameraError } from './CameraError';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
 import { CameraPermissionState } from './CameraPermissionState';
@@ -18,17 +18,18 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
   const [error, setError] = useState<string | null>(null);
   const [hasPermission, setHasPermission] = useState(false);
   const [isInitializing, setIsInitializing] = useState(false);
+  const [isFrontCamera, setIsFrontCamera] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
 
   const startCamera = async (fromPermissionGrant = false): Promise<void> => {
     if (!fromPermissionGrant && !hasPermission) return;
     setIsInitializing(true);
     try {
-      // Check if device is mobile
-      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      setIsMobile(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
       
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          facingMode: isMobile ? 'environment' : 'user', // Use back camera on mobile
+          facingMode: isFrontCamera ? 'user' : 'environment',
           width: { ideal: 1280 },
           height: { ideal: 720 }
         }
@@ -131,6 +132,20 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
       />
       {isStreaming && (
         <div className="absolute inset-x-0 bottom-4 flex flex-col items-center space-y-3">
+          {isMobile && (
+            <button
+              onClick={() => {
+                stopCamera();
+                setIsFrontCamera(!isFrontCamera);
+                startCamera(true);
+              }}
+              className="bg-purple-600/80 backdrop-blur-sm text-white p-2 rounded-full hover:bg-purple-700 
+                       transition-colors shadow-lg mb-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              aria-label="Bytt kamera"
+            >
+              <FlipHorizontal className="w-6 h-6" />
+            </button>
+          )}
           <button
             onClick={takePhoto}
             disabled={isCapturing || isGenerating}
