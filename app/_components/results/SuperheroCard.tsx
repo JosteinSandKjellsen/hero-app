@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { PersonalityType } from '../../_lib/types/personality';
 import { UserData } from '../../_lib/types';
 import { getPersonalityIcon } from '../../_utils/personalityIcons';
+import { getHeroCardIcon } from '../../_utils/heroCardIcons';
 
 interface SuperheroCardProps {
   photoUrl: string;
@@ -53,7 +54,7 @@ export function SuperheroCard({ photoUrl, personality, userData, results = [] }:
         style={{ backgroundColor: 'white' }}
       >
         <div 
-          className="w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center"
+          className="w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center personality-icon"
           data-color-bg="true"
           style={{ backgroundColor: getColorValue(personality.color) }}
         >
@@ -88,16 +89,25 @@ export function SuperheroCard({ photoUrl, personality, userData, results = [] }:
           {userData.name.toUpperCase()}
         </div>
         <div className="flex gap-2">
-          {['red', 'yellow', 'green', 'blue'].map(color => {
+          {(['red', 'yellow', 'green', 'blue'] as const).map(color => {
             const result = results.find(r => r.color === color);
             const score = result ? Math.round(result.percentage / 10) : 0;
             return (
               <div 
                 key={color}
-                className="w-8 h-8 rounded-full flex items-center justify-center"
+                className="score-circle rounded-full flex items-center"
                 data-color-bg="true"
-                style={{ backgroundColor: getColorValue(color) }}
+                style={{ 
+                  backgroundColor: getColorValue(color),
+                  width: '2.7rem',
+                  height: '1.7rem',
+                  paddingLeft: '0.5rem',
+                  gap: '0.3rem'
+                }}
               >
+                <div className="w-4 h-4 flex items-center justify-center">
+                  {getHeroCardIcon(color)}
+                </div>
                 <span className="text-xs font-bold text-white">{score}</span>
               </div>
             );
