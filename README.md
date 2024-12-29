@@ -53,3 +53,25 @@ The application will be available at [http://localhost:3000](http://localhost:30
    - You can also trigger manual deploys from the Netlify dashboard
 
 Note: The API keys are used securely in server-side API routes and are never exposed to the client browser. Make sure both keys are properly set in Netlify's environment variables before deploying.
+
+## Print View
+
+The application includes a print view that can be accessed with query parameters to display an already generated hero. Use the following format:
+
+```
+/print?name=John&heroName=Thunder%20Strike&imageId=abc123&personalityName=The%20Protector&color=blue&heroScore=8
+```
+
+Query Parameters:
+- `name`: The person's real name
+- `heroName`: The generated superhero name
+- `imageId`: The ID of the generated hero image
+- `personalityName`: The personality type name
+- `color`: The personality color (red, yellow, green, or blue)
+- `heroScore`: A number from 0-10 representing the hero score
+- `gender`: (optional) 'male' or 'female', defaults to 'male'
+
+Example:
+```
+http://localhost:3000/print?name=John%20Doe&heroName=Thunder%20Strike&imageId=abc123&personalityName=The%20Protector&color=blue&heroScore=8&gender=male
+```
