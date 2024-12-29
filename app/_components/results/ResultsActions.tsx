@@ -1,7 +1,7 @@
 'use client';
 
 import { Printer, RefreshCw, Link } from 'lucide-react';
-import { openPrintWindow, getPrintUrl } from '../../_lib/utils/print';
+import { getPrintUrl } from '../../_lib/utils/print';
 import { PrintCardData } from '../../_lib/utils/print';
 
 interface ResultsActionsProps {
@@ -10,13 +10,16 @@ interface ResultsActionsProps {
 }
 
 export function ResultsActions({ printData, onReset }: ResultsActionsProps): JSX.Element {
-  const handlePrint = (): void => {
-    openPrintWindow(printData);
-  };
-
   const handleCopyUrl = async (): Promise<void> => {
+    // Use getPrintUrl to get the same URL format as the print button
     const url = new URL(getPrintUrl(printData), window.location.origin);
     await navigator.clipboard.writeText(url.toString());
+  };
+
+  const handlePrint = (): void => {
+    // Use getPrintUrl which includes the print parameter
+    const url = getPrintUrl(printData);
+    window.open(url, '_blank');
   };
 
   return (

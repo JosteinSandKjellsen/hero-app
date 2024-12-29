@@ -28,7 +28,8 @@ export function getPrintUrl(data: PrintCardData): string {
     heroName: data.heroName,
     personalityName: data.personalityName,
     color: data.color,
-    scores: scores.map(s => `${s.color}:${s.score}`).join(',')
+    scores: scores.map(s => `${s.color}:${s.score}`).join(','),
+    print: 'true' // Add print parameter
   });
 
   return `/print?${params.toString()}`;

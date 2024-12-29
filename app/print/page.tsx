@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { SuperheroCard } from '../_components/results/SuperheroCard';
 import { PersonalityType } from '../_lib/types/personality';
@@ -53,6 +53,36 @@ function PrintContent(): JSX.Element {
     name: name,
     gender: gender
   };
+
+  // Check if we should trigger print
+  const shouldPrint = searchParams.get('print') === 'true';
+
+  // Add effect to trigger print if requested
+  useEffect(() => {
+    if (shouldPrint) {
+      // Wait for images to load
+      setTimeout(() => {
+        // Set print settings
+        const style = document.createElement('style');
+        style.textContent = `
+          @page {
+            size: A4 portrait;
+            margin: 0;
+          }
+          @media print {
+            body {
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
+            }
+          }
+        `;
+        document.head.appendChild(style);
+
+        // Trigger print
+        window.print();
+      }, 1000);
+    }
+  }, [shouldPrint]);
 
   return (
     <div className="min-h-screen flex items-center justify-center p-8">
