@@ -1,6 +1,6 @@
 'use client';
 
-import { Sparkles } from 'lucide-react';
+import Image from 'next/image';
 import type { LayoutVariant } from '@/app/_lib/types/layout';
 
 interface HeaderProps {
@@ -13,8 +13,15 @@ export function Header({ variant = 'quiz' }: HeaderProps): JSX.Element {
   return (
     <div className="text-center mb-8">
       <div className="flex justify-center mb-4">
-        <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-3 rounded-full shadow-lg">
-          <Sparkles className="w-8 h-8 text-white animate-pulse" />
+        <div className="bg-white/10 p-3 rounded-full shadow-2xl backdrop-blur-lg border border-white/20">
+          <div className="w-12 h-12 relative animate-float-subtle mt-1">
+            <Image
+              src="/images/superheroes/heroapp-icon.png"
+              alt="Hero App Logo"
+              fill
+              className="object-contain"
+            />
+          </div>
         </div>
       </div>
       <h1 className={`text-5xl font-bangers tracking-wider ${textColor} mb-4 drop-shadow-lg`}>
