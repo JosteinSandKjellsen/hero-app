@@ -1,8 +1,5 @@
 import { HeroColor } from '../types/api';
 
-// Leonardo AI image URLs follow this format
-const LEONARDO_IMAGE_BASE_URL = 'https://cdn.leonardo.ai/users/';
-
 export interface PrintCardData {
   photoUrl: string;
   name: string;
