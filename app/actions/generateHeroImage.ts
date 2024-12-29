@@ -4,14 +4,29 @@ import { LeonardoAiService } from '../_lib/services/leonardoAi';
 import { ApiError } from '../_lib/errors';
 import type { HeroColor } from '../_types/api';
 
+const MAX_RETRIES = 3;
+
 export async function generateHeroImage(
   personality: string,
   gender: 'male' | 'female',
   color: HeroColor,
   photoBase64?: string
 ): Promise<string> {
+  const leonardoService = new LeonardoAiService();
+  let initImageId: string | undefined;
+  let uploadSuccessful = false;
+
   try {
-    const leonardoService = new LeonardoAiService();
+    // Upload the initial image if provided
+    if (photoBase64) {
+      try {
+        initImageId = await leonardoService.uploadImage(photoBase64);
+        uploadSuccessful = true;
+      } catch (error) {
+        console.error('Failed to upload initial image:', error);
+        throw new ApiError('Failed to upload initial image', 500);
+      }
+    }
 
     const heroPrompts = {
       red: 'A superhero wearing a sleek, tight-fitting, flexible dark red and black suit with aerodynamic lines. Hero logo is a flame symbol. Hero has glowing red, stylized energy fins on the shoulders, face revealing sharp, focused eyes, and tousled hair that suggests hero is always on the move. The character is mid-action, slightly hovering as if ready to sprint at lightning speed, with a dynamic and adventurous pose. The background is a futuristic urban setting with a sense of motion and energy trails around him. Character exudes boldness, curiosity, and determination. Image in comic art style of Alex Ross.',
@@ -27,16 +42,11 @@ export async function generateHeroImage(
     const negativePrompt =
       'blurry, low quality, distorted, bad anatomy, text, watermark, signature, deformed, ugly, duplicate, morbid, mutilated, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, extra limbs, extra legs, extra arms, disfigured, bad anatomy, bad proportions, gross proportions, malformed limbs, missing arms, missing legs, extra digit, fewer digits, mask, superman logo, batman logo, spiderman logo, sexual content, bare skin, large breasts';
 
-    let initImageId: string | undefined;
-    let uploadSuccessful = false;
-
-    try {
-      if (photoBase64) {
-        initImageId = await leonardoService.uploadImage(photoBase64);
-        uploadSuccessful = true;
-      }
-
-      const generationId = await leonardoService.generateImage({
+    // Attempt generation with retries
+    let lastError: Error | null = null;
+    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+      try {
+        const generationId = await leonardoService.generateImage({
         prompt,
         negativePrompt,
         width: 512,
@@ -44,31 +54,35 @@ export async function generateHeroImage(
         initImageId,
       });
 
-      // Wait for the generated image to be available
-      const imageUrl = await leonardoService.getGeneratedImage(generationId);
-
-      // Only delete the initial image if it was successfully uploaded and used
-      if (uploadSuccessful && initImageId) {
-        // Add a small delay to ensure the image was used
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        await leonardoService.deleteImage(initImageId, 'initial');
+        // Wait for the generated image to be available
+        const imageUrl = await leonardoService.getGeneratedImage(generationId);
+        return imageUrl;
+      } catch (error) {
+        console.error(`Generation attempt ${attempt} failed:`, error);
+        lastError = error as Error;
+        
+        if (attempt < MAX_RETRIES) {
+          // Wait before retrying
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        }
       }
-
-      return imageUrl;
-    } catch (error) {
-      // Only attempt to delete if the upload was successful
-      if (uploadSuccessful && initImageId) {
-        // Add a small delay to ensure the image was used
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        await leonardoService.deleteImage(initImageId, 'initial');
-      }
-      throw error;
     }
+
+    // If we get here, all attempts failed
+    throw lastError || new ApiError('Failed to generate hero image after all retries', 500);
   } catch (error) {
-    console.error('Error generating hero image:', error);
-    if (error instanceof ApiError) {
-      throw error;
+    console.error('Error in hero image generation process:', error);
+    throw error;
+  } finally {
+    // Always clean up the initial image if it was uploaded
+    if (uploadSuccessful && initImageId) {
+      try {
+        // Add a small delay to ensure the image was used
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        await leonardoService.deleteImage(initImageId, 'initial');
+      } catch (deleteError) {
+        console.error('Failed to delete initial image:', deleteError);
+      }
     }
-    throw new ApiError('Failed to generate hero image', 500);
   }
 }

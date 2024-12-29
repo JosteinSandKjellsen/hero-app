@@ -109,44 +109,58 @@ export function useQuiz(): UseQuizReturn {
       
       setGenerationStep('process');
 
-      // Generate AI image
-      const imageResponse = await fetch('/api/hero-image', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          personality: dominantPersonality.name,
-          gender: userData.gender,
-          color: dominantPersonality.color,
-          originalPhoto: photo || undefined,
-        }),
-      });
+      // Generate AI image with error handling
+      let imageUrl: string | null = null;
+      try {
+        setGenerationStep('generate');
+        const imageResponse = await fetch('/api/hero-image', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            personality: dominantPersonality.name,
+            gender: userData.gender,
+            color: dominantPersonality.color,
+            originalPhoto: photo || undefined,
+          }),
+        });
 
-      if (!imageResponse.ok) {
-        throw new AppError('Kunne ikke generere superhelt-bilde');
+        if (!imageResponse.ok) {
+          throw new AppError('Kunne ikke generere superhelt-bilde');
+        }
+
+        const imageData = await imageResponse.json();
+        
+        if (!imageData.imageUrl) {
+          throw new AppError('Ingen bilde-URL mottatt fra serveren');
+        }
+
+        imageUrl = imageData.imageUrl;
+      } catch (error) {
+        console.error('Error generating hero image:', error);
+        const message = error instanceof AppError 
+          ? error.message 
+          : 'Kunne ikke generere superhelt-bilde. Vennligst prøv igjen.';
+        
+        showToast(message);
+        setShowCamera(true);
+        return;
       }
 
-      setGenerationStep('generate');
-
-      const imageData = await imageResponse.json();
-      
-      if (!imageData.imageUrl) {
-        throw new AppError('Ingen bilde-URL mottatt fra serveren');
-      }
-
-      setPhotoUrl(imageData.imageUrl);
+      setPhotoUrl(imageUrl);
       setHeroName(nameData.name);
       setGenerationStep('complete');
       setShowResults(true);
     } catch (error) {
-      console.error('Error processing photo:', error);
+      console.error('Error in photo processing flow:', error);
       const message = error instanceof AppError 
         ? error.message 
-        : 'Det oppstod en feil ved behandling av bildet. Vennligst prøv igjen.';
+        : 'Det oppstod en feil. Vennligst prøv igjen.';
       
       showToast(message);
       setPhotoUrl(null);
+      setHeroName(null);
       setShowCamera(true);
     } finally {
       setIsGeneratingImage(false);
