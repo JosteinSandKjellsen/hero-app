@@ -16,8 +16,8 @@ const bangers = Bangers({
 });
 
 export const metadata: Metadata = {
-  title: 'Superhelt Quiz',
-  description: 'Oppdag din indre superhelt!',
+  title: 'Bouvet - Superhelt Profilen',
+  description: 'Oppdag superhelt-versjonen av deg selv!',
   icons: {
     icon: [
       { url: '/images/superheroes/favicon/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
