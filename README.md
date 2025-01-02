@@ -1,7 +1,5 @@
 # hero-app
 
-[Edit in StackBlitz next generation editor ⚡️](https://stackblitz.com/~/github.com/JosteinSandKjellsen/hero-app)
-
 ## Environment Setup
 
 1. Copy `.env.example` to a new file named `.env`:
