@@ -3,12 +3,14 @@
 ## Environment Setup
 
 1. Copy `.env.example` to a new file named `.env`:
+
    ```bash
    cp .env.example .env
    ```
 
 2. Add your API keys to the `.env` file:
-   ```
+
+   ```text
    LEONARDO_API_KEY=your_leonardo_api_key_here
    GEMINI_API_KEY=your_gemini_api_key_here
    ```
@@ -23,11 +25,13 @@ Note: These API keys are used server-side only and are not exposed to the client
 ## Development
 
 1. Install dependencies:
+
    ```bash
    npm install
    ```
 
 2. Start the development server:
+
    ```bash
    npm run dev
    ```
@@ -41,7 +45,8 @@ The application will be available at [http://localhost:3000](http://localhost:30
 2. Configure environment variables in Netlify:
    - Go to Site settings > Environment variables
    - Add the following environment variables:
-     ```
+
+     ```text
      LEONARDO_API_KEY=your_leonardo_api_key_here
      GEMINI_API_KEY=your_gemini_api_key_here
      ```
@@ -56,11 +61,12 @@ Note: The API keys are used securely in server-side API routes and are never exp
 
 The application includes a print view that can be accessed with query parameters to display an already generated hero. Use the following format:
 
-```
+```bash
 /print?name=John&heroName=Thunder%20Strike&imageId=abc123&personalityName=The%20Protector&color=blue&heroScore=8
 ```
 
 Query Parameters:
+
 - `name`: The person's real name
 - `heroName`: The generated superhero name
 - `imageId`: The ID of the generated hero image
@@ -70,6 +76,7 @@ Query Parameters:
 - `gender`: (optional) 'male' or 'female', defaults to 'male'
 
 Example:
-```
+
+```bash
 http://localhost:3000/print?name=John%20Doe&heroName=Thunder%20Strike&imageId=abc123&personalityName=The%20Protector&color=blue&heroScore=8&gender=male
 ```
