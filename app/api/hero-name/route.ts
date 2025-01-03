@@ -34,6 +34,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         
         Rules:
         - The name should be short (1-3 words)
+        - Name shouuld be in Norwegian
         - Should not include common superhero names like "man", "woman", "boy", "girl"
         - Should be creative and unique
         - Should reflect the personality and color theme
