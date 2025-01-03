@@ -1,0 +1,48 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
+{
+	"name": "Next.js Development",
+	"image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
+
+	// Forward port 3000 for Next.js development server
+	"forwardPorts": [3000],
+
+	// Install project dependencies after container is created
+	"postCreateCommand": "npm install",
+
+	// Configure VSCode settings and extensions
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"dbaeumer.vscode-eslint",
+				"esbenp.prettier-vscode",
+				"bradlc.vscode-tailwindcss",
+				"dsznajder.es7-react-js-snippets",
+				"formulahendry.auto-rename-tag"
+			],
+			"settings": {
+				"editor.formatOnSave": true,
+				"editor.defaultFormatter": "esbenp.prettier-vscode",
+				"editor.codeActionsOnSave": {
+					"source.fixAll.eslint": true
+				},
+				"typescript.tsdk": "node_modules/typescript/lib"
+			}
+		}
+	},
+
+	// Additional container features
+	"features": {
+		"ghcr.io/devcontainers/features/git:1": {}
+	},
+
+	// Mount node_modules as a volume for better performance
+	"mounts": [
+		"source=${localWorkspaceFolderBasename}-node_modules,target=${containerWorkspaceFolder}/node_modules,type=volume"
+	],
+
+	// Environment variables
+	"remoteEnv": {
+		"NODE_ENV": "development"
+	}
+}
