@@ -11,3 +11,21 @@
 
 [functions]
   included_files = ["node_modules/@netlify/plugin-nextjs/**/*"]
+  node_bundler = "esbuild"
+  external_node_modules = ["@netlify/plugin-nextjs"]
+  
+[build.processing]
+  skip_processing = false
+
+[build.processing.images]
+  compress = true
+
+[functions]
+  timeout = 30
+
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    "Access-Control-Allow-Origin" = "*"
+    "Access-Control-Allow-Headers" = "Content-Type"
+    "Access-Control-Allow-Methods" = "GET, POST, OPTIONS"

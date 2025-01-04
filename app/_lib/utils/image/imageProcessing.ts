@@ -44,17 +44,17 @@ export class ImageProcessor {
       }
 
       // Calculate dimensions while maintaining aspect ratio
-      const maxDim = 1024;
+      // Reduce maximum dimension to ensure smaller file size
+      const maxDim = 800;
       let { width, height } = img;
       
-      if (width > maxDim || height > maxDim) {
-        if (width > height) {
-          height = Math.round((height / width) * maxDim);
-          width = maxDim;
-        } else {
-          width = Math.round((width / height) * maxDim);
-          height = maxDim;
-        }
+      // Always resize to reduce payload size
+      if (width > height) {
+        height = Math.round((height / width) * maxDim);
+        width = maxDim;
+      } else {
+        width = Math.round((width / height) * maxDim);
+        height = maxDim;
       }
 
       // Set canvas dimensions and draw
@@ -62,8 +62,8 @@ export class ImageProcessor {
       canvas.height = height;
       ctx.drawImage(img, 0, 0, width, height);
 
-      // Compress and return
-      return canvas.toDataURL('image/jpeg', 0.8);
+      // Compress with higher compression ratio
+      return canvas.toDataURL('image/jpeg', 0.7);
     } catch (error) {
       throw new Error('Failed to compress image');
     }
