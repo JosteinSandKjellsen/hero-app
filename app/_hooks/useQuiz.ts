@@ -19,6 +19,9 @@ const initialResult: QuizResult = {
   blue: 0,
 };
 
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 2000; // 2 seconds
+
 interface UseQuizReturn {
   userData: UserData | null;
   currentQuestion: number;
@@ -35,6 +38,8 @@ interface UseQuizReturn {
   calculateResults: () => PersonalityResult[];
   resetQuiz: () => void;
 }
+
+const delay = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
 
 export function useQuiz(): UseQuizReturn {
   const t = useTranslations();
@@ -64,6 +69,49 @@ export function useQuiz(): UseQuizReturn {
       setCurrentQuestion(prev => prev + 1);
     } else {
       setShowCamera(true);
+    }
+  };
+
+  const generateHeroImage = async (
+    personality: string,
+    gender: 'male' | 'female',
+    color: HeroColor,
+    photo?: string,
+    retryCount = 0
+  ): Promise<string> => {
+    try {
+      const response = await fetch(`${window.location.origin}/api/hero-image`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          personality,
+          gender,
+          color,
+          originalPhoto: photo,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new AppError(errorData.error || tErrors('heroImageError'));
+      }
+
+      const data = await response.json();
+      
+      if (!data.imageUrl) {
+        throw new AppError(tErrors('noImageUrl'));
+      }
+
+      return data.imageUrl;
+    } catch (error) {
+      if (retryCount < MAX_RETRIES) {
+        console.log(`Retrying image generation (attempt ${retryCount + 1}/${MAX_RETRIES})...`);
+        await delay(RETRY_DELAY);
+        return generateHeroImage(personality, gender, color, photo, retryCount + 1);
+      }
+      throw error;
     }
   };
 
@@ -120,34 +168,20 @@ export function useQuiz(): UseQuizReturn {
       
       setGenerationStep('process');
 
-      // Generate AI image with error handling
-      let imageUrl: string | null = null;
+      // Generate AI image with retries and error handling
       try {
         setGenerationStep('generate');
-        const imageResponse = await fetch(`${window.location.origin}/api/hero-image`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            personality: t(`personalities.${dominantPersonality.color}.name`),
-            gender: userData.gender,
-            color: dominantPersonality.color,
-            originalPhoto: photo || undefined,
-          }),
-        });
+        const imageUrl = await generateHeroImage(
+          t(`personalities.${dominantPersonality.color}.name`),
+          userData.gender,
+          dominantPersonality.color,
+          photo || undefined
+        );
 
-        if (!imageResponse.ok) {
-          throw new AppError(tErrors('heroImageError'));
-        }
-
-        const imageData = await imageResponse.json();
-        
-        if (!imageData.imageUrl) {
-          throw new AppError(tErrors('noImageUrl'));
-        }
-
-        imageUrl = imageData.imageUrl;
+        setPhotoUrl(imageUrl);
+        setHeroName(nameData.name);
+        setGenerationStep('complete');
+        setShowResults(true);
       } catch (error) {
         console.error('Error generating hero image:', error);
         const message = error instanceof AppError 
@@ -158,11 +192,6 @@ export function useQuiz(): UseQuizReturn {
         setShowCamera(true);
         return;
       }
-
-      setPhotoUrl(imageUrl);
-      setHeroName(nameData.name);
-      setGenerationStep('complete');
-      setShowResults(true);
     } catch (error) {
       console.error('Error in photo processing flow:', error);
       let message = tErrors('generic');

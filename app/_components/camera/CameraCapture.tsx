@@ -77,16 +77,37 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
       const canvas = document.createElement('canvas');
       const video = videoRef.current;
       
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
+      // Calculate dimensions while maintaining aspect ratio
+      const maxDim = 800;
+      let width = video.videoWidth;
+      let height = video.videoHeight;
+      
+      if (width > height) {
+        if (width > maxDim) {
+          height = Math.round((height / width) * maxDim);
+          width = maxDim;
+        }
+      } else {
+        if (height > maxDim) {
+          width = Math.round((width / height) * maxDim);
+          height = maxDim;
+        }
+      }
+      
+      canvas.width = width;
+      canvas.height = height;
       
       const ctx = canvas.getContext('2d');
       if (!ctx) {
         throw new Error('Could not get canvas context');
       }
 
-      ctx.drawImage(video, 0, 0);
-      const photoUrl = canvas.toDataURL('image/jpeg', 0.8);
+      // Use better quality settings for initial scaling
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      
+      ctx.drawImage(video, 0, 0, width, height);
+      const photoUrl = canvas.toDataURL('image/jpeg', 0.7);
       
       stopCamera();
       onPhotoTaken(photoUrl);
