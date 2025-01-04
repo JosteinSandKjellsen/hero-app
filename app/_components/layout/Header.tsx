@@ -20,6 +20,7 @@ export function Header({ variant = 'quiz' }: HeaderProps): JSX.Element {
               src="/images/superheroes/heroapp-icon.png"
               alt={t('logoAlt')}
               fill
+              sizes="48px"
               className="object-contain"
             />
           </div>

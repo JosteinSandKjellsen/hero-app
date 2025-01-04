@@ -1,3 +1,9 @@
+export const IMAGES_CONFIG = {
+  superheroes: {
+    basePath: '/images/superheroes'
+  }
+} as const;
+
 export const heroImages = [
   '/images/superheroes/red-man.jpeg',
   '/images/superheroes/blue-woman.jpeg',

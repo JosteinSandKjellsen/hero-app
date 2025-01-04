@@ -1,6 +1,7 @@
 import { Flame, Sun, Leaf, Brain } from 'lucide-react';
+import type { HeroColor } from '../_lib/types';
 
-export function getPersonalityIcon(color: 'red' | 'yellow' | 'green' | 'blue'): React.ReactElement | null {
+export function getPersonalityIcon(color: HeroColor): React.ReactElement | null {
   switch (color) {
     case 'red':
       return <Flame className="w-6 h-6 text-white" />;

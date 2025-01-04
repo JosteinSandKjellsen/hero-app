@@ -12,6 +12,17 @@ export const matchingColors: ColorMapping = {
   green: 'yellow'
 } as const;
 
+export function getMatchingColor(color: keyof typeof matchingColors): (typeof matchingColors)[keyof typeof matchingColors] {
+  return matchingColors[color];
+}
+
+export function getMatchingTip(color: keyof typeof matchingColors): string {
+  const matchingColor = getMatchingColor(color);
+  const description = matchingDescriptions[color];
+  
+  return `Tips: Snakk med en ${colorTranslations[matchingColor]} venn: Din ${description.source} møter den ${description.target}.`;
+}
+
 export const colorTranslations: ColorTranslation = {
   red: 'rød',
   yellow: 'gul',

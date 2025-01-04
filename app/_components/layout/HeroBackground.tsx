@@ -23,6 +23,7 @@ export function HeroBackground(): JSX.Element {
               alt="Superhero"
               fill
               priority
+              sizes="(max-width: 768px) 50vw, 25vw"
               className="object-cover scale-105 transition-transform duration-5000 group-hover:scale-110"
             />
           </div>

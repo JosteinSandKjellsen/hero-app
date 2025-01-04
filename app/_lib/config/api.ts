@@ -5,4 +5,10 @@ export const API_CONFIG = {
     styleUUID: '32b653d2-8819-4363-bc82-a6466dfcb825',
     version: 'SDXL_LIGHTNING',
   },
+  internal: {
+    baseUrl: '/api',
+    endpoints: {
+      heroName: '/hero-name'
+    }
+  }
 } as const;

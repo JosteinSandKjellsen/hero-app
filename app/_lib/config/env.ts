@@ -1,14 +1,16 @@
 import { z } from 'zod';
 
 const envSchema = z.object({
-  LEONARDO_API_KEY: z.string().optional().default(''),
-  GEMINI_API_KEY: z.string().optional().default(''),
+  LEONARDO_API_KEY: z.string().min(1, 'LEONARDO_API_KEY is required'),
+  GEMINI_API_KEY: z.string().min(1, 'GEMINI_API_KEY is required'),
+  NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
 });
 
 // Use environment variable with correct name
 const env = {
   LEONARDO_API_KEY: process.env.LEONARDO_API_KEY ?? '',
   GEMINI_API_KEY: process.env.GEMINI_API_KEY ?? '',
+  NODE_ENV: process.env.NODE_ENV ?? 'development',
 } as const;
 
 // Validate environment variables
