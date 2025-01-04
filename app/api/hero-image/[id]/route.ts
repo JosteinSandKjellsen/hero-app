@@ -30,25 +30,33 @@ export async function GET(
 
     const imageUrl = generation.generated_images[0].url;
     
-    // Fetch the actual image with authentication
-    const imageResponse = await fetch(imageUrl, {
-      headers: leonardoService['headers']
-    });
-    if (!imageResponse.ok) {
-      throw new Error(`Failed to fetch image: ${imageResponse.statusText}`);
+    // In production, return the CDN URL directly
+    if (process.env.NODE_ENV === 'production') {
+      return NextResponse.json({ url: imageUrl });
     }
-
-    // Get the image data
-    const imageData = await imageResponse.arrayBuffer();
     
-    // Return the image with proper headers
-    return new NextResponse(imageData, {
-      headers: {
-        'Content-Type': 'image/png',
-        'Cache-Control': 'public, max-age=31536000',
-        'Access-Control-Allow-Origin': '*'
+    // In development, proxy the image through our API
+    try {
+      const imageResponse = await fetch(imageUrl, {
+        headers: leonardoService['headers']
+      });
+      if (!imageResponse.ok) {
+        throw new Error(`Failed to fetch image: ${imageResponse.statusText}`);
       }
-    });
+
+      const imageData = await imageResponse.arrayBuffer();
+      
+      return new NextResponse(imageData, {
+        headers: {
+          'Content-Type': 'image/png',
+          'Cache-Control': 'public, max-age=31536000',
+          'Access-Control-Allow-Origin': '*'
+        }
+      });
+    } catch (error) {
+      console.error('Error fetching image:', error);
+      return NextResponse.json({ url: imageUrl });
+    }
   } catch (error) {
     console.error('Error serving hero image:', error);
     return NextResponse.json(

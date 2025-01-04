@@ -11,8 +11,24 @@ function PrintContent(): JSX.Element {
   
   // Get parameters from URL
   const imageId = searchParams.get('imageId') || '';
-  // Use our API endpoint to serve the image
-  const photoUrl = imageId ? `/api/hero-image/${imageId}` : '';
+  const [photoUrl, setPhotoUrl] = React.useState('');
+  
+  useEffect(() => {
+    async function fetchImageUrl() {
+      if (!imageId) return;
+      try {
+        const response = await fetch(`/api/hero-image/${imageId}`);
+        const data = await response.json();
+        // If we get a URL directly (production), use it
+        // Otherwise (development) use the proxied endpoint
+        setPhotoUrl(data.url || `/api/hero-image/${imageId}`);
+      } catch (error) {
+        console.error('Error fetching image URL:', error);
+      }
+    }
+    fetchImageUrl();
+  }, [imageId]);
+  
   const name = searchParams.get('name') || '';
   const gender = (searchParams.get('gender') as 'male' | 'female') || 'male';
   const heroName = searchParams.get('heroName') || '';
