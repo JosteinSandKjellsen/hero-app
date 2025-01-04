@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { PersonalityType } from '../../_lib/types/personality';
 import { UserData } from '../../_lib/types';
 import { getPersonalityIcon } from '../../_utils/personalityIcons';
@@ -14,6 +15,8 @@ interface SuperheroCardProps {
 }
 
 export function SuperheroCard({ photoUrl, personality, userData, results = [] }: SuperheroCardProps): JSX.Element {
+  const t = useTranslations('results');
+
   const getColorValue = (color: string): string => {
     switch (color) {
       case 'red': return 'rgb(220, 38, 38)'; // text-red-600
@@ -73,7 +76,7 @@ export function SuperheroCard({ photoUrl, personality, userData, results = [] }:
       <div className="relative aspect-[3/4]">
         <Image
           src={photoUrl}
-          alt="Din superhelt-selfie"
+          alt={t('selfieAlt')}
           className="object-cover"
           fill
           sizes="(max-width: 600px) 100vw, 600px"

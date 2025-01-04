@@ -3,10 +3,11 @@
 import { QuizProgress } from './QuizProgress';
 import { QuizQuestion } from './QuizQuestion';
 import { questions } from '../../_data/questions';
+import type { HeroColor } from '../../_lib/types/api';
 
 interface QuizSectionProps {
   currentQuestion: number;
-  onAnswer: (type: 'red' | 'yellow' | 'green' | 'blue') => void;
+  onAnswer: (type: HeroColor) => void;
 }
 
 export function QuizSection({ currentQuestion, onAnswer }: QuizSectionProps): JSX.Element {
@@ -15,6 +16,7 @@ export function QuizSection({ currentQuestion, onAnswer }: QuizSectionProps): JS
       <QuizProgress
         currentQuestion={currentQuestion + 1}
         totalQuestions={questions.length}
+        className="mb-8"
       />
       <QuizQuestion
         question={questions[currentQuestion]}

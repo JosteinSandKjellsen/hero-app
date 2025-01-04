@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { LoadingSpinner } from './LoadingSpinner';
 import { HeroImageCarousel } from './HeroImageCarousel';
 import { ProgressBullets } from './ProgressBullets';
@@ -10,6 +11,7 @@ interface LoadingStateProps {
 }
 
 export function LoadingState({ currentStep }: LoadingStateProps): JSX.Element {
+  const t = useTranslations('loading');
   const currentStatus = GENERATION_STEPS.find(step => step.step === currentStep);
 
   return (
@@ -18,10 +20,10 @@ export function LoadingState({ currentStep }: LoadingStateProps): JSX.Element {
         <HeroImageCarousel />
         <LoadingSpinner size="lg" />
         <p className="text-white mt-4 text-center">
-          {currentStatus?.message || 'Preparing your superhero transformation...'}
+          {currentStatus ? t(`steps.${currentStatus.step}`) : t('defaultMessage')}
         </p>
         <p className="text-white/70 text-sm mt-2 text-center">
-          Dette kan ta opptil ett minutt
+          {t('timeEstimate')}
         </p>
         <ProgressBullets currentStep={currentStep} />
       </div>

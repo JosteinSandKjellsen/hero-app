@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { LeonardoAiService } from '../../../_lib/services/leonardoAi';
 import { API_CONFIG } from '../../../_lib/config/api';
 
+export const dynamic = 'force-dynamic'; // API routes should be dynamic
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }

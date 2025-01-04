@@ -1,13 +1,16 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations, useLocale } from 'next-intl';
 import { useToast } from './useToast';
 import { questions } from '../_data/questions';
 import { personalities } from '../_data/personalities';
 import { AppError, ValidationError } from '../_lib/errors';
 import { photoSchema } from '../_lib/utils/validation/photoValidation';
-import type { QuizResult, UserData, PersonalityType } from '../_lib/types';
+import type { QuizResult, UserData } from '../_lib/types/quiz';
+import type { PersonalityResult } from '../_lib/types/personality';
 import type { GenerationStep } from '../_lib/types/loading';
+import type { HeroColor } from '../_lib/types/api';
 
 const initialResult: QuizResult = {
   red: 0,
@@ -27,13 +30,16 @@ interface UseQuizReturn {
   isGeneratingName: boolean;
   generationStep: GenerationStep;
   handleRegistration: (data: UserData) => void;
-  handleAnswer: (type: 'red' | 'yellow' | 'green' | 'blue') => void;
+  handleAnswer: (type: HeroColor) => void;
   handlePhotoTaken: (photo: string | null) => Promise<void>;
-  calculateResults: () => (PersonalityType & { percentage: number })[];
+  calculateResults: () => PersonalityResult[];
   resetQuiz: () => void;
 }
 
 export function useQuiz(): UseQuizReturn {
+  const t = useTranslations();
+  const locale = useLocale();
+  const tErrors = useTranslations('errors');
   const [userData, setUserData] = useState<UserData | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<QuizResult>(initialResult);
@@ -51,7 +57,7 @@ export function useQuiz(): UseQuizReturn {
     setUserData(data);
   };
 
-  const handleAnswer = (type: 'red' | 'yellow' | 'green' | 'blue'): void => {
+  const handleAnswer = (type: HeroColor): void => {
     setAnswers((prev: QuizResult) => ({ ...prev, [type]: prev[type] + 1 }));
 
     if (currentQuestion < questions.length - 1) {
@@ -63,7 +69,7 @@ export function useQuiz(): UseQuizReturn {
 
   const handlePhotoTaken = async (photo: string | null): Promise<void> => {
     if (!userData) {
-      showToast('Brukerdata mangler. Vennligst start på nytt.');
+      showToast(tErrors('missingUserData'));
       return;
     }
 
@@ -81,7 +87,7 @@ export function useQuiz(): UseQuizReturn {
           photoSchema.parse(photo);
         } catch (error) {
           if (error instanceof Error) {
-            throw new ValidationError('Ugyldig bildeformat. Vennligst prøv igjen.');
+            throw new ValidationError(tErrors('invalidPhotoFormat'));
           }
           throw error;
         }
@@ -89,23 +95,28 @@ export function useQuiz(): UseQuizReturn {
       const dominantPersonality = results[0];
 
       // Generate hero name
-      const nameResponse = await fetch('/api/hero-name', {
+      const nameResponse = await fetch(`${window.location.origin}/api/hero-name`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          personality: dominantPersonality.name,
+          personality: t(`personalities.${dominantPersonality.color}.name`),
           gender: userData.gender,
           color: dominantPersonality.color,
+          language: locale,
         }),
       });
 
+      const nameData = await nameResponse.json();
+      
       if (!nameResponse.ok) {
-        throw new AppError('Kunne ikke generere heltenavn');
+        throw new AppError(nameData.error || tErrors('heroNameError'));
       }
 
-      const nameData = await nameResponse.json();
+      if (!nameData.name) {
+        throw new AppError(tErrors('heroNameError'));
+      }
       
       setGenerationStep('process');
 
@@ -113,13 +124,13 @@ export function useQuiz(): UseQuizReturn {
       let imageUrl: string | null = null;
       try {
         setGenerationStep('generate');
-        const imageResponse = await fetch('/api/hero-image', {
+        const imageResponse = await fetch(`${window.location.origin}/api/hero-image`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            personality: dominantPersonality.name,
+            personality: t(`personalities.${dominantPersonality.color}.name`),
             gender: userData.gender,
             color: dominantPersonality.color,
             originalPhoto: photo || undefined,
@@ -127,13 +138,13 @@ export function useQuiz(): UseQuizReturn {
         });
 
         if (!imageResponse.ok) {
-          throw new AppError('Kunne ikke generere superhelt-bilde');
+          throw new AppError(tErrors('heroImageError'));
         }
 
         const imageData = await imageResponse.json();
         
         if (!imageData.imageUrl) {
-          throw new AppError('Ingen bilde-URL mottatt fra serveren');
+          throw new AppError(tErrors('noImageUrl'));
         }
 
         imageUrl = imageData.imageUrl;
@@ -141,7 +152,7 @@ export function useQuiz(): UseQuizReturn {
         console.error('Error generating hero image:', error);
         const message = error instanceof AppError 
           ? error.message 
-          : 'Kunne ikke generere superhelt-bilde. Vennligst prøv igjen.';
+          : tErrors('heroImageGenerationError');
         
         showToast(message);
         setShowCamera(true);
@@ -154,9 +165,12 @@ export function useQuiz(): UseQuizReturn {
       setShowResults(true);
     } catch (error) {
       console.error('Error in photo processing flow:', error);
-      const message = error instanceof AppError 
-        ? error.message 
-        : 'Det oppstod en feil. Vennligst prøv igjen.';
+      let message = tErrors('generic');
+      if (error instanceof AppError) {
+        message = error.message;
+      } else if (error instanceof SyntaxError) {
+        message = tErrors('network');
+      }
       
       showToast(message);
       setPhotoUrl(null);
@@ -168,11 +182,13 @@ export function useQuiz(): UseQuizReturn {
     }
   };
 
-  const calculateResults = (): (PersonalityType & { percentage: number })[] => {
+  const calculateResults = (): PersonalityResult[] => {
     const total = Object.values(answers).reduce((a: number, b: number) => a + b, 0);
     return personalities
-      .map((personality: PersonalityType) => ({
+      .map((personality) => ({
         ...personality,
+        name: t(`personalities.${personality.color}.name`),
+        heroName: t(`personalities.${personality.color}.heroName`),
         percentage: Math.round((answers[personality.color as keyof QuizResult] / total) * 100),
       }))
       .sort((a, b) => b.percentage - a.percentage);

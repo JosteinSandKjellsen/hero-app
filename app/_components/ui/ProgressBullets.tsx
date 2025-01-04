@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { GenerationStep, GENERATION_STEPS } from '../../_lib/types/loading';
 
 interface ProgressBulletsProps {
@@ -7,6 +8,8 @@ interface ProgressBulletsProps {
 }
 
 export function ProgressBullets({ currentStep }: ProgressBulletsProps): JSX.Element {
+  const t = useTranslations('loading.steps');
+  
   const getCurrentStepIndex = (): number => {
     return GENERATION_STEPS.findIndex(step => step.step === currentStep);
   };
@@ -21,7 +24,7 @@ export function ProgressBullets({ currentStep }: ProgressBulletsProps): JSX.Elem
               ? 'bg-purple-500'
               : 'bg-white/20'
           }`}
-          title={step.message}
+          title={t(step.step)}
         />
       ))}
     </div>

@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { PersonalityType } from '../../_lib/types/personality';
 import { getPersonalityIcon } from '../../_utils/personalityIcons';
 
@@ -9,6 +10,8 @@ interface PersonalityCardProps {
 }
 
 export function PersonalityCard({ personality, percentage }: PersonalityCardProps): JSX.Element {
+  const t = useTranslations();
+
   return (
     <div className="bg-white rounded-lg shadow-lg p-6">
       <div className="flex items-center gap-3 mb-4">
@@ -16,12 +19,12 @@ export function PersonalityCard({ personality, percentage }: PersonalityCardProp
           {getPersonalityIcon(personality.color)}
         </div>
         <h3 className={`text-2xl font-bangers tracking-wide ${personality.textClass}`}>
-          {personality.name}
+          {t(`personalities.${personality.color}.name`)}
         </h3>
       </div>
       <div className="mb-4">
         <div className="flex justify-between mb-1">
-          <span className="text-sm font-medium">Matchprosent:</span>
+          <span className="text-sm font-medium">{t('results.matchPercentage')}:</span>
           <span className="text-sm font-medium">{percentage}%</span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
@@ -31,11 +34,11 @@ export function PersonalityCard({ personality, percentage }: PersonalityCardProp
           />
         </div>
       </div>
-      <p className="text-gray-600 mb-4">{personality.description}</p>
+      <p className="text-gray-600 mb-4">{t(`personalities.${personality.color}.description`)}</p>
       <div className="flex flex-wrap gap-2">
-        {personality.traits.map((trait, index) => (
+        {t.raw(`personalities.${personality.color}.traits`).map((trait: string) => (
           <span
-            key={index}
+            key={trait}
             className={`${personality.bgClass} text-white px-3 py-1 rounded-full text-sm`}
           >
             {trait}

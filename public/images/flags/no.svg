@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="56" height="32" viewBox="0 0 56 32" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath id="pill">
+      <rect x="0" y="0" width="56" height="32" rx="16" ry="16"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#pill)">
+    <rect width="56" height="32" fill="#ef2b2d"/>
+    <path fill="#fff" d="M0 12h56v8H0z"/>
+    <path fill="#002868" d="M0 14h56v4H0z"/>
+  </g>
+</svg>

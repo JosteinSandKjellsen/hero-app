@@ -1,0 +1,98 @@
+{
+  "header": {
+    "title": "Hvilken Superhelt Er Du?",
+    "subtitle": "Oppdag din indre superhelt gjennom denne personlighetstesten!",
+    "logoAlt": "Hero App Logo"
+  },
+  "registration": {
+    "title": "Finn din superhelt-identitet",
+    "name": {
+      "label": "Navn",
+      "placeholder": "Skriv inn ditt navn",
+      "required": "Navn er påkrevd"
+    },
+    "gender": {
+      "label": "Kjønn",
+      "male": "Mann",
+      "female": "Kvinne"
+    },
+    "start": "Start"
+  },
+  "personalities": {
+    "red": {
+      "name": "Den Eventyrlystne Innovatøren",
+      "heroName": "Crimson Comet",
+      "description": "Du er nysgjerrig, impulsiv og elsker nye opplevelser. Du får energi av nye idéer og er ikke redd for å hoppe ut i ukjent terreng.",
+      "traits": ["Kreativ", "Spontan", "Modig", "Utforskende"]
+    },
+    "yellow": {
+      "name": "Den Sosiale Optimisten",
+      "heroName": "Solar Serenade",
+      "description": "Du er varm, utadvendt og entusiastisk. Du elsker å være rundt andre og sprer lett positiv energi.",
+      "traits": ["Omgjengelig", "Energisk", "Inkluderende", "Livlig"]
+    },
+    "green": {
+      "name": "Den Rolige Harmoniseren",
+      "heroName": "Emerald Whisper",
+      "description": "Du søker balanse, harmoni og gode relasjoner. Du er en god lytter, samarbeidsvillig og omsorgsfull.",
+      "traits": ["Omsorgsfull", "Reflektert", "Diplomatisk", "Støttegivende"]
+    },
+    "blue": {
+      "name": "Den Analytiske Planleggeren",
+      "heroName": "Azure Architect",
+      "description": "Du er systematisk, pålitelig og grundig. Du liker tydelige planer og setter pris på forutsigbarhet.",
+      "traits": ["Ansvarlig", "Metodisk", "Stabil", "Grundig"]
+    }
+  },
+  "quiz": {
+    "progress": {
+      "status": "Spørsmål {current} av {total}"
+    },
+    "questions": {
+      "1": {
+        "text": "Hvordan foretrekker du å starte en ny uke?",
+        "options": {
+          "red": "Hoppe rett inn i nye prosjekter uten en tydelig plan, klar for hva enn som dukker opp.",
+          "yellow": "Få med kollegene på en felles kick-off, fylle rommet med latter og entusiasme.",
+          "green": "Sette deg ned med en god venn og dele ideer rolig, over en kopp te.",
+          "blue": "Lage en detaljert liste over oppgaver og prioritere dem i riktig rekkefølge."
+        }
+      }
+    }
+  },
+  "results": {
+    "title": "Din Superhelt-Profil",
+    "selfieAlt": "Din superhelt-selfie",
+    "actions": {
+      "download": "Last ned superhelt-kort som PDF",
+      "copyLink": "Kopier lenke til superhelt-kort",
+      "newHero": "Ny superhelt!"
+    }
+  },
+  "loading": {
+    "defaultMessage": "Forbereder din superhelt-transformasjon...",
+    "timeEstimate": "Dette kan ta opptil ett minutt",
+    "steps": {
+      "upload": "Sender bildet til superhelt-basen...",
+      "process": "Starter opp transformasjonskammeret...",
+      "generate": "Skaper din superhelt-identitet...",
+      "complete": "Din superhelt er klar!"
+    }
+  },
+  "errors": {
+    "missingUserData": "Brukerdata mangler. Vennligst start på nytt.",
+    "invalidPhotoFormat": "Ugyldig bildeformat. Vennligst prøv igjen.",
+    "heroNameError": "Kunne ikke generere heltenavn",
+    "heroImageError": "Kunne ikke generere superhelt-bilde",
+    "noImageUrl": "Ingen bilde-URL mottatt fra serveren",
+    "heroImageGenerationError": "Kunne ikke generere superhelt-bilde. Vennligst prøv igjen.",
+    "generalError": "Det oppstod en feil. Vennligst prøv igjen."
+  },
+  "common": {
+    "languageSwitcher": {
+      "label": "Velg språk",
+      "en": "English",
+      "no": "Norsk"
+    }
+  }
+}

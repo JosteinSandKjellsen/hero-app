@@ -1,22 +1,4 @@
-export type HeroColor = 'red' | 'yellow' | 'green' | 'blue';
-
-export interface QuizQuestion {
-  id: number;
-  text: string;
-  options: QuizOption[];
-}
-
-export interface QuizOption {
-  text: string;
-  type: HeroColor;
-}
-
-export interface QuizResult {
-  red: number;
-  yellow: number;
-  green: number;
-  blue: number;
-}
+import type { HeroColor } from '../_lib/types/api';
 
 export interface PersonalityType {
   name: string;
@@ -26,11 +8,6 @@ export interface PersonalityType {
   traits: string[];
   bgClass: string;
   textClass: string;
-}
-
-export interface UserData {
-  name: string;
-  gender: 'male' | 'female';
 }
 
 export interface LayoutProps {

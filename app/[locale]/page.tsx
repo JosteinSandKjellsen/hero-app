@@ -1,14 +1,14 @@
 'use client';
 
-import { QuizLayout } from './_components/layout/QuizLayout';
-import { RegistrationForm } from './_components/registration/RegistrationForm';
-import { QuizSection } from './_components/quiz/QuizSection';
-import { CameraSection } from './_components/camera/CameraSection';
-import { ResultsSection } from './_components/results/ResultsSection';
-import { Toast } from './_components/ui/Toast';
-import { LoadingState } from './_components/ui/LoadingState';
-import { useQuiz } from './_hooks/useQuiz';
-import { useToast } from './_hooks/useToast';
+import { QuizLayout } from '../_components/layout/QuizLayout';
+import { RegistrationForm } from '../_components/registration/RegistrationForm';
+import { QuizSection } from '../_components/quiz/QuizSection';
+import { CameraSection } from '../_components/camera/CameraSection';
+import { ResultsSection } from '../_components/results/ResultsSection';
+import { Toast } from '../_components/ui/Toast';
+import { LoadingState } from '../_components/ui/LoadingState';
+import { useQuiz } from '../_hooks/useQuiz';
+import { useToast } from '../_hooks/useToast';
 
 export default function Home(): JSX.Element {
   const {
@@ -82,3 +82,6 @@ export default function Home(): JSX.Element {
     </QuizLayout>
   );
 }
+
+// Add metadata export for static optimization
+export const dynamic = 'force-static';

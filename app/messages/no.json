@@ -1,0 +1,263 @@
+{
+  "header": {
+    "title": "Hvilken Superhelt Er Du?",
+    "subtitle": "Oppdag din indre superhelt gjennom denne personlighetstesten!",
+    "logoAlt": "Hero App Logo"
+  },
+  "registration": {
+    "title": "Finn din superhelt-identitet",
+    "name": {
+      "label": "Navn",
+      "placeholder": "Skriv inn ditt navn",
+      "required": "Navn er påkrevd"
+    },
+    "gender": {
+      "label": "Kjønn",
+      "male": "Mann",
+      "female": "Kvinne"
+    },
+    "start": "Start"
+  },
+  "personalities": {
+    "red": {
+      "name": "Den Eventyrlystne Innovatøren",
+      "heroName": "Crimson Comet",
+      "description": "Du er nysgjerrig, impulsiv og elsker nye opplevelser. Du får energi av nye idéer og er ikke redd for å hoppe ut i ukjent terreng.",
+      "traits": ["Kreativ", "Spontan", "Modig", "Utforskende"]
+    },
+    "yellow": {
+      "name": "Den Sosiale Optimisten",
+      "heroName": "Solar Serenade",
+      "description": "Du er varm, utadvendt og entusiastisk. Du elsker å være rundt andre og sprer lett positiv energi.",
+      "traits": ["Omgjengelig", "Energisk", "Inkluderende", "Livlig"]
+    },
+    "green": {
+      "name": "Den Rolige Harmoniseren",
+      "heroName": "Emerald Whisper",
+      "description": "Du søker balanse, harmoni og gode relasjoner. Du er en god lytter, samarbeidsvillig og omsorgsfull.",
+      "traits": ["Omsorgsfull", "Reflektert", "Diplomatisk", "Støttegivende"]
+    },
+    "blue": {
+      "name": "Den Analytiske Planleggeren",
+      "heroName": "Azure Architect",
+      "description": "Du er systematisk, pålitelig og grundig. Du liker tydelige planer og setter pris på forutsigbarhet.",
+      "traits": ["Ansvarlig", "Metodisk", "Stabil", "Grundig"]
+    }
+  },
+  "quiz": {
+    "progress": {
+      "status": "Spørsmål {current} av {total}"
+    },
+    "questions": {
+      "1": {
+        "text": "Hvordan foretrekker du å starte en ny uke?",
+        "options": {
+          "red": "Hoppe rett inn i nye prosjekter uten en tydelig plan, klar for hva enn som dukker opp.",
+          "yellow": "Få med kollegene på en felles kick-off, fylle rommet med latter og entusiasme.",
+          "green": "Sette deg ned med en god venn og dele ideer rolig, over en kopp te.",
+          "blue": "Lage en detaljert liste over oppgaver og prioritere dem i riktig rekkefølge."
+        }
+      },
+      "2": {
+        "text": "Hvordan forholder du deg til uventede utfordringer?",
+        "options": {
+          "red": "Kaster deg ut i det, improviserer og utnytter momentum.",
+          "yellow": "Samler teamet for et \"pep talk\"-møte og løser problemet sammen.",
+          "green": "Prøver å megle og skape ro, finner en harmonisk løsning.",
+          "blue": "Setter av tid til å analysere situasjonen og lage en handlingsplan."
+        }
+      },
+      "3": {
+        "text": "En venn inviterer deg med på en aktivitet du aldri har prøvd før. Hva gjør du?",
+        "options": {
+          "red": "Hopper på med en gang, uansett hva det er – elsker noe nytt!",
+          "yellow": "Spør om dere kan ta med flere venner, gjøre det til en sosial begivenhet.",
+          "green": "Forsikrer deg om at det blir i rolige og hyggelige omgivelser.",
+          "blue": "Les litt om aktiviteten på forhånd, forbereder deg mentalt."
+        }
+      },
+      "4": {
+        "text": "Når du skal velge feriedestinasjon:",
+        "options": {
+          "red": "Et ukjent sted, ingen planer – bare frihet og eventyr.",
+          "yellow": "Et sted med livlige festivaler og mye sosial interaksjon.",
+          "green": "Et fredelig hytteretreat i naturen, nær en stille innsjø.",
+          "blue": "Et sted med klare reiseruter og kjent kultur – minimal usikkerhet."
+        }
+      },
+      "5": {
+        "text": "Hva motiverer deg i hverdagen?",
+        "options": {
+          "red": "Spenningen ved å prøve ut noe ingen andre har turt ennå.",
+          "yellow": "Gleden ved å se at folk rundt deg smiler og har det bra.",
+          "green": "Følelsen av balanse, indre ro og gode, nære relasjoner.",
+          "blue": "Å krysse av oppgaver på en liste og vite at alt går etter planen."
+        }
+      },
+      "6": {
+        "text": "Hvordan håndterer du konflikter i en gruppe?",
+        "options": {
+          "red": "Kaster inn en vill idé eller aktivitet for å bryte spenningen.",
+          "yellow": "Får alle sammen for å snakke det ut, skape en felles forståelse.",
+          "green": "Lytter nøye, foreslår kompromiss og påpeker felles mål.",
+          "blue": "Samler fakta, analyserer problemet og foreslår en logisk løsning."
+        }
+      },
+      "7": {
+        "text": "Når du skal lære noe nytt:",
+        "options": {
+          "red": "Lærer best gjennom eksperimentering i praksis, gjerne uten bruksanvisning.",
+          "yellow": "Lærer gjennom å diskutere og utforske temaet sammen med andre.",
+          "green": "Lærer i et rolig tempo, gjerne ved å observere og reflektere selv.",
+          "blue": "Lærer best ved å lese strukturert materiale og følge en klar prosess."
+        }
+      },
+      "8": {
+        "text": "Din drømmefest:",
+        "options": {
+          "red": "En overraskelsesfest der ingen helt vet hva som skjer neste minutt.",
+          "yellow": "Et stort selskap med musikk, dans og mange gode samtaler.",
+          "green": "En rolig sammenkomst med få, nære venner, lave stemmer og dyp samtale.",
+          "blue": "En nøye planlagt middag med en nøyaktig gjesteliste, meny og program."
+        }
+      },
+      "9": {
+        "text": "Hvilke gaver liker du best å gi?",
+        "options": {
+          "red": "Noe helt uventet, kanskje et kunstverk laget i full fart.",
+          "yellow": "En opplevelse der flere kan delta og kose seg sammen.",
+          "green": "En gjennomtenkt, personlig gave som viser omtanke og kjennskap.",
+          "blue": "En nyttig, praktisk gave som mottakeren kan bruke effektivt."
+        }
+      },
+      "10": {
+        "text": "Når du må ta en viktig avgjørelse:",
+        "options": {
+          "red": "Følger magefølelsen og håper på det beste.",
+          "yellow": "Spør venner om deres meninger, og lar fellesskapet lede veien.",
+          "green": "Tenker over hvordan dette vil påvirke harmonien i relasjonene dine.",
+          "blue": "Samler informasjon, veier fordeler og ulemper systematisk."
+        }
+      },
+      "11": {
+        "text": "Hva gjør deg mest fornøyd etter en lang dag?",
+        "options": {
+          "red": "Å ha opplevd noe helt nytt, uventet og spennende.",
+          "yellow": "Å ha delt gode stunder med mange mennesker.",
+          "green": "Å ha hatt en dyp, meningsfull samtale med noen du bryr deg om.",
+          "blue": "Å ha fullført alle oppgaver nøyaktig som planlagt."
+        }
+      },
+      "12": {
+        "text": "Når du ser fremover i livet:",
+        "options": {
+          "red": "Gleder du deg til alt det uvisse og ukjente du kan utforske.",
+          "yellow": "Ser du for deg et liv fylt med gode venner og mye glede.",
+          "green": "Håper du på stabilitet, nære relasjoner og indre ro.",
+          "blue": "Forestiller du deg et velorganisert, velstrukturert liv med klare mål."
+        }
+      }
+    }
+  },
+  "results": {
+    "title": "Din Superhelt-Profil",
+    "selfieAlt": "Din superhelt-selfie",
+    "matchPercentage": "Matchprosent",
+    "actions": {
+      "download": "Last ned superhelt-kort som PDF",
+      "copyLink": "Kopier lenke til superhelt-kort",
+      "newHero": "Ny superhelt!"
+    }
+  },
+  "loading": {
+    "defaultMessage": "Forbereder din superhelt-transformasjon...",
+    "timeEstimate": "Dette kan ta opptil ett minutt",
+    "steps": {
+      "upload": "Sender bildet til superhelt-basen...",
+      "process": "Starter opp transformasjonskammeret...",
+      "generate": "Skaper din superhelt-identitet...",
+      "complete": "Din superhelt er klar!"
+    }
+  },
+  "common": {
+    "languageSwitcher": {
+      "label": "Velg språk",
+      "en": "English",
+      "no": "Norsk"
+    }
+  },
+  "camera": {
+    "title": "Ta et bilde av din indre superhelt!",
+    "subtitle": "La oss se hvordan du ser ut som din personlige superhelt-type.",
+    "generating": {
+      "status": "Genererer ditt superhelt-bilde...",
+      "timeEstimate": "Dette kan ta opptil ett minutt"
+    },
+    "start": "Starter kamera...",
+    "takePhoto": "Ta bilde",
+    "takingPhoto": "Tar bildet...",
+    "switchCamera": "Bytt kamera",
+    "continueWithoutPhoto": "Fortsett uten bilde",
+    "retry": "Prøv igjen",
+    "activate": "Aktiver kamera",
+    "permission": {
+      "title": "Aktiver kamera",
+      "description": "For å ta et superhelt-bilde trenger vi tilgang til kameraet ditt",
+      "instructions": {
+        "Chrome": "Klikk på kamera-ikonet i adressefeltet ➜ Tillat",
+        "Firefox": "Klikk på kamera-ikonet til venstre i adressefeltet ➜ Tillat",
+        "Safari": "Gå til Safari ➜ Innstillinger ➜ Nettsteder ➜ Kamera ➜ Tillat",
+        "default": "Aktiver kameratilgang i nettleserinnstillingene"
+      },
+      "allowPrompt": "Tillat kameratilgang når nettleseren spør.",
+      "browserInstructions": "Nettleser-spesifikke instruksjoner vil vises her"
+    },
+    "errors": {
+      "streamStart": "Kunne ikke starte videostrømmen. Vennligst prøv igjen.",
+      "access": "Kunne ikke få tilgang til kameraet. Vennligst sjekk at nettleseren har tilgang til kameraet ditt.",
+      "capture": "Det oppstod en feil ved taking av bildet. Vennligst prøv igjen."
+    }
+  },
+  "errors": {
+    "generic": "Noe gikk galt",
+    "validation": "Vennligst sjekk inndataene dine",
+    "network": "Nettverksfeil oppstod",
+    "imageProcessing": "Feil ved behandling av bilde",
+    "nameGeneration": "Feil ved generering av heltenavn",
+    "heroNameError": "Kunne ikke generere heltenavn",
+    "heroImageError": "Kunne ikke generere superhelt-bilde",
+    "noImageUrl": "Ingen bilde-URL mottatt",
+    "heroImageGenerationError": "Feil ved generering av superhelt-bilde",
+    "invalidPhotoFormat": "Ugyldig bildeformat",
+    "missingUserData": "Brukerdata mangler"
+  },
+  "matchingTips": {
+    "intro": "Tips: Snakk med en",
+    "connector": "venn: Din",
+    "meets": "møter den",
+    "colors": {
+      "red": "rød",
+      "yellow": "gul",
+      "green": "grønn",
+      "blue": "blå"
+    },
+    "descriptions": {
+      "red": {
+        "source": "røde energi",
+        "target": "grønnes harmoni"
+      },
+      "yellow": {
+        "source": "gule optimisme",
+        "target": "blåes struktur"
+      },
+      "blue": {
+        "source": "blåes struktur",
+        "target": "rødes fart"
+      },
+      "green": {
+        "source": "grønnes harmoni",
+        "target": "gules inspirasjon"
+      }
+    }
+  }
+}

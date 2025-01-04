@@ -2,6 +2,7 @@
 
 import { Camera, RefreshCw } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 interface CameraPermissionStateProps {
   onPermissionGranted: () => void;
@@ -9,6 +10,7 @@ interface CameraPermissionStateProps {
 }
 
 export function CameraPermissionState({ onPermissionGranted, onSkip }: CameraPermissionStateProps): JSX.Element {
+  const t = useTranslations();
   const [browserName, setBrowserName] = useState<string>('');
   const [error, setError] = useState(false);
 
@@ -26,9 +28,9 @@ export function CameraPermissionState({ onPermissionGranted, onSkip }: CameraPer
         setBrowserName('Safari');
         break;
       default:
-        setBrowserName('nettleseren din');
+        setBrowserName(t('camera.permission.browserInstructions'));
     }
-  }, []);
+  }, [t]);
 
   const requestPermission = async (): Promise<void> => {
     try {
@@ -44,13 +46,13 @@ export function CameraPermissionState({ onPermissionGranted, onSkip }: CameraPer
   const getBrowserInstructions = (): string => {
     switch (browserName) {
       case 'Chrome':
-        return 'Klikk på kamera-ikonet i adressefeltet ➜ Tillat';
+        return t('camera.permission.instructions.Chrome');
       case 'Firefox':
-        return 'Klikk på kamera-ikonet til venstre i adressefeltet ➜ Tillat';
+        return t('camera.permission.instructions.Firefox');
       case 'Safari':
-        return 'Gå til Safari ➜ Innstillinger ➜ Nettsteder ➜ Kamera ➜ Tillat';
+        return t('camera.permission.instructions.Safari');
       default:
-        return 'Aktiver kameratilgang i nettleserinnstillingene';
+        return t('camera.permission.instructions.default');
     }
   };
 
@@ -62,10 +64,10 @@ export function CameraPermissionState({ onPermissionGranted, onSkip }: CameraPer
             <Camera className="w-8 h-8 text-white" />
           </div>
           <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
-            Aktiver kamera
+            {t('camera.permission.title')}
           </h3>
           <p className="text-white/80 text-sm md:text-base mb-4">
-            For å ta et superhelt-bilde trenger vi tilgang til kameraet ditt
+            {t('camera.permission.description')}
           </p>
         </div>
 
@@ -76,7 +78,7 @@ export function CameraPermissionState({ onPermissionGranted, onSkip }: CameraPer
                    focus:outline-none focus:ring-2 focus:ring-green-500 active:bg-green-800"
         >
           <Camera className="w-5 h-5" />
-          <span>Aktiver kamera</span>
+          <span>{t('camera.activate')}</span>
         </button>
 
         <button
@@ -84,12 +86,12 @@ export function CameraPermissionState({ onPermissionGranted, onSkip }: CameraPer
           className="w-full text-white/70 py-2 text-sm hover:text-white/90 transition-colors
                    underline underline-offset-2 focus:outline-none focus:text-white"
         >
-          Fortsett uten bilde
+          {t('camera.continueWithoutPhoto')}
         </button>
 
         {error && (
           <div className="text-white/70 text-sm">
-            <p className="mb-2">Tillat kameratilgang når nettleseren spør.</p>
+            <p className="mb-2">{t('camera.permission.allowPrompt')}</p>
             <p className="mb-4">{getBrowserInstructions()}</p>
             <button
               onClick={requestPermission}
@@ -97,7 +99,7 @@ export function CameraPermissionState({ onPermissionGranted, onSkip }: CameraPer
                        focus:outline-none focus:underline"
             >
               <RefreshCw className="w-4 h-4" />
-              <span>Prøv igjen</span>
+              <span>{t('camera.retry')}</span>
             </button>
           </div>
         )}

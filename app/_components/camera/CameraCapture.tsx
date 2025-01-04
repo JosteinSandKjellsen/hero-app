@@ -5,6 +5,7 @@ import { Camera, FlipHorizontal } from 'lucide-react';
 import { CameraError } from './CameraError';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
 import { CameraPermissionState } from './CameraPermissionState';
+import { useTranslations } from 'next-intl';
 
 interface CameraCaptureProps {
   onPhotoTaken: (photoUrl: string | null) => void;
@@ -12,6 +13,7 @@ interface CameraCaptureProps {
 }
 
 export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCaptureProps): JSX.Element {
+  const t = useTranslations();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isStreaming, setIsStreaming] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
@@ -47,7 +49,7 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
                 })
                 .catch(err => {
                   console.error('Error playing video:', err);
-                  setError('Kunne ikke starte videostrømmen. Vennligst prøv igjen.');
+                  setError(t('camera.errors.streamStart'));
                 });
             };
           }
@@ -55,7 +57,7 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
       }
     } catch (err) {
       console.error('Error accessing camera:', err);
-      setError('Kunne ikke få tilgang til kameraet. Vennligst sjekk at nettleseren har tilgang til kameraet ditt.');
+      setError(t('camera.errors.access'));
     }
   };
 
@@ -90,7 +92,7 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
       onPhotoTaken(photoUrl);
     } catch (err) {
       console.error('Error taking photo:', err);
-      setError('Det oppstod en feil ved taking av bildet. Vennligst prøv igjen.');
+      setError(t('camera.errors.capture'));
     } finally {
       setIsCapturing(false);
     }
@@ -120,7 +122,7 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
         <div className="absolute inset-0 flex items-center justify-center bg-purple-900/30 backdrop-blur-sm rounded-lg">
           <div className="text-center">
             <LoadingSpinner size="lg" />
-            <p className="text-white mt-4">Starter kamera...</p>
+            <p className="text-white mt-4">{t('camera.start')}</p>
           </div>
         </div>
       )}
@@ -141,7 +143,7 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
               }}
               className="bg-purple-600/80 backdrop-blur-sm text-white p-2 rounded-full hover:bg-purple-700 
                        transition-colors shadow-lg mb-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
-              aria-label="Bytt kamera"
+              aria-label={t('camera.switchCamera')}
             >
               <FlipHorizontal className="w-6 h-6" />
             </button>
@@ -157,12 +159,12 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
             {isCapturing ? (
               <>
                 <LoadingSpinner size="sm" />
-                <span>Tar bildet...</span>
+                <span>{t('camera.takingPhoto')}</span>
               </>
             ) : (
               <>
                 <Camera className="w-6 h-6" />
-                <span>Ta bilde</span>
+                <span>{t('camera.takePhoto')}</span>
               </>
             )}
           </button>
@@ -174,7 +176,7 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
             className="text-white/70 text-sm hover:text-white/90 transition-colors
                      underline underline-offset-2 focus:outline-none focus:text-white"
           >
-            Fortsett uten bilde
+            {t('camera.continueWithoutPhoto')}
           </button>
         </div>
       )}

@@ -1,10 +1,10 @@
 'use client';
 
 import React, { Suspense, useEffect } from 'react';
+import './print.css';
 import { useSearchParams } from 'next/navigation';
-import { SuperheroCard } from '../_components/results/SuperheroCard';
-import { PersonalityType } from '../_lib/types/personality';
-import { HeroColor } from '../_lib/types/api';
+import { SuperheroCard } from '../../_components/results/SuperheroCard';
+import { HeroColor } from '../../_lib/types/api';
 
 function PrintContent(): JSX.Element {
   const searchParams = useSearchParams();
@@ -38,14 +38,12 @@ function PrintContent(): JSX.Element {
   }
 
   // Construct personality object
-  const personality: PersonalityType = {
-    name: personalityName,
-    heroName: heroName,
+  const personality = {
     color: color,
-    description: '', // Not needed for print view
-    traits: [], // Not needed for print view
     bgClass: `bg-${color}-600`,
-    textClass: `text-${color}-600`
+    textClass: `text-${color}-600`,
+    name: personalityName,
+    heroName: heroName
   };
 
   // Construct user data
@@ -85,7 +83,7 @@ function PrintContent(): JSX.Element {
   }, [shouldPrint]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-8">
+    <div className="min-h-screen flex items-center justify-center p-8 bg-white">
       <div className="w-[600px]">
         <SuperheroCard
           photoUrl={photoUrl}

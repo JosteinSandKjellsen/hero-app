@@ -1,0 +1,263 @@
+{
+  "header": {
+    "title": "Which Superhero Are You?",
+    "subtitle": "Discover your inner superhero through this personality test!",
+    "logoAlt": "Hero App Logo"
+  },
+  "registration": {
+    "title": "Find your superhero identity",
+    "name": {
+      "label": "Name",
+      "placeholder": "Enter your name",
+      "required": "Name is required"
+    },
+    "gender": {
+      "label": "Gender",
+      "male": "Male",
+      "female": "Female"
+    },
+    "start": "Start"
+  },
+  "personalities": {
+    "red": {
+      "name": "The Adventurous Innovator",
+      "heroName": "Crimson Comet",
+      "description": "You are curious, impulsive, and love new experiences. You get energized by new ideas and aren't afraid to venture into unknown territory.",
+      "traits": ["Creative", "Spontaneous", "Brave", "Exploratory"]
+    },
+    "yellow": {
+      "name": "The Social Optimist",
+      "heroName": "Solar Serenade",
+      "description": "You are warm, outgoing, and enthusiastic. You love being around others and easily spread positive energy.",
+      "traits": ["Sociable", "Energetic", "Inclusive", "Lively"]
+    },
+    "green": {
+      "name": "The Calm Harmonizer",
+      "heroName": "Emerald Whisper",
+      "description": "You seek balance, harmony, and good relationships. You are a good listener, cooperative, and caring.",
+      "traits": ["Caring", "Reflective", "Diplomatic", "Supportive"]
+    },
+    "blue": {
+      "name": "The Analytical Planner",
+      "heroName": "Azure Architect",
+      "description": "You are systematic, reliable, and thorough. You like clear plans and appreciate predictability.",
+      "traits": ["Responsible", "Methodical", "Stable", "Thorough"]
+    }
+  },
+  "quiz": {
+    "progress": {
+      "status": "Question {current} of {total}"
+    },
+    "questions": {
+      "1": {
+        "text": "How do you prefer to start a new week?",
+        "options": {
+          "red": "Jump right into new projects without a clear plan, ready for whatever comes up.",
+          "yellow": "Get colleagues together for a joint kick-off, filling the room with laughter and enthusiasm.",
+          "green": "Sit down with a good friend and calmly share ideas over a cup of tea.",
+          "blue": "Make a detailed list of tasks and prioritize them in the right order."
+        }
+      },
+      "2": {
+        "text": "How do you handle unexpected challenges?",
+        "options": {
+          "red": "Jump right in, improvise and use the momentum.",
+          "yellow": "Gather the team for a pep talk meeting and solve the problem together.",
+          "green": "Try to mediate and create calm, find a harmonious solution.",
+          "blue": "Set aside time to analyze the situation and create an action plan."
+        }
+      },
+      "3": {
+        "text": "A friend invites you to an activity you've never tried before. What do you do?",
+        "options": {
+          "red": "Jump right in, no matter what it is – love trying new things!",
+          "yellow": "Ask if you can bring more friends, make it a social event.",
+          "green": "Make sure it will be in calm and pleasant surroundings.",
+          "blue": "Read up about the activity beforehand, prepare mentally."
+        }
+      },
+      "4": {
+        "text": "When choosing a holiday destination:",
+        "options": {
+          "red": "An unknown place, no plans – just freedom and adventure.",
+          "yellow": "A place with lively festivals and lots of social interaction.",
+          "green": "A peaceful cabin retreat in nature, near a quiet lake.",
+          "blue": "A place with clear travel routes and familiar culture – minimal uncertainty."
+        }
+      },
+      "5": {
+        "text": "What motivates you in everyday life?",
+        "options": {
+          "red": "The excitement of trying something no one else has dared yet.",
+          "yellow": "The joy of seeing people around you smile and feel good.",
+          "green": "The feeling of balance, inner peace and good, close relationships.",
+          "blue": "Checking off tasks on a list and knowing everything is going according to plan."
+        }
+      },
+      "6": {
+        "text": "How do you handle conflicts in a group?",
+        "options": {
+          "red": "Throw in a wild idea or activity to break the tension.",
+          "yellow": "Get everyone together to talk it out, create mutual understanding.",
+          "green": "Listen carefully, suggest compromises and point out common goals.",
+          "blue": "Gather facts, analyze the problem and suggest a logical solution."
+        }
+      },
+      "7": {
+        "text": "When learning something new:",
+        "options": {
+          "red": "Learn best through hands-on experimentation, preferably without instructions.",
+          "yellow": "Learn through discussing and exploring the topic with others.",
+          "green": "Learn at a calm pace, preferably by observing and reflecting.",
+          "blue": "Learn best by reading structured material and following a clear process."
+        }
+      },
+      "8": {
+        "text": "Your dream party:",
+        "options": {
+          "red": "A surprise party where no one quite knows what happens next.",
+          "yellow": "A big gathering with music, dancing and lots of good conversations.",
+          "green": "A quiet get-together with few, close friends, soft voices and deep conversation.",
+          "blue": "A carefully planned dinner with an exact guest list, menu and program."
+        }
+      },
+      "9": {
+        "text": "What kind of gifts do you prefer to give?",
+        "options": {
+          "red": "Something completely unexpected, maybe an artwork made in the moment.",
+          "yellow": "An experience where several can participate and enjoy together.",
+          "green": "A thoughtful, personal gift that shows consideration and familiarity.",
+          "blue": "A useful, practical gift that the recipient can use effectively."
+        }
+      },
+      "10": {
+        "text": "When you need to make an important decision:",
+        "options": {
+          "red": "Follow your gut feeling and hope for the best.",
+          "yellow": "Ask friends for their opinions, and let the community guide the way.",
+          "green": "Think about how this will affect the harmony in your relationships.",
+          "blue": "Gather information, weigh pros and cons systematically."
+        }
+      },
+      "11": {
+        "text": "What makes you most satisfied after a long day?",
+        "options": {
+          "red": "Having experienced something completely new, unexpected and exciting.",
+          "yellow": "Having shared good moments with many people.",
+          "green": "Having had a deep, meaningful conversation with someone you care about.",
+          "blue": "Having completed all tasks exactly as planned."
+        }
+      },
+      "12": {
+        "text": "When looking ahead in life:",
+        "options": {
+          "red": "You look forward to all the uncertain and unknown you can explore.",
+          "yellow": "You envision a life filled with good friends and lots of joy.",
+          "green": "You hope for stability, close relationships and inner peace.",
+          "blue": "You imagine a well-organized, well-structured life with clear goals."
+        }
+      }
+    }
+  },
+  "results": {
+    "title": "Your Superhero Profile",
+    "selfieAlt": "Your superhero selfie",
+    "matchPercentage": "Match percentage",
+    "actions": {
+      "download": "Download superhero card as PDF",
+      "copyLink": "Copy superhero card link",
+      "newHero": "New superhero!"
+    }
+  },
+  "loading": {
+    "defaultMessage": "Preparing your superhero transformation...",
+    "timeEstimate": "This may take up to a minute",
+    "steps": {
+      "upload": "Sending image to superhero database...",
+      "process": "Starting up transformation chamber...",
+      "generate": "Creating your superhero identity...",
+      "complete": "Your superhero is ready!"
+    }
+  },
+  "common": {
+    "languageSwitcher": {
+      "label": "Select language",
+      "en": "English",
+      "no": "Norsk"
+    }
+  },
+  "camera": {
+    "title": "Take a picture of your inner superhero!",
+    "subtitle": "Let's see how you look as your personal superhero type.",
+    "generating": {
+      "status": "Generating your superhero image...",
+      "timeEstimate": "This may take up to a minute"
+    },
+    "start": "Starting camera...",
+    "takePhoto": "Take photo",
+    "takingPhoto": "Taking photo...",
+    "switchCamera": "Switch camera",
+    "continueWithoutPhoto": "Continue without photo",
+    "retry": "Try again",
+    "activate": "Activate camera",
+    "permission": {
+      "title": "Activate camera",
+      "description": "To take a superhero photo, we need access to your camera",
+      "instructions": {
+        "Chrome": "Click the camera icon in the address bar ➜ Allow",
+        "Firefox": "Click the camera icon on the left in the address bar ➜ Allow",
+        "Safari": "Go to Safari ➜ Settings ➜ Websites ➜ Camera ➜ Allow",
+        "default": "Enable camera access in browser settings"
+      },
+      "allowPrompt": "Allow camera access when the browser asks.",
+      "browserInstructions": "Browser-specific instructions will be shown here"
+    },
+    "errors": {
+      "streamStart": "Could not start video stream. Please try again.",
+      "access": "Could not access the camera. Please check that your browser has access to your camera.",
+      "capture": "An error occurred while taking the photo. Please try again."
+    }
+  },
+  "errors": {
+    "generic": "Something went wrong",
+    "validation": "Please check your input",
+    "network": "Network error occurred",
+    "imageProcessing": "Error processing image",
+    "nameGeneration": "Error generating hero name",
+    "heroNameError": "Failed to generate hero name",
+    "heroImageError": "Failed to generate hero image",
+    "noImageUrl": "No image URL received",
+    "heroImageGenerationError": "Error generating hero image",
+    "invalidPhotoFormat": "Invalid photo format",
+    "missingUserData": "User data is missing"
+  },
+  "matchingTips": {
+    "intro": "Tip: Talk to a",
+    "connector": "friend: Your",
+    "meets": "meets the",
+    "colors": {
+      "red": "red",
+      "yellow": "yellow",
+      "green": "green",
+      "blue": "blue"
+    },
+    "descriptions": {
+      "red": {
+        "source": "red energy",
+        "target": "green's harmony"
+      },
+      "yellow": {
+        "source": "yellow optimism",
+        "target": "blue's structure"
+      },
+      "blue": {
+        "source": "blue structure",
+        "target": "red's speed"
+      },
+      "green": {
+        "source": "green harmony",
+        "target": "yellow's inspiration"
+      }
+    }
+  }
+}

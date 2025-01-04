@@ -3,7 +3,6 @@ import { z } from 'zod';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { defaultHeroNames, type HeroColor } from '../../_lib/constants/defaultNames';
 import { getGeminiApiKey } from '../../_lib/config/env';
-import { headers } from 'next/headers';
 
 // Enhanced request validation
 const requestSchema = z.object({
@@ -15,34 +14,8 @@ const requestSchema = z.object({
     .transform(str => str.trim()),
   gender: z.enum(['male', 'female'] as const),
   color: z.enum(['red', 'yellow', 'green', 'blue'] as const),
+  language: z.enum(['en', 'no'] as const),
 });
-
-// Rate limiting configuration
-const RATE_LIMIT = 10; // requests
-const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute in milliseconds
-const ipRequests = new Map<string, { count: number; timestamp: number }>();
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const requestData = ipRequests.get(ip);
-
-  if (!requestData) {
-    ipRequests.set(ip, { count: 1, timestamp: now });
-    return false;
-  }
-
-  if (now - requestData.timestamp > RATE_LIMIT_WINDOW) {
-    ipRequests.set(ip, { count: 1, timestamp: now });
-    return false;
-  }
-
-  if (requestData.count >= RATE_LIMIT) {
-    return true;
-  }
-
-  requestData.count++;
-  return false;
-}
 
 function getRandomDefaultName(): string {
   const colors = Object.keys(defaultHeroNames) as HeroColor[];
@@ -50,17 +23,10 @@ function getRandomDefaultName(): string {
   return defaultHeroNames[randomColor];
 }
 
+export const dynamic = 'force-dynamic'; // API routes should be dynamic
+
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
-    // Rate limiting check
-    const ip = headers().get('x-forwarded-for') || 'unknown';
-    if (isRateLimited(ip)) {
-      return NextResponse.json(
-        { error: 'Too many requests' },
-        { status: 429 }
-      );
-    }
-
     const body = await request.json();
     
     // Validate and sanitize request body
@@ -83,7 +49,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         '',
         'Rules:',
         '- Name must be 1-3 words',
-        '- Must be in Norwegian',
+        `- Must be in ${validatedData.language === 'no' ? 'Norwegian' : 'English'}`,
         '- No common terms like "man", "woman", "boy", "girl"',
         '- Must be creative and unique',
         '- Must reflect personality and color',

@@ -1,6 +1,7 @@
 'use client';
 
 import { AlertCircle, RefreshCw } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface CameraErrorProps {
   error: string;
@@ -8,6 +9,7 @@ interface CameraErrorProps {
 }
 
 export function CameraError({ error, onRetry }: CameraErrorProps): JSX.Element {
+  const t = useTranslations();
   return (
     <div className="text-center p-8 bg-red-50/10 rounded-lg">
       <AlertCircle className="w-12 h-12 text-red-300 mx-auto mb-4" />
@@ -18,7 +20,7 @@ export function CameraError({ error, onRetry }: CameraErrorProps): JSX.Element {
                    transition-colors flex items-center justify-center gap-2 mx-auto"
       >
         <RefreshCw className="w-5 h-5" />
-        <span>Prøv igjen</span>
+        <span>{t('camera.retry')}</span>
       </button>
     </div>
   );

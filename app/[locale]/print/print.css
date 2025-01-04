@@ -28,7 +28,7 @@ html, body {
   }
 
   /* White backgrounds only for main containers */
-  html, body, .min-h-screen, [data-card-clone] {
+  html, body, .min-h-screen, .print-layout, [data-card-clone] {
     background-color: white !important;
   }
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { Printer, RefreshCw, Link } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { getPrintUrl } from '../../_lib/utils/print';
 import { PrintCardData } from '../../_lib/utils/print';
 
@@ -10,6 +11,8 @@ interface ResultsActionsProps {
 }
 
 export function ResultsActions({ printData, onReset }: ResultsActionsProps): JSX.Element {
+  const t = useTranslations('results.actions');
+
   const handleCopyUrl = async (): Promise<void> => {
     // Use getPrintUrl to get the same URL format as the print button
     const url = new URL(getPrintUrl(printData), window.location.origin);
@@ -30,7 +33,7 @@ export function ResultsActions({ printData, onReset }: ResultsActionsProps): JSX
                   hover:bg-purple-700 transition-colors font-medium flex items-center justify-center gap-2"
       >
         <Printer className="w-5 h-5" />
-        <span>Last ned superhelt-kort som PDF</span>
+        <span>{t('download')}</span>
       </button>
 
       <button
@@ -39,7 +42,7 @@ export function ResultsActions({ printData, onReset }: ResultsActionsProps): JSX
                   hover:bg-purple-700 transition-colors font-medium flex items-center justify-center gap-2"
       >
         <Link className="w-5 h-5" />
-        <span>Kopier lenke til superhelt-kort</span>
+        <span>{t('copyLink')}</span>
       </button>
 
       <button
@@ -48,7 +51,7 @@ export function ResultsActions({ printData, onReset }: ResultsActionsProps): JSX
                   hover:bg-purple-700 transition-colors font-medium flex items-center justify-center gap-2"
       >
         <RefreshCw className="w-5 h-5" />
-        <span>Ny superhelt!</span>
+        <span>{t('newHero')}</span>
       </button>
     </div>
   );

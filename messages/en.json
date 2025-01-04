@@ -1,0 +1,98 @@
+{
+  "header": {
+    "title": "Which Superhero Are You?",
+    "subtitle": "Discover your inner superhero through this personality test!",
+    "logoAlt": "Hero App Logo"
+  },
+  "registration": {
+    "title": "Find your superhero identity",
+    "name": {
+      "label": "Name",
+      "placeholder": "Enter your name",
+      "required": "Name is required"
+    },
+    "gender": {
+      "label": "Gender",
+      "male": "Male",
+      "female": "Female"
+    },
+    "start": "Start"
+  },
+  "personalities": {
+    "red": {
+      "name": "The Adventurous Innovator",
+      "heroName": "Crimson Comet",
+      "description": "You are curious, impulsive, and love new experiences. You get energized by new ideas and aren't afraid to venture into unknown territory.",
+      "traits": ["Creative", "Spontaneous", "Brave", "Exploratory"]
+    },
+    "yellow": {
+      "name": "The Social Optimist",
+      "heroName": "Solar Serenade",
+      "description": "You are warm, outgoing, and enthusiastic. You love being around others and easily spread positive energy.",
+      "traits": ["Sociable", "Energetic", "Inclusive", "Lively"]
+    },
+    "green": {
+      "name": "The Calm Harmonizer",
+      "heroName": "Emerald Whisper",
+      "description": "You seek balance, harmony, and good relationships. You are a good listener, cooperative, and caring.",
+      "traits": ["Caring", "Reflective", "Diplomatic", "Supportive"]
+    },
+    "blue": {
+      "name": "The Analytical Planner",
+      "heroName": "Azure Architect",
+      "description": "You are systematic, reliable, and thorough. You like clear plans and appreciate predictability.",
+      "traits": ["Responsible", "Methodical", "Stable", "Thorough"]
+    }
+  },
+  "quiz": {
+    "progress": {
+      "status": "Question {current} of {total}"
+    },
+    "questions": {
+      "1": {
+        "text": "How do you prefer to start a new week?",
+        "options": {
+          "red": "Jump right into new projects without a clear plan, ready for whatever comes up.",
+          "yellow": "Get colleagues together for a joint kick-off, filling the room with laughter and enthusiasm.",
+          "green": "Sit down with a good friend and calmly share ideas over a cup of tea.",
+          "blue": "Make a detailed list of tasks and prioritize them in the right order."
+        }
+      }
+    }
+  },
+  "results": {
+    "title": "Your Superhero Profile",
+    "selfieAlt": "Your superhero selfie",
+    "actions": {
+      "download": "Download superhero card as PDF",
+      "copyLink": "Copy superhero card link",
+      "newHero": "New superhero!"
+    }
+  },
+  "loading": {
+    "defaultMessage": "Preparing your superhero transformation...",
+    "timeEstimate": "This may take up to a minute",
+    "steps": {
+      "upload": "Sending image to superhero database...",
+      "process": "Starting up transformation chamber...",
+      "generate": "Creating your superhero identity...",
+      "complete": "Your superhero is ready!"
+    }
+  },
+  "errors": {
+    "missingUserData": "User data missing. Please start over.",
+    "invalidPhotoFormat": "Invalid photo format. Please try again.",
+    "heroNameError": "Could not generate hero name",
+    "heroImageError": "Could not generate superhero image",
+    "noImageUrl": "No image URL received from server",
+    "heroImageGenerationError": "Could not generate superhero image. Please try again.",
+    "generalError": "An error occurred. Please try again."
+  },
+  "common": {
+    "languageSwitcher": {
+      "label": "Select language",
+      "en": "English",
+      "no": "Norsk"
+    }
+  }
+}

@@ -1,13 +1,11 @@
 import type { HeroColor } from './api';
 
 export interface PersonalityType {
-  name: string;
   color: HeroColor;
-  heroName: string;
-  description: string;
-  traits: string[];
   bgClass: string;
   textClass: string;
+  name: string;
+  heroName: string;
 }
 
 export interface PersonalityResult extends PersonalityType {
