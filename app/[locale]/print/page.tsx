@@ -14,7 +14,7 @@ function PrintContent(): JSX.Element {
   const [photoUrl, setPhotoUrl] = React.useState('');
   
   useEffect(() => {
-    async function fetchImageUrl() {
+    async function fetchImageUrl(): Promise<void> {
       if (!imageId) return;
       try {
         const response = await fetch(`/api/hero-image/${imageId}`);
