@@ -13,15 +13,13 @@
   included_files = ["node_modules/@netlify/plugin-nextjs/**/*"]
   node_bundler = "esbuild"
   external_node_modules = ["@netlify/plugin-nextjs"]
+  timeout = 30
   
 [build.processing]
   skip_processing = false
 
 [build.processing.images]
   compress = true
-
-[functions]
-  timeout = 30
 
 [[headers]]
   for = "/api/*"

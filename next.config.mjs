@@ -6,12 +6,9 @@ const withNextIntl = createNextIntlPlugin('./app/i18n/request.ts');
 const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ['node:buffer', 'punycode'],
-  },
-  api: {
-    bodyParser: {
-      sizeLimit: '10mb',
+    serverActions: {
+      bodySizeLimit: '10mb',
     },
-    responseLimit: '10mb',
   },
   headers: async () => [
     {
