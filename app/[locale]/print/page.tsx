@@ -17,11 +17,8 @@ function PrintContent(): JSX.Element {
     async function fetchImageUrl(): Promise<void> {
       if (!imageId) return;
       try {
-        const response = await fetch(`/api/hero-image/${imageId}`);
-        const data = await response.json();
-        // If we get a URL directly (production), use it
-        // Otherwise (development) use the proxied endpoint
-        setPhotoUrl(data.url || `/api/hero-image/${imageId}`);
+        // Always use the proxied endpoint to avoid CORS issues
+        setPhotoUrl(`/api/hero-image/${imageId}`);
       } catch (error) {
         console.error('Error fetching image URL:', error);
       }

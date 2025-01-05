@@ -11,12 +11,16 @@ interface QuizLayoutProps extends LayoutProps {
 
 export function QuizLayout({ children, showBackground = false, variant = 'quiz' }: QuizLayoutProps): JSX.Element {
   return (
-    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 relative">
-      {showBackground ? <HeroBackground /> : <Background variant={variant} />}
-      <div className="relative z-10 max-w-3xl mx-auto pb-20">
+    <div className="min-h-screen flex flex-col relative">
+      <div className="fixed inset-0">
+        {showBackground ? <HeroBackground /> : <Background variant={variant} />}
+      </div>
+      <main className="relative z-10 flex-1 pt-12 pb-24 px-4 sm:px-6 lg:px-8 overflow-x-hidden">
+        <div className="max-w-3xl mx-auto">
         <Header variant={variant} />
         {children}
-      </div>
+        </div>
+      </main>
       <Footer variant={variant} />
     </div>
   );
