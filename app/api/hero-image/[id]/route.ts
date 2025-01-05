@@ -30,7 +30,12 @@ export async function GET(
 
     const imageUrl = generation.generated_images[0].url;
     
-    // Always proxy the image through our API to avoid CORS issues
+    // In production (Netlify), return the CDN URL directly
+    if (process.env.NODE_ENV === 'production') {
+      return NextResponse.json({ url: imageUrl });
+    }
+    
+    // In development, proxy the image through our API
     const imageResponse = await fetch(imageUrl, {
       headers: leonardoService['headers']
     });

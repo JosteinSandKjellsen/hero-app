@@ -17,8 +17,17 @@ function PrintContent(): JSX.Element {
     async function fetchImageUrl(): Promise<void> {
       if (!imageId) return;
       try {
-        // Always use the proxied endpoint to avoid CORS issues
-        setPhotoUrl(`/api/hero-image/${imageId}`);
+        // Try to get JSON response first (production)
+        const response = await fetch(`/api/hero-image/${imageId}`);
+        const contentType = response.headers.get('content-type');
+        
+        if (contentType?.includes('application/json')) {
+          const data = await response.json();
+          setPhotoUrl(data.url);
+        } else {
+          // If not JSON, use the proxied endpoint (development)
+          setPhotoUrl(`/api/hero-image/${imageId}`);
+        }
       } catch (error) {
         console.error('Error fetching image URL:', error);
       }
@@ -70,9 +79,12 @@ function PrintContent(): JSX.Element {
 
   // Add effect to trigger print if requested
   useEffect(() => {
-    if (shouldPrint) {
-      // Wait for images to load
-      setTimeout(() => {
+    if (shouldPrint && photoUrl) {
+      // Create a new image element to check when it's loaded
+      const img = new Image();
+      img.src = photoUrl;
+      
+      img.onload = () => {
         // Set print settings
         const style = document.createElement('style');
         style.textContent = `
@@ -89,11 +101,13 @@ function PrintContent(): JSX.Element {
         `;
         document.head.appendChild(style);
 
-        // Trigger print
-        window.print();
-      }, 1000);
+        // Add a small delay to ensure styles are applied
+        setTimeout(() => {
+          window.print();
+        }, 100);
+      };
     }
-  }, [shouldPrint]);
+  }, [shouldPrint, photoUrl]);
 
   return (
     <div className="min-h-screen flex items-center justify-center p-8 bg-white">
