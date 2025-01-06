@@ -10,8 +10,8 @@ interface FooterProps {
 
 export function Footer({ variant = 'quiz' }: FooterProps): JSX.Element {
   return (
-    <footer className="fixed bottom-0 left-0 right-0 z-50">
-      <div className="w-full bg-white/10 backdrop-blur-lg border-t border-white/20 shadow-lg relative">
+    <footer className="w-full">
+      <div className="w-full bg-white/20 backdrop-blur-lg border-t border-white/30 shadow-lg relative">
         <div className="max-w-3xl mx-auto flex items-center px-6 py-4">
           {variant === 'registration' ? (
             <>

@@ -15,7 +15,7 @@ export function QuizLayout({ children, showBackground = false, variant = 'quiz' 
       <div className="fixed inset-0">
         {showBackground ? <HeroBackground /> : <Background variant={variant} />}
       </div>
-      <main className="relative z-10 flex-1 pt-12 pb-24 px-4 sm:px-6 lg:px-8 overflow-x-hidden">
+      <main className="relative z-10 flex-1 pt-12 pb-8 px-4 sm:px-6 lg:px-8 overflow-x-hidden">
         <div className="max-w-3xl mx-auto">
         <Header variant={variant} />
         {children}

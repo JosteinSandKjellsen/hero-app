@@ -20,7 +20,7 @@ export function Background({ variant }: BackgroundProps): JSX.Element | null {
       return (
         <div className="fixed inset-0 -z-10">
           <div className="absolute inset-0 bg-gradient-to-b from-purple-50 via-white to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 h-[50vh] bg-gradient-to-t from-purple-100 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-[60vh] bg-gradient-to-t from-purple-200 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-br from-purple-100/50 via-transparent to-blue-100/50" />
         </div>
       );
