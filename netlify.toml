@@ -13,7 +13,16 @@
   included_files = ["node_modules/@netlify/plugin-nextjs/**/*"]
   node_bundler = "esbuild"
   external_node_modules = ["@netlify/plugin-nextjs"]
-  timeout = 26
+
+[functions.generateHeroImage]
+  included_files = ["node_modules/@netlify/plugin-nextjs/**/*"]
+  external_node_modules = ["@netlify/plugin-nextjs"]
+  timeout = 30
+
+[functions.generateHeroName]
+  included_files = ["node_modules/@netlify/plugin-nextjs/**/*"]
+  external_node_modules = ["@netlify/plugin-nextjs"]
+  timeout = 30
 
 [[edge_functions]]
   function = "generateHeroImage"
