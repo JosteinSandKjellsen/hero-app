@@ -13,10 +13,15 @@
   included_files = ["node_modules/@netlify/plugin-nextjs/**/*"]
   node_bundler = "esbuild"
   external_node_modules = ["@netlify/plugin-nextjs"]
-  timeout = 30
+  timeout = 26
 
-[edge_functions]
-  force_deploy = true
+[[edge_functions]]
+  function = "generateHeroImage"
+  path = "/api/hero-image"
+
+[[edge_functions]]
+  function = "generateHeroName"
+  path = "/api/hero-name"
 
 [build.processing]
   skip_processing = false
