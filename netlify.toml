@@ -13,6 +13,10 @@
   included_files = ["node_modules/@netlify/plugin-nextjs/**/*"]
   node_bundler = "esbuild"
   external_node_modules = ["@netlify/plugin-nextjs"]
+  timeout = 30
+
+[edge_functions]
+  force_deploy = true
 
 [build.processing]
   skip_processing = false

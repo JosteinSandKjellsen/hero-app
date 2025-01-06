@@ -53,17 +53,21 @@ export class LeonardoAiService {
       // Get S3 upload URL and fields
       const { id, url, fields } = await this.getUploadUrl();
 
-      // Convert base64 to blob
+      // Convert base64 to array buffer and create blob
       const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, '');
-      const buffer = Buffer.from(base64Data, 'base64');
-      const blob = new Blob([buffer], { type: 'image/jpeg' });
+      const binaryString = atob(base64Data);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      const blob = new Blob([bytes], { type: 'image/jpeg' });
 
       // Create form data with all required fields
       const formData = new FormData();
       Object.entries(fields).forEach(([key, value]) => {
         formData.append(key, value as string);
       });
-      formData.append('file', blob);
+      formData.append('file', blob, 'image.jpg');
 
       // Upload to S3
       const uploadResponse = await fetch(url, {
@@ -165,21 +169,9 @@ export class LeonardoAiService {
     }
   }
 
-  private async verifyImageAccessibility(url: string): Promise<boolean> {
-    try {
-      const response = await fetch(url, { method: 'HEAD' });
-      return response.ok;
-    } catch (error) {
-      console.error('Error verifying image accessibility:', error);
-      return false;
-    }
-  }
-
   async getGeneratedImage(generationId: string): Promise<string> {
-    const maxAttempts = 45; // Increased from 30 to 45 attempts
+    const maxAttempts = 12;
     const pollInterval = 2000;
-    const urlVerificationRetries = 3;
-    const urlVerificationInterval = 2000;
     let attempts = 0;
 
     while (attempts < maxAttempts) {
@@ -205,28 +197,16 @@ export class LeonardoAiService {
         }
 
         if (generation.status === 'COMPLETE' && generation.generated_images?.length) {
-          const imageUrl = generation.generated_images[0].url;
-          
-          // Verify image URL accessibility with retries
-          for (let urlAttempt = 0; urlAttempt < urlVerificationRetries; urlAttempt++) {
-            if (await this.verifyImageAccessibility(imageUrl)) {
-              return imageUrl;
-            }
-            
-            console.log(`Image URL not yet accessible, attempt ${urlAttempt + 1}/${urlVerificationRetries}`);
-            if (urlAttempt < urlVerificationRetries - 1) {
-              await sleep(urlVerificationInterval);
-            }
-          }
-          
-          throw new ApiError('Generated image URL is not accessible', 503);
+          return generation.generated_images[0].url;
         }
 
         if (generation.status === 'FAILED') {
           throw new ApiError('Image generation failed', 500);
         }
 
-        await sleep(pollInterval);
+        // Exponential backoff for polling
+        const backoffDelay = Math.min(pollInterval * Math.pow(1.5, attempts), 5000);
+        await sleep(backoffDelay);
         attempts++;
       } catch (error) {
         console.error('Error checking generation status:', error);

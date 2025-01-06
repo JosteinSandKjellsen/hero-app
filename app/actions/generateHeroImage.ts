@@ -4,7 +4,7 @@ import { LeonardoAiService } from '../_lib/services/leonardoAi';
 import { ApiError } from '../_lib/errors';
 import type { HeroColor } from '../_types/api';
 
-const MAX_RETRIES = 3;
+const MAX_RETRIES = 2; // Reduced retries to fit within function timeout
 
 export async function generateHeroImage(
   personality: string,
@@ -77,7 +77,7 @@ export async function generateHeroImage(
         lastError = error as Error;
         
         if (attempt < MAX_RETRIES) {
-          const retryDelay = 2000 * attempt; // Exponential backoff
+          const retryDelay = Math.min(1500 * attempt, 3000); // Capped exponential backoff
           console.log(`Waiting ${retryDelay}ms before retry...`);
           await new Promise(resolve => setTimeout(resolve, retryDelay));
         }
@@ -99,15 +99,11 @@ export async function generateHeroImage(
     console.error('Error in hero image generation process:', error);
     throw error;
   } finally {
-    // Always clean up the initial image if it was uploaded
+    // Clean up the initial image if it was uploaded
     if (uploadSuccessful && initImageId) {
-      try {
-        // Add a small delay to ensure the image was used
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        await leonardoService.deleteImage(initImageId, 'initial');
-      } catch (deleteError) {
-        console.error('Failed to delete initial image:', deleteError);
-      }
+      // Fire and forget cleanup - don't await or delay
+      leonardoService.deleteImage(initImageId, 'initial')
+        .catch(deleteError => console.error('Failed to delete initial image:', deleteError));
     }
   }
 }
