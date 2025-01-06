@@ -165,9 +165,21 @@ export class LeonardoAiService {
     }
   }
 
+  private async verifyImageAccessibility(url: string): Promise<boolean> {
+    try {
+      const response = await fetch(url, { method: 'HEAD' });
+      return response.ok;
+    } catch (error) {
+      console.error('Error verifying image accessibility:', error);
+      return false;
+    }
+  }
+
   async getGeneratedImage(generationId: string): Promise<string> {
-    const maxAttempts = 30;
+    const maxAttempts = 45; // Increased from 30 to 45 attempts
     const pollInterval = 2000;
+    const urlVerificationRetries = 3;
+    const urlVerificationInterval = 2000;
     let attempts = 0;
 
     while (attempts < maxAttempts) {
@@ -193,7 +205,21 @@ export class LeonardoAiService {
         }
 
         if (generation.status === 'COMPLETE' && generation.generated_images?.length) {
-          return generation.generated_images[0].url;
+          const imageUrl = generation.generated_images[0].url;
+          
+          // Verify image URL accessibility with retries
+          for (let urlAttempt = 0; urlAttempt < urlVerificationRetries; urlAttempt++) {
+            if (await this.verifyImageAccessibility(imageUrl)) {
+              return imageUrl;
+            }
+            
+            console.log(`Image URL not yet accessible, attempt ${urlAttempt + 1}/${urlVerificationRetries}`);
+            if (urlAttempt < urlVerificationRetries - 1) {
+              await sleep(urlVerificationInterval);
+            }
+          }
+          
+          throw new ApiError('Generated image URL is not accessible', 503);
         }
 
         if (generation.status === 'FAILED') {

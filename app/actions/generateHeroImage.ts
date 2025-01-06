@@ -42,34 +42,59 @@ export async function generateHeroImage(
     const negativePrompt =
       'blurry, low quality, distorted, bad anatomy, text, watermark, signature, deformed, ugly, duplicate, morbid, mutilated, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, extra limbs, extra legs, extra arms, disfigured, bad anatomy, bad proportions, gross proportions, malformed limbs, missing arms, missing legs, extra digit, fewer digits, mask, superman logo, batman logo, spiderman logo, sexual content, bare skin, large breasts';
 
-    // Attempt generation with retries
+    // Attempt generation with retries and detailed error tracking
     let lastError: Error | null = null;
+    let lastGenerationId: string | null = null;
+
     for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
       try {
-        const generationId = await leonardoService.generateImage({
-        prompt,
-        negativePrompt,
-        width: 512,
-        height: 768,
-        initImageId,
-      });
+        console.log(`Starting generation attempt ${attempt}/${MAX_RETRIES}`);
+        
+        // Generate the image
+        lastGenerationId = await leonardoService.generateImage({
+          prompt,
+          negativePrompt,
+          width: 512,
+          height: 768,
+          initImageId,
+        });
+        
+        console.log(`Generation ID received: ${lastGenerationId}`);
 
-        // Wait for the generated image to be available
-        const imageUrl = await leonardoService.getGeneratedImage(generationId);
+        // Wait for the generated image to be available and accessible
+        const imageUrl = await leonardoService.getGeneratedImage(lastGenerationId);
+        console.log(`Successfully generated and verified image URL: ${imageUrl}`);
         return imageUrl;
       } catch (error) {
-        console.error(`Generation attempt ${attempt} failed:`, error);
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        console.error(`Generation attempt ${attempt} failed:`, {
+          error: errorMessage,
+          generationId: lastGenerationId,
+          attempt,
+          maxRetries: MAX_RETRIES
+        });
+        
         lastError = error as Error;
         
         if (attempt < MAX_RETRIES) {
-          // Wait before retrying
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          const retryDelay = 2000 * attempt; // Exponential backoff
+          console.log(`Waiting ${retryDelay}ms before retry...`);
+          await new Promise(resolve => setTimeout(resolve, retryDelay));
         }
       }
     }
 
     // If we get here, all attempts failed
-    throw lastError || new ApiError('Failed to generate hero image after all retries', 500);
+    const finalError = new ApiError(
+      `Failed to generate hero image after ${MAX_RETRIES} retries. Last error: ${lastError?.message || 'Unknown error'}`,
+      500
+    );
+    console.error('All generation attempts failed:', {
+      error: finalError,
+      lastGenerationId,
+      totalAttempts: MAX_RETRIES
+    });
+    throw finalError;
   } catch (error) {
     console.error('Error in hero image generation process:', error);
     throw error;
