@@ -1,5 +1,3 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
 {
 	"name": "Next.js Development",
 	"image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
@@ -18,7 +16,11 @@
 				"esbenp.prettier-vscode",
 				"bradlc.vscode-tailwindcss",
 				"dsznajder.es7-react-js-snippets",
-				"formulahendry.auto-rename-tag"
+				"formulahendry.auto-rename-tag",
+				"GitHub.vscode-pull-request-github",
+				"GitHub.copilot",
+				"eamodio.gitlens",
+				"ms-vscode.vscode-typescript-next"
 			],
 			"settings": {
 				"editor.formatOnSave": true,
@@ -26,14 +28,20 @@
 				"editor.codeActionsOnSave": {
 					"source.fixAll.eslint": true
 				},
-				"typescript.tsdk": "node_modules/typescript/lib"
+				"typescript.tsdk": "node_modules/typescript/lib",
+				"typescript.enablePromptUseWorkspaceTsdk": true,
+				"git.enableSmartCommit": true,
+				"git.confirmSync": false,
+				"github.gitAuthentication": true
 			}
 		}
 	},
 
 	// Additional container features
 	"features": {
-		"ghcr.io/devcontainers/features/git:1": {}
+		"ghcr.io/devcontainers/features/git:1": {},
+		"ghcr.io/devcontainers/features/github-cli:1": {},
+		"ghcr.io/devcontainers-contrib/features/npm-package-manager:1": {}
 	},
 
 	// Mount node_modules as a volume for better performance
@@ -44,5 +52,16 @@
 	// Environment variables
 	"remoteEnv": {
 		"NODE_ENV": "development"
-	}
+	},
+
+	// Set memory requirements
+	"hostRequirements": {
+		"memory": "8gb"
+	},
+
+	// Use non-root user
+	"remoteUser": "node",
+
+	// Wait for container to be ready
+	"waitFor": "postCreateCommand"
 }
