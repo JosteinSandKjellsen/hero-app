@@ -213,7 +213,7 @@
       "browserInstructions": "Browser-specific instructions will be shown here"
     },
     "errors": {
-      "streamStart": "Could not start video stream. Please try again.",
+      "streamStart": "Could not start camera stream. Please try again.",
       "access": "Could not access the camera. Please check that your browser has access to your camera.",
       "capture": "An error occurred while taking the photo. Please try again."
     }
