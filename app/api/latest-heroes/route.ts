@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { JsonValue } from '@prisma/client/runtime/library';
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/app/_lib/prisma';
 import { z } from 'zod';
 
 // Input validation schema

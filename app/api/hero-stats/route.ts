@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
-import { prisma } from '@/lib/prisma'
+import { prisma } from '@/app/_lib/prisma'
 
 // Input validation schema
 const ColorSchema = z.object({
