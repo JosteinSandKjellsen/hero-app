@@ -247,6 +247,9 @@
       "blue": "Blå"
     }
   },
+  "latest": {
+    "title": "Siste Helter"
+  },
   "matchingTips": {
     "intro": "Tips: Snakk med en",
     "connector": "venn: Din",

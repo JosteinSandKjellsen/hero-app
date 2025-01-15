@@ -11,9 +11,12 @@ export async function GET(
   try {
     const leonardoService = new LeonardoAiService();
     
+    // The ID should already be the generation ID
+    const generationId = params.id;
+    
     // Get the image URL using the service
     const response = await fetch(
-      `${API_CONFIG.leonardo.baseUrl}/generations/${params.id}`,
+      `${API_CONFIG.leonardo.baseUrl}/generations/${generationId}`,
       { headers: leonardoService['headers'] }
     );
 

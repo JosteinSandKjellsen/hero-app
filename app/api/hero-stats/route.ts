@@ -1,21 +1,6 @@
-import { PrismaClient } from '@prisma/client'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
-
-// Define type for global prisma instance
-const globalForPrisma = global as unknown as { prisma: PrismaClient | undefined }
-
-// Prisma client initialization optimized for serverless
-let prisma: PrismaClient
-
-if (process.env.NODE_ENV === 'production') {
-  prisma = new PrismaClient()
-} else {
-  if (!globalForPrisma.prisma) {
-    globalForPrisma.prisma = new PrismaClient()
-  }
-  prisma = globalForPrisma.prisma
-}
+import { prisma } from '@/lib/prisma'
 
 // Input validation schema
 const ColorSchema = z.object({

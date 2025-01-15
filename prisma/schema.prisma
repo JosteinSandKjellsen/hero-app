@@ -14,3 +14,17 @@ model HeroStats {
 
   @@index([color])
 }
+
+model LatestHero {
+  id             Int      @id @default(autoincrement())
+  name           String
+  userName       String?
+  personalityType String
+  imageId        String   @unique
+  color          String
+  gender         String
+  colorScores    Json     @default("{}")
+  createdAt      DateTime @default(now())
+
+  @@index([createdAt])
+}

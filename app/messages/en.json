@@ -247,6 +247,9 @@
       "blue": "Blue"
     }
   },
+  "latest": {
+    "title": "Latest Heroes"
+  },
   "matchingTips": {
     "intro": "Tip: Talk to a",
     "connector": "friend: Your",
