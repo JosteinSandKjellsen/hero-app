@@ -7,8 +7,8 @@
   "registration": {
     "title": "Find your superhero identity",
     "name": {
-      "label": "Name",
-      "placeholder": "Enter your name",
+      "label": "First name",
+      "placeholder": "Enter your first name",
       "required": "Name is required"
     },
     "gender": {
@@ -230,6 +230,22 @@
     "heroImageGenerationError": "Error generating hero image",
     "invalidPhotoFormat": "Invalid photo format",
     "missingUserData": "User data is missing"
+  },
+  "stats": {
+    "title": "Hero Stats",
+    "total": {
+      "title": "Total Heroes Generated Today",
+      "loading": "Loading stats..."
+    },
+    "distribution": {
+      "title": "Distribution by Type"
+    },
+    "colors": {
+      "red": "Red",
+      "yellow": "Yellow",
+      "green": "Green",
+      "blue": "Blue"
+    }
   },
   "matchingTips": {
     "intro": "Tip: Talk to a",

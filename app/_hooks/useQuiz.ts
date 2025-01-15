@@ -181,6 +181,23 @@ export function useQuiz(): UseQuizReturn {
         setPhotoUrl(imageUrl);
         setHeroName(nameData.name);
         setGenerationStep('complete');
+        
+        // Track hero generation statistics
+        try {
+          await fetch(`${window.location.origin}/api/hero-stats`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              color: dominantPersonality.color
+            }),
+          });
+        } catch (statsError) {
+          // Log but don't fail if stats tracking fails
+          console.error('Failed to track hero statistics:', statsError);
+        }
+        
         setShowResults(true);
       } catch (error) {
         console.error('Error generating hero image:', error);

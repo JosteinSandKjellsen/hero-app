@@ -8,7 +8,7 @@
     "title": "Find your superhero identity",
     "name": {
       "label": "Name",
-      "placeholder": "Enter your name",
+      "placeholder": "Enter your first name",
       "required": "Name is required"
     },
     "gender": {

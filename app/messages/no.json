@@ -7,8 +7,8 @@
   "registration": {
     "title": "Finn din superhelt-identitet",
     "name": {
-      "label": "Navn",
-      "placeholder": "Skriv inn ditt navn",
+      "label": "Fornavn",
+      "placeholder": "Skriv inn ditt fornavn",
       "required": "Navn er påkrevd"
     },
     "gender": {
@@ -50,7 +50,7 @@
     },
     "questions": {
       "1": {
-        "text": "Hvordan foretrekker du å starte en ny uke?",
+        "text": "Hvordan pleier du å starte en ny uke?",
         "options": {
           "red": "Hoppe rett inn i nye prosjekter uten en tydelig plan, klar for hva enn som dukker opp.",
           "yellow": "Få med kollegene på en felles kick-off, fylle rommet med latter og entusiasme.",
@@ -230,6 +230,22 @@
     "heroImageGenerationError": "Feil ved generering av superhelt-bilde",
     "invalidPhotoFormat": "Ugyldig bildeformat",
     "missingUserData": "Brukerdata mangler"
+  },
+  "stats": {
+    "title": "Helt-statistikk",
+    "total": {
+      "title": "Totalt Antall Helter Generert I Dag",
+      "loading": "Laster statistikk..."
+    },
+    "distribution": {
+      "title": "Fordeling etter Type"
+    },
+    "colors": {
+      "red": "Rød",
+      "yellow": "Gul",
+      "green": "Grønn",
+      "blue": "Blå"
+    }
   },
   "matchingTips": {
     "intro": "Tips: Snakk med en",

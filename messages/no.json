@@ -8,7 +8,7 @@
     "title": "Finn din superhelt-identitet",
     "name": {
       "label": "Navn",
-      "placeholder": "Skriv inn ditt navn",
+      "placeholder": "Skriv inn ditt fornavn",
       "required": "Navn er påkrevd"
     },
     "gender": {

@@ -24,6 +24,13 @@ export function Background({ variant }: BackgroundProps): JSX.Element | null {
           <div className="absolute inset-0 bg-gradient-to-br from-purple-100/50 via-transparent to-blue-100/50" />
         </div>
       );
+    case 'stats':
+      return (
+        <div className="fixed inset-0 -z-10">
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-700 via-indigo-800 to-purple-900" />
+          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent" />
+        </div>
+      );
     default:
       return null;
   }

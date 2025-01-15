@@ -53,23 +53,25 @@ export function SuperheroCard({ photoUrl, personality, userData, results = [] }:
       }}
     >
       <div 
-        className="h-20 flex items-center gap-3 px-4 border-b-2 border-opacity-20"
+        className="h-20 flex items-center px-4 border-b-2 border-opacity-20"
         style={{ backgroundColor: 'white' }}
       >
-        <div 
-          className="w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center personality-icon"
-          data-color-bg="true"
-          style={{ backgroundColor: getColorValue(personality.color) }}
-        >
-          {getPersonalityIcon(personality.color)}
-        </div>
-        <div className="flex-1 flex flex-col justify-center -mt-0.5 py-2">
-          <h3 className={`text-2xl font-bangers tracking-wide ${personality.textClass} leading-none mb-1`}>
-            {personality.heroName}
-          </h3>
-          <p className="text-xs text-gray-600 uppercase tracking-wider font-medium leading-none">
-            {personality.name}
-          </p>
+        <div className="flex items-center gap-3 flex-1">
+          <div 
+            className="w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center personality-icon"
+            data-color-bg="true"
+            style={{ backgroundColor: getColorValue(personality.color) }}
+          >
+            {getPersonalityIcon(personality.color)}
+          </div>
+          <div className="flex-1 flex flex-col justify-center -mt-0.5 py-2">
+            <h3 className={`text-2xl font-bangers tracking-wide ${personality.textClass} leading-none mb-1`}>
+              {personality.heroName}
+            </h3>
+            <p className="text-xs text-gray-600 uppercase tracking-wider font-medium leading-none">
+              {personality.name}
+            </p>
+          </div>
         </div>
       </div>
 
@@ -81,15 +83,29 @@ export function SuperheroCard({ photoUrl, personality, userData, results = [] }:
           fill
           sizes="(max-width: 600px) 100vw, 600px"
           crossOrigin="anonymous"
+          priority
         />
+        <div className="absolute bottom-3 right-3 bg-white/30 backdrop-blur-sm py-1.5 rounded-full flex items-center justify-center w-[6.25rem]" style={{ backdropFilter: 'blur(4px)' }}>
+          <Image
+            src="/images/logos/bouvet.svg"
+            alt="Bouvet Logo"
+            width={64}
+            height={32}
+            className="w-16 h-8"
+            style={{ filter: 'brightness(0)' }}
+            priority
+          />
+        </div>
       </div>
 
       <div 
         className="p-3 border-t-2 border-opacity-20 flex justify-between items-center"
         style={{ backgroundColor: 'white' }}
       >
-        <div className="text-sm font-bangers tracking-wide text-gray-700 px-4">
-          {userData.name.toUpperCase()}
+        <div className="flex items-center gap-4">
+          <div className="text-sm font-bangers tracking-wide text-gray-700">
+            {userData.name.toUpperCase()}
+          </div>
         </div>
         <div className="flex gap-2">
           {(['red', 'yellow', 'green', 'blue'] as const).map(color => {
