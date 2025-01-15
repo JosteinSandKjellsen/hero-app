@@ -26,7 +26,7 @@ export const LatestHeroCard = forwardRef<HTMLDivElement, LatestHeroCardProps>(
   // Animation variants
   const variants = {
     enter: {
-      x: -100,
+      x: 100,
       opacity: 0,
     },
     center: {
@@ -37,7 +37,7 @@ export const LatestHeroCard = forwardRef<HTMLDivElement, LatestHeroCardProps>(
       },
     },
     exit: {
-      x: 100,
+      x: -100,
       opacity: 0,
       transition: {
         duration: 0.3,
