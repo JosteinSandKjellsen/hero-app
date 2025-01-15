@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { getPersonalityIcon } from '../../_utils/personalityIcons';
+import { getPersonalityIcon } from '@/app/_lib/utils/personalityIcons';
 import { HeroColor } from '@/app/_lib/types/api';
 
 interface LatestHeroPersonalityProps {

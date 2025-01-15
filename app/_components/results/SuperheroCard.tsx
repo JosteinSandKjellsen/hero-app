@@ -4,8 +4,8 @@ import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { PersonalityType } from '../../_lib/types/personality';
 import { UserData } from '../../_lib/types';
-import { getPersonalityIcon } from '../../_utils/personalityIcons';
-import { getHeroCardIcon } from '../../_utils/heroCardIcons';
+import { getPersonalityIcon } from '@/app/_lib/utils/personalityIcons';
+import { getHeroCardIcon } from '@/app/_lib/utils/heroCardIcons';
 
 interface SuperheroCardProps {
   photoUrl: string;

@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { PersonalityType } from '../../_lib/types/personality';
-import { getPersonalityIcon } from '../../_utils/personalityIcons';
+import { getPersonalityIcon } from '@/app/_lib/utils/personalityIcons';
 
 interface PersonalityCardProps {
   personality: PersonalityType;

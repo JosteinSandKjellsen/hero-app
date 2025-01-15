@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
-import { getHeroCardIcon } from '@/app/_utils/heroCardIcons';
+import { getHeroCardIcon } from '@/app/_lib/utils/heroCardIcons';
 import { heroColors } from '@/app/_lib/constants/colors';
 ChartJS.register(ArcElement, Tooltip, Legend);
 

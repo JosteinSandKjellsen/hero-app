@@ -4,8 +4,8 @@ import { forwardRef } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { HeroImage } from '../ui/HeroImage';
-import { getPersonalityIcon } from '@/app/_utils/personalityIcons';
-import { getHeroCardIcon } from '@/app/_utils/heroCardIcons';
+import { getPersonalityIcon } from '@/app/_lib/utils/personalityIcons';
+import { getHeroCardIcon } from '@/app/_lib/utils/heroCardIcons';
 import { HeroColor } from '@/app/_lib/types/api';
 
 interface LatestHeroCardProps {
