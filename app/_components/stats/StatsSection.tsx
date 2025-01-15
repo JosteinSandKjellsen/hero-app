@@ -30,7 +30,14 @@ export function StatsSection(): JSX.Element {
       }
     };
 
+    // Fetch immediately on mount
     fetchStats();
+
+    // Set up polling interval (every minute)
+    const intervalId = setInterval(fetchStats, 60000);
+
+    // Cleanup interval on unmount
+    return () => clearInterval(intervalId);
   }, []);
 
   if (!stats) {
