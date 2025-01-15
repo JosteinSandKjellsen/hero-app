@@ -2,7 +2,7 @@
 
 import { LeonardoAiService } from '../_lib/services/leonardoAi';
 import { ApiError } from '../_lib/errors';
-import type { HeroColor } from '../_types/api';
+import type { HeroColor } from '../_lib/types/api';
 
 const MAX_RETRIES = 2; // Reduced retries to fit within function timeout
 

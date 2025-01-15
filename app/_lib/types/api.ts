@@ -22,3 +22,8 @@ export interface HeroImageResponse {
   imageUrl: string;
   error?: string;
 }
+
+export interface PersonalityResult {
+  personality: string;
+  percentage: number;
+}
