@@ -1,4 +1,105 @@
 {
+  "Privacy": {
+    "title": "Privacy Policy",
+    "button": "Privacy Policy",
+    "introduction": {
+      "title": "1. Introduction",
+      "content": "This privacy policy explains how the Hero App collects, uses, and protects your personal information. We are committed to ensuring your privacy and protecting any data you share with us."
+    },
+    "dataCollection": {
+      "title": "2. Information We Collect",
+      "photos": {
+        "title": "2.1 Photos and Camera Usage",
+        "content": "When you use our app to create your superhero image:",
+        "points": [
+          "We temporarily process your photo to generate your superhero image",
+          "Original photos are immediately deleted after processing",
+          "Only the AI-generated superhero image is stored",
+          "Camera access is only used while you're actively taking a photo"
+        ]
+      },
+      "quiz": {
+        "title": "2.2 Quiz Data",
+        "content": "When you take our personality quiz:",
+        "points": [
+          "Your answers are processed to determine your superhero personality match",
+          "Individual question responses are not stored",
+          "Only the final personality type result is saved with your hero profile"
+        ]
+      },
+      "generated": {
+        "title": "2.3 Generated Content",
+        "content": "We store:",
+        "points": [
+          "Your AI-generated superhero image",
+          "Your superhero name",
+          "Your personality type result",
+          "Creation timestamp"
+        ]
+      }
+    },
+    "thirdParty": {
+      "title": "3. Third-Party Services",
+      "leonardo": {
+        "title": "3.1 Leonardo AI",
+        "content": "We use Leonardo AI to generate superhero images. When using this service:",
+        "points": [
+          "Your processed photo is temporarily shared with Leonardo AI",
+          "Leonardo AI's usage is governed by their privacy policy",
+          "The generated image is stored in Leonardo AI's AWS S3 database, while we only store the image ID"
+        ]
+      },
+      "gemini": {
+        "title": "3.2 Google Gemini",
+        "content": "We use Google Gemini to generate superhero names. When using this service:",
+        "points": [
+          "No personal information or user input is used in the name generation",
+          "The service only receives predefined prompts to generate hero names",
+          "Only the final generated name is stored in our database"
+        ]
+      }
+    },
+    "storage": {
+      "title": "4. Data Storage and Retention",
+      "points": [
+        "We maintain a rolling list of the 50 most recently generated heroes (name, personality type, and creation time)",
+        "All hero information (except generated images) older than 30 days is automatically deleted",
+        "Generated superhero images are stored indefinitely",
+        "Original photos are deleted immediately after processing",
+        "Quiz responses are not stored, only the final result"
+      ]
+    },
+    "rights": {
+      "title": "5. Your Rights",
+      "content": "You have the right to:",
+      "points": [
+        "Request deletion of your generated content",
+        "Access your stored data",
+        "Object to data processing",
+        "Withdraw consent at any time"
+      ]
+    },
+    "notStored": {
+      "title": "6. Data We Don't Store",
+      "content": "We do not collect or store:",
+      "points": [
+        "Original photos",
+        "Individual quiz responses",
+        "Gender information",
+        "Personal identification information",
+        "Payment information",
+        "Location data",
+        "Device information",
+        "Cookies or tracking data",
+        "Usage analytics or tracking data"
+      ]
+    },
+    "contact": {
+      "title": "7. Contact Information",
+      "content": "For any privacy-related questions or requests, please contact us at:",
+      "email": "Email: [Contact Email]"
+    }
+  },
   "header": {
     "title": "Which Superhero Are You?",
     "subtitle": "Discover your inner superhero through this personality test!",

@@ -37,7 +37,7 @@ export function GeneratedHeroesTable(): JSX.Element {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [t]);
 
   // Initial fetch
   useEffect(() => {

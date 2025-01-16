@@ -1,4 +1,105 @@
 {
+  "Privacy": {
+    "title": "Personvernerklæring",
+    "button": "Personvern",
+    "introduction": {
+      "title": "1. Introduksjon",
+      "content": "Denne personvernerklæringen forklarer hvordan Hero App samler inn, bruker og beskytter din personlige informasjon. Vi er forpliktet til å sikre ditt personvern og beskytte all data du deler med oss."
+    },
+    "dataCollection": {
+      "title": "2. Informasjon Vi Samler Inn",
+      "photos": {
+        "title": "2.1 Bilder og Kamerabruk",
+        "content": "Når du bruker appen vår til å lage ditt superheltbilde:",
+        "points": [
+          "Vi behandler midlertidig ditt foto for å generere ditt superheltbilde",
+          "Originalbilder slettes umiddelbart etter behandling",
+          "Kun det AI-genererte superheltbildet lagres",
+          "Kameratilgang brukes kun mens du aktivt tar et bilde"
+        ]
+      },
+      "quiz": {
+        "title": "2.2 Quiz-data",
+        "content": "Når du tar vår personlighetsquiz:",
+        "points": [
+          "Dine svar behandles for å bestemme din superhelt-personlighetsmatch",
+          "Individuelle spørsmålsvar lagres ikke",
+          "Kun det endelige personlighetsresultatet lagres med din helteprofil"
+        ]
+      },
+      "generated": {
+        "title": "2.3 Generert Innhold",
+        "content": "Vi lagrer:",
+        "points": [
+          "Ditt AI-genererte superheltbilde",
+          "Ditt superheltnavn",
+          "Ditt personlighetstype-resultat",
+          "Tidspunkt for opprettelse"
+        ]
+      }
+    },
+    "thirdParty": {
+      "title": "3. Tredjepartstjenester",
+      "leonardo": {
+        "title": "3.1 Leonardo AI",
+        "content": "Vi bruker Leonardo AI for å generere superheltbilder. Når du bruker denne tjenesten:",
+        "points": [
+          "Ditt behandlede foto deles midlertidig med Leonardo AI",
+          "Leonardo AIs bruk er regulert av deres personvernerklæring",
+          "Det genererte bildet lagres i Leonardo AIs AWS S3-database, mens vi kun lagrer bilde-ID-en"
+        ]
+      },
+      "gemini": {
+        "title": "3.2 Google Gemini",
+        "content": "Vi bruker Google Gemini for å generere superheltnavn. Når du bruker denne tjenesten:",
+        "points": [
+          "Ingen personlig informasjon eller brukerinndata brukes i navnegeneringen",
+          "Tjenesten mottar kun forhåndsdefinerte prompts for å generere heltenavn",
+          "Kun det endelige genererte navnet lagres i vår database"
+        ]
+      }
+    },
+    "storage": {
+      "title": "4. Datalagring og Oppbevaring",
+      "points": [
+        "Vi oppbevarer en rullerende liste over de 50 siste genererte heltene (navn, personlighetstype og opprettelsestidspunkt)",
+        "All helteinformasjon (unntatt genererte bilder) eldre enn 30 dager slettes automatisk",
+        "Genererte superheltbilder lagres på ubestemt tid",
+        "Originalbilder slettes umiddelbart etter behandling",
+        "Quiz-svar lagres ikke, kun det endelige resultatet"
+      ]
+    },
+    "rights": {
+      "title": "5. Dine Rettigheter",
+      "content": "Du har rett til å:",
+      "points": [
+        "Be om sletting av ditt genererte innhold",
+        "Få tilgang til dine lagrede data",
+        "Protestere mot databehandling",
+        "Trekke tilbake samtykke når som helst"
+      ]
+    },
+    "notStored": {
+      "title": "6. Data Vi Ikke Lagrer",
+      "content": "Vi samler ikke inn eller lagrer:",
+      "points": [
+        "Originalbilder",
+        "Individuelle quiz-svar",
+        "Kjønnsinformasjon",
+        "Personlig identifikasjonsinformasjon",
+        "Betalingsinformasjon",
+        "Stedsinformasjon",
+        "Enhetsinformasjon",
+        "Informasjonskapsler eller sporingsdata",
+        "Bruksanalyse eller sporingsdata"
+      ]
+    },
+    "contact": {
+      "title": "7. Kontaktinformasjon",
+      "content": "For spørsmål eller forespørsler om personvern, vennligst kontakt oss på:",
+      "email": "E-post: [Kontakt E-post]"
+    }
+  },
   "header": {
     "title": "Hvilken Superhelt Er Du?",
     "subtitle": "Oppdag din indre superhelt gjennom denne personlighetstesten!",
