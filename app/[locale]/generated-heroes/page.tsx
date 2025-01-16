@@ -1,25 +1,23 @@
+'use client';
+
+import { useTranslations } from 'next-intl';
 import { GeneratedHeroesTable } from '@/app/_components/generated-heroes/GeneratedHeroesTable';
-import { Background } from '@/app/_components/layout/Background';
+import { QuizLayout } from '@/app/_components/layout/QuizLayout';
 
 export default function GeneratedHeroesPage(): JSX.Element {
+  const t = useTranslations('generatedHeroes');
+
   return (
-    <>
-      <Background variant="stats" />
-      <main className="min-h-screen py-8 md:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="sm:flex sm:items-center">
-            <div className="sm:flex-auto">
-              <h1 className="text-2xl font-semibold text-white">Generated Heroes</h1>
-              <p className="mt-2 text-sm text-gray-300">
-                A list of all generated heroes in the system, showing the last 50 entries. Entries older than a month are automatically removed.
-              </p>
-            </div>
-          </div>
-          <div className="mt-8">
-            <GeneratedHeroesTable />
-          </div>
+    <QuizLayout variant="stats">
+      <div className="sm:flex sm:items-center">
+        <div className="sm:flex-auto">
+          <h1 className="text-2xl font-semibold text-white">{t('title')}</h1>
+          <p className="mt-2 text-sm text-gray-300">{t('description')}</p>
         </div>
-      </main>
-    </>
+      </div>
+      <div className="mt-8">
+        <GeneratedHeroesTable />
+      </div>
+    </QuizLayout>
   );
 }

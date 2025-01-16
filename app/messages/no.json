@@ -250,6 +250,23 @@
   "latest": {
     "title": "Siste Helter"
   },
+  "generatedHeroes": {
+    "title": "Genererte Helter",
+    "description": "En liste over alle genererte helter i systemet, viser de siste 50 oppføringene. Oppføringer eldre enn en måned fjernes automatisk.",
+    "table": {
+      "timeCreated": "Opprettet",
+      "userName": "Brukernavn",
+      "heroName": "Heltenavn",
+      "color": "Farge",
+      "actions": "Handlinger",
+      "noHeroes": "Ingen helter funnet",
+      "emptyUserName": "-",
+      "printHero": "Skriv ut helt",
+      "deleteHero": "Slett helt",
+      "deleteError": "Kunne ikke slette helt",
+      "fetchError": "Kunne ikke laste inn helter"
+    }
+  },
   "matchingTips": {
     "intro": "Tips: Snakk med en",
     "connector": "venn: Din",

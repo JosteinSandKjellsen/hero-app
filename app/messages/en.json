@@ -250,6 +250,23 @@
   "latest": {
     "title": "Latest Heroes"
   },
+  "generatedHeroes": {
+    "title": "Generated Heroes",
+    "description": "A list of all generated heroes in the system, showing the last 50 entries. Entries older than a month are automatically removed.",
+    "table": {
+      "timeCreated": "Time Created",
+      "userName": "User Name",
+      "heroName": "Hero Name",
+      "color": "Color",
+      "actions": "Actions",
+      "noHeroes": "No heroes found",
+      "emptyUserName": "-",
+      "printHero": "Print hero",
+      "deleteHero": "Delete hero",
+      "deleteError": "Failed to delete hero",
+      "fetchError": "Failed to load heroes"
+    }
+  },
   "matchingTips": {
     "intro": "Tip: Talk to a",
     "connector": "friend: Your",

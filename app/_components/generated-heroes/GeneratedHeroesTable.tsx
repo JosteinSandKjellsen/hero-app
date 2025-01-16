@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { GeneratedHeroRow } from './GeneratedHeroRow';
 
 interface GeneratedHero {
@@ -19,6 +20,7 @@ export function GeneratedHeroesTable(): JSX.Element {
   const [heroes, setHeroes] = useState<GeneratedHero[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const t = useTranslations('generatedHeroes.table');
 
   const fetchHeroes = useCallback(async () => {
     try {
@@ -30,7 +32,7 @@ export function GeneratedHeroesTable(): JSX.Element {
       setError(null);
     } catch (error) {
       console.error('Error fetching heroes:', error);
-      setError('Failed to load heroes');
+      setError(t('fetchError'));
     } finally {
       setIsLoading(false);
     }
@@ -76,19 +78,19 @@ export function GeneratedHeroesTable(): JSX.Element {
               <thead className="bg-gray-50">
                 <tr>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Time Created
+                    {t('timeCreated')}
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    User Name
+                    {t('userName')}
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Hero Name
+                    {t('heroName')}
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Color
+                    {t('color')}
                   </th>
                   <th scope="col" className="relative px-6 py-3">
-                    <span className="sr-only">Actions</span>
+                    <span className="sr-only">{t('actions')}</span>
                   </th>
                 </tr>
               </thead>
@@ -103,7 +105,7 @@ export function GeneratedHeroesTable(): JSX.Element {
                 {heroes.length === 0 && (
                   <tr>
                     <td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500">
-                      No heroes found
+                      {t('noHeroes')}
                     </td>
                   </tr>
                 )}
