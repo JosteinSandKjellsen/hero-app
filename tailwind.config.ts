@@ -36,6 +36,12 @@ const config: Config = {
       },
     },
   },
+  safelist: [
+    'bg-red-600',
+    'bg-yellow-600',
+    'bg-green-600',
+    'bg-blue-600',
+  ],
   plugins: [],
 };
 
