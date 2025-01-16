@@ -24,10 +24,11 @@ export function Footer({ variant }: FooterProps = {}): JSX.Element {
           <div className="w-[120px] flex items-center">
             <button
               onClick={() => setIsPrivacyOpen(true)}
-              className="flex items-center gap-2 text-sm text-white/80 hover:text-white transition-colors"
+              className="text-white/80 hover:text-white transition-colors"
+              title={t('button')}
+              aria-label={t('button')}
             >
-              <IoShieldCheckmarkOutline size={20} />
-              <span>{t('button')}</span>
+              <IoShieldCheckmarkOutline size={24} />
             </button>
           </div>
           <div className="flex-1 flex justify-center">
