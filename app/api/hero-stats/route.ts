@@ -36,14 +36,42 @@ export async function POST(request: Request): Promise<Response> {
 
 export async function GET(): Promise<Response> {
   try {
-    // Get total count
-    const total = await prisma.heroStats.count()
+    // Calculate timestamps
+    const now = new Date()
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    const endOfDay = new Date(startOfDay)
+    endOfDay.setDate(startOfDay.getDate() + 1)
+
+    // Delete records older than today
+    await prisma.heroStats.deleteMany({
+      where: {
+        createdAt: {
+          lt: startOfDay
+        }
+      }
+    })
+
+    // Get total count for today
+    const total = await prisma.heroStats.count({
+      where: {
+        createdAt: {
+          gte: startOfDay,
+          lt: endOfDay
+        }
+      }
+    })
     
-    // Get count by color
+    // Get count by color for today
     const colorStats = await prisma.heroStats.groupBy({
       by: ['color'],
       _count: {
         _all: true
+      },
+      where: {
+        createdAt: {
+          gte: startOfDay,
+          lt: endOfDay
+        }
       }
     })
     

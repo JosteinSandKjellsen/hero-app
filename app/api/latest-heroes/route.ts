@@ -117,31 +117,6 @@ export async function POST(request: Request): Promise<NextResponse> {
       }
     });
 
-    // Get all heroes with unique imageIds, keeping only the latest version of each
-    const uniqueHeroes = await prisma.$queryRaw<Array<{ id: number }>>`
-      WITH RankedHeroes AS (
-        SELECT 
-          id,
-          "imageId",
-          ROW_NUMBER() OVER (PARTITION BY "imageId" ORDER BY "createdAt" DESC) as rn
-        FROM "LatestHero"
-      )
-      SELECT id FROM RankedHeroes WHERE rn = 1
-      ORDER BY id DESC;
-    `;
-
-    // If we have more than 3 unique heroes, delete the oldest ones
-    if (uniqueHeroes.length > 3) {
-      const heroesToKeep = uniqueHeroes.slice(0, 3).map((h: { id: number }) => h.id);
-      await prisma.latestHero.deleteMany({
-        where: {
-          id: {
-            notIn: heroesToKeep
-          }
-        }
-      });
-    }
-
     // Ensure all fields are JSON serializable
     const result = {
       ...newHero,

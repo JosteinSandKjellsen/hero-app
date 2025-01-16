@@ -19,17 +19,25 @@ export type GeneratedHeroWithId = {
 // GET /api/generated-heroes
 export async function GET(): Promise<NextResponse> {
   try {
-    // Delete heroes older than a month
-    const oneMonthAgo = new Date();
-    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+    // Get total count of heroes
+    const totalCount = await prisma.latestHero.count();
 
-    await prisma.latestHero.deleteMany({
-      where: {
-        createdAt: {
-          lt: oneMonthAgo
+    // If we have more than 50 heroes, delete the oldest ones
+    if (totalCount > 50) {
+      const heroesToKeep = await prisma.latestHero.findMany({
+        select: { id: true },
+        orderBy: { createdAt: 'desc' },
+        take: 50
+      });
+
+      await prisma.latestHero.deleteMany({
+        where: {
+          id: {
+            notIn: heroesToKeep.map(h => h.id)
+          }
         }
-      }
-    });
+      });
+    }
 
     // Get latest 50 heroes
     const generatedHeroes = await prisma.latestHero.findMany({
