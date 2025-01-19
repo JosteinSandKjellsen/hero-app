@@ -10,7 +10,7 @@ export interface PrintCardData {
   scores: Array<{ color: string; percentage: number }>;
 }
 
-export function getPrintUrl(data: PrintCardData): string {
+export function getPrintUrl(data: PrintCardData, shouldPrint: boolean = true): string {
   // Extract generation ID from Leonardo AI URL
   // URL format: https://cdn.leonardo.ai/users/{userId}/generations/{generationId}/[filename]
   const imageId = data.photoUrl.split('/generations/')[1]?.split('/')[0] || '';
@@ -29,7 +29,7 @@ export function getPrintUrl(data: PrintCardData): string {
     personalityName: data.personalityName,
     color: data.color,
     scores: scores.map(s => `${s.color}:${s.score}`).join(','),
-    print: 'true' // Add print parameter
+    print: shouldPrint ? 'true' : 'false' // Control print parameter
   });
 
   return `/print?${params.toString()}`;

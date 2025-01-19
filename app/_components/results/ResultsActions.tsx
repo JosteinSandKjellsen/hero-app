@@ -82,7 +82,7 @@ export function ResultsActions({ printData, onReset }: ResultsActionsProps): JSX
     setEmailError('');
 
     try {
-      const url = new URL(getPrintUrl(printData), window.location.origin);
+      const url = new URL(getPrintUrl(printData, false), window.location.origin);
       const response = await fetch('/api/send-email', {
         method: 'POST',
         headers: {
