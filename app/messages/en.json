@@ -57,6 +57,16 @@
           "The service only receives predefined prompts to generate hero names",
           "Only the final generated name is stored in our database"
         ]
+      },
+      "zoho": {
+        "title": "3.3 Zoho Mail",
+        "content": "We use Zoho Mail service for sending emails. When using this service:",
+        "points": [
+          "Emails are only sent when you actively choose to send hero information to a specific email address",
+          "The email address you provide is used solely for the purpose of sending the requested hero information",
+          "Email addresses are not stored in our database",
+          "The service is governed by Zoho's privacy policy"
+        ]
       }
     },
     "storage": {
@@ -267,7 +277,15 @@
     "actions": {
       "download": "Download superhero card as PDF",
       "copyLink": "Copy superhero card link",
-      "newHero": "New superhero!"
+      "newHero": "New superhero!",
+      "sendEmail": "Send via email",
+      "emailPlaceholder": "Enter email address",
+      "send": "Send",
+      "emailSuccess": "Email sent successfully!",
+      "emailError": "Failed to send email",
+      "invalidEmail": "Please enter a valid email",
+      "sending": "Sending...",
+      "tooManyRequests": "Too many emails sent. Please try again later."
     }
   },
   "loading": {

@@ -15,11 +15,22 @@ const config: Config = {
         float: 'float 6s ease-in-out infinite',
         'float-subtle': 'float-subtle 6s ease-in-out infinite',
         shimmer: 'shimmer 2s infinite',
+        'fade-in': 'fade-in 0.3s ease-out forwards',
+        shake: 'shake 0.5s ease-in-out',
       },
       keyframes: {
         fadeIn: {
           '0%': { opacity: '0', transform: 'translateY(10px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'fade-in': {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        shake: {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '25%': { transform: 'translateX(-5px)' },
+          '75%': { transform: 'translateX(5px)' },
         },
         float: {
           '0%, 100%': { transform: 'translateY(0)' },

@@ -57,6 +57,16 @@
           "Tjenesten mottar kun forhåndsdefinerte prompts for å generere heltenavn",
           "Kun det endelige genererte navnet lagres i vår database"
         ]
+      },
+      "zoho": {
+        "title": "3.3 Zoho Mail",
+        "content": "Vi bruker Zoho Mail-tjenesten for å sende e-poster. Når du bruker denne tjenesten:",
+        "points": [
+          "E-poster sendes kun når du aktivt velger å sende helteinformasjon til en spesifikk e-postadresse",
+          "E-postadressen du oppgir brukes kun til å sende den forespurte helteinformasjonen",
+          "E-postadresser lagres ikke i vår database",
+          "Tjenesten er regulert av Zohos personvernerklæring"
+        ]
       }
     },
     "storage": {
@@ -267,7 +277,15 @@
     "actions": {
       "download": "Last ned superhelt-kort som PDF",
       "copyLink": "Kopier lenke til superhelt-kort",
-      "newHero": "Ny superhelt!"
+      "newHero": "Ny superhelt!",
+      "sendEmail": "Send via e-post",
+      "emailPlaceholder": "Skriv inn e-postadresse",
+      "send": "Send",
+      "emailSuccess": "E-post sendt!",
+      "emailError": "Kunne ikke sende e-post",
+      "invalidEmail": "Vennligst skriv inn en gyldig e-postadresse",
+      "sending": "Sender...",
+      "tooManyRequests": "For mange e-poster sendt. Vennligst prøv igjen senere."
     }
   },
   "loading": {
