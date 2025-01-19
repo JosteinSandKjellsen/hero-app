@@ -275,8 +275,10 @@
     "selfieAlt": "Your superhero selfie",
     "matchPercentage": "Match percentage",
     "actions": {
+      "manageHero": "Share Your Hero",
       "download": "Download superhero card as PDF",
       "copyLink": "Copy superhero card link",
+      "linkCopied": "Link copied!",
       "newHero": "New superhero!",
       "sendEmail": "Send via email",
       "emailPlaceholder": "Enter email address",

@@ -275,8 +275,10 @@
     "selfieAlt": "Din superhelt-selfie",
     "matchPercentage": "Matchprosent",
     "actions": {
+      "manageHero": "Del Din Helt",
       "download": "Last ned superhelt-kort som PDF",
       "copyLink": "Kopier lenke til superhelt-kort",
+      "linkCopied": "Lenke kopiert!",
       "newHero": "Ny superhelt!",
       "sendEmail": "Send via e-post",
       "emailPlaceholder": "Skriv inn e-postadresse",
