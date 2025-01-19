@@ -10,7 +10,7 @@ export function getEmailTemplate({ heroUrl, name, heroName, personalityName, col
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       <h1 style="color: #2563eb;">Din Superhelt-Match</h1>
-      <p>Hei! Her er din unike superhelt-profil:</p>
+      <p>Hei! Du har nettopp generert en superhelt på <a href="${new URL(heroUrl).origin}" style="color: #2563eb; text-decoration: underline;">${new URL(heroUrl).origin.replace('https://', '')}</a>. Her er din unike superhelt-profil:</p>
       <div style="background-color: #f3f4f6; padding: 16px; border-radius: 8px; margin: 16px 0;">
         <p><strong>Navn:</strong> ${name}</p>
         <p><strong>Superheltnavn:</strong> ${heroName}</p>
