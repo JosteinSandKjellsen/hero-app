@@ -40,6 +40,16 @@
     },
     "thirdParty": {
       "title": "3. Tredjepartstjenester",
+      "leonardo": {
+        "title": "Leonardo AI",
+        "content": "Vi bruker Leonardo AI for å generere superheltbilder. Når du bruker denne tjenesten:",
+        "points": [
+          "Ditt behandlede foto deles midlertidig med Leonardo AI for bildegenerering",
+          "Originalbildet slettes umiddelbart etter behandling",
+          "Leonardo AIs bruk er regulert av deres personvernerklæring",
+          "Det genererte superheltbildet lagres i Leonardo AIs AWS S3-database, mens vi kun lagrer bilde-ID-en"
+        ]
+      },
       "intro": {
         "title": "Oversikt",
         "content": "Vi bruker flere tredjepartstjenester for å levere appens funksjonalitet. Her er hvordan vi sikrer ditt personvern med hver tjeneste:"
