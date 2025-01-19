@@ -47,7 +47,7 @@
       "dataProcessing": {
         "title": "3.1 Bildebehandlingstjenester",
         "leonardo": {
-          "title": "Leonardo AI",
+          "title": "3.1.1 Leonardo AI",
           "content": "Vi bruker Leonardo AI for å generere superheltbilder. Når du bruker denne tjenesten:",
           "points": [
             "Ditt behandlede foto deles midlertidig med Leonardo AI for bildegenerering",

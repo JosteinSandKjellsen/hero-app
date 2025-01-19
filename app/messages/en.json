@@ -47,7 +47,7 @@
       "dataProcessing": {
         "title": "3.1 Image Processing Services",
         "leonardo": {
-          "title": "Leonardo AI",
+          "title": "3.1.1 Leonardo AI",
           "content": "We use Leonardo AI to generate superhero images. When using this service:",
           "points": [
             "Your processed photo is temporarily shared with Leonardo AI for image generation",
