@@ -40,32 +40,57 @@
     },
     "thirdParty": {
       "title": "3. Tredjepartstjenester",
-      "leonardo": {
-        "title": "3.1 Leonardo AI",
-        "content": "Vi bruker Leonardo AI for å generere superheltbilder. Når du bruker denne tjenesten:",
-        "points": [
-          "Ditt behandlede foto deles midlertidig med Leonardo AI",
-          "Leonardo AIs bruk er regulert av deres personvernerklæring",
-          "Det genererte bildet lagres i Leonardo AIs AWS S3-database, mens vi kun lagrer bilde-ID-en"
-        ]
+      "intro": {
+        "title": "Oversikt",
+        "content": "Vi bruker flere tredjepartstjenester for å levere appens funksjonalitet. Her er hvordan vi sikrer ditt personvern med hver tjeneste:"
       },
-      "gemini": {
-        "title": "3.2 Google Gemini",
-        "content": "Vi bruker Google Gemini for å generere superheltnavn. Når du bruker denne tjenesten:",
-        "points": [
-          "Ingen personlig informasjon eller brukerinndata brukes i navnegeneringen",
-          "Tjenesten mottar kun forhåndsdefinerte prompts for å generere heltenavn",
-          "Kun det endelige genererte navnet lagres i vår database"
-        ]
+      "dataProcessing": {
+        "title": "3.1 Bildebehandlingstjenester",
+        "leonardo": {
+          "title": "Leonardo AI",
+          "content": "Vi bruker Leonardo AI for å generere superheltbilder. Når du bruker denne tjenesten:",
+          "points": [
+            "Ditt behandlede foto deles midlertidig med Leonardo AI for bildegenerering",
+            "Originalbildet slettes umiddelbart etter behandling",
+            "Leonardo AIs bruk er regulert av deres personvernerklæring",
+            "Det genererte superheltbildet lagres i Leonardo AIs AWS S3-database, mens vi kun lagrer bilde-ID-en"
+          ]
+        }
       },
-      "zoho": {
-        "title": "3.3 Zoho Mail",
-        "content": "Vi bruker Zoho Mail-tjenesten for å sende e-poster. Når du bruker denne tjenesten:",
+      "noDataProcessing": {
+        "title": "3.2 Personvernssikre Tjenester",
+        "gemini": {
+          "title": "Google Gemini",
+          "content": "Vi bruker Google Gemini for å generere superheltnavn på en personvernssikker måte:",
+          "points": [
+            "Ingen personlig informasjon eller bilder sendes noensinne til Gemini",
+            "Navnegenerering bruker kun forhåndsdefinerte prompts basert på personlighetstype",
+            "Tjenesten mottar null brukerdata eller inndata",
+            "Kun det endelige genererte heltenavnet lagres i vår database"
+          ]
+        }
+      },
+      "optional": {
+        "title": "3.3 Valgfrie Tjenester",
+        "zoho": {
+          "title": "Zoho Mail",
+          "content": "Vi bruker Zoho Mail kun når du velger å dele ditt heltekort via e-post:",
+          "points": [
+            "E-posttjenesten er helt valgfri og brukes kun når du aktivt ber om å dele ditt heltekort",
+            "Din oppgitte e-postadresse brukes kun til å sende den forespurte helteinformasjonen",
+            "E-postadresser lagres ikke i vår database eller brukes til andre formål",
+            "E-posten inneholder kun helteinformasjonen du valgte å dele"
+          ]
+        }
+      },
+      "database": {
+        "title": "3.4 Datalagring",
+        "content": "Vi bruker Prisma med en sikker database for å lagre helteinformasjon:",
         "points": [
-          "E-poster sendes kun når du aktivt velger å sende helteinformasjon til en spesifikk e-postadresse",
-          "E-postadressen du oppgir brukes kun til å sende den forespurte helteinformasjonen",
-          "E-postadresser lagres ikke i vår database",
-          "Tjenesten er regulert av Zohos personvernerklæring"
+          "Lagrer kun generert innhold: heltenavn, personlighetsresultater og bilde-ID-er",
+          "Ingen personlig identifikasjonsinformasjon lagres",
+          "Databasen er sikret og vedlikeholdes regelmessig",
+          "Automatisk sletting av oppføringer eldre enn 30 dager (unntatt genererte bilder)"
         ]
       }
     },

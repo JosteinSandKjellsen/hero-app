@@ -40,32 +40,57 @@
     },
     "thirdParty": {
       "title": "3. Third-Party Services",
-      "leonardo": {
-        "title": "3.1 Leonardo AI",
-        "content": "We use Leonardo AI to generate superhero images. When using this service:",
-        "points": [
-          "Your processed photo is temporarily shared with Leonardo AI",
-          "Leonardo AI's usage is governed by their privacy policy",
-          "The generated image is stored in Leonardo AI's AWS S3 database, while we only store the image ID"
-        ]
+      "intro": {
+        "title": "Overview",
+        "content": "We use several third-party services to provide our app's functionality. Here's how we ensure your privacy with each service:"
       },
-      "gemini": {
-        "title": "3.2 Google Gemini",
-        "content": "We use Google Gemini to generate superhero names. When using this service:",
-        "points": [
-          "No personal information or user input is used in the name generation",
-          "The service only receives predefined prompts to generate hero names",
-          "Only the final generated name is stored in our database"
-        ]
+      "dataProcessing": {
+        "title": "3.1 Image Processing Services",
+        "leonardo": {
+          "title": "Leonardo AI",
+          "content": "We use Leonardo AI to generate superhero images. When using this service:",
+          "points": [
+            "Your processed photo is temporarily shared with Leonardo AI for image generation",
+            "The original photo is deleted immediately after processing",
+            "Leonardo AI's usage is governed by their privacy policy",
+            "The generated superhero image is stored in Leonardo AI's AWS S3 database, while we only store the image ID"
+          ]
+        }
       },
-      "zoho": {
-        "title": "3.3 Zoho Mail",
-        "content": "We use Zoho Mail service for sending emails. When using this service:",
+      "noDataProcessing": {
+        "title": "3.2 Privacy-Safe Services",
+        "gemini": {
+          "title": "Google Gemini",
+          "content": "We use Google Gemini to generate superhero names in a privacy-safe way:",
+          "points": [
+            "No personal information or photos are ever sent to Gemini",
+            "Name generation uses only predefined prompts based on personality type",
+            "The service receives zero user data or input",
+            "Only the final generated hero name is stored in our database"
+          ]
+        }
+      },
+      "optional": {
+        "title": "3.3 Optional Services",
+        "zoho": {
+          "title": "Zoho Mail",
+          "content": "We use Zoho Mail only when you choose to share your hero card via email:",
+          "points": [
+            "Email service is completely optional and only used when you actively request to share your hero card",
+            "Your provided email address is used solely for sending the requested hero information",
+            "Email addresses are not stored in our database or used for any other purpose",
+            "The email contains only the hero information you chose to share"
+          ]
+        }
+      },
+      "database": {
+        "title": "3.4 Data Storage",
+        "content": "We use Prisma with a secure database to store hero information:",
         "points": [
-          "Emails are only sent when you actively choose to send hero information to a specific email address",
-          "The email address you provide is used solely for the purpose of sending the requested hero information",
-          "Email addresses are not stored in our database",
-          "The service is governed by Zoho's privacy policy"
+          "Only stores generated content: hero names, personality results, and image IDs",
+          "No personal identification information is stored",
+          "Database is secured and regularly maintained",
+          "Automatic deletion of entries older than 30 days (except generated images)"
         ]
       }
     },
