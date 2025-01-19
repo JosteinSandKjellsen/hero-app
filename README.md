@@ -32,6 +32,51 @@ Browse and manage all generated heroes on the `/generated-heroes` page, featurin
 - Ability to delete unwanted hero entries
 - Detailed view of hero information including names, personality types, and images
 
+## Database Setup
+
+The application uses PostgreSQL with Prisma ORM for data persistence. The database stores hero statistics and latest generated heroes.
+
+### Database Schema
+
+The database includes two main models:
+
+- **HeroStats**: Tracks hero generation statistics
+  - Color distributions
+  - Creation timestamps
+  
+- **LatestHero**: Stores recently generated heroes
+  - User information
+  - Personality details
+  - Image references
+  - Color scores
+  - Timestamps
+
+### Development Database Setup
+
+1. The project uses Prisma's Data Platform for the database. Get your database URL from [Prisma Data Platform](https://cloud.prisma.io).
+
+2. Add the database URL to your environment variables:
+   ```
+   DATABASE_URL="prisma+postgres://accelerate.prisma-data.net/?api_key=your_database_api_key_here"
+   ```
+
+3. Initialize the database:
+   ```bash
+   # Install Prisma CLI globally (if not already installed)
+   npm install -g prisma
+
+   # Generate Prisma Client
+   npx prisma generate
+
+   # Run database migrations
+   npx prisma migrate deploy
+   ```
+
+4. (Optional) Use Prisma Studio to view and edit data:
+   ```bash
+   npx prisma studio
+   ```
+
 ## Environment Setup
 
 1. Copy `.env.example` to a new file named `.env`:
@@ -40,19 +85,28 @@ Browse and manage all generated heroes on the `/generated-heroes` page, featurin
    cp .env.example .env
    ```
 
-2. Add your API keys to the `.env` file:
+2. Add your API keys and configuration to the `.env` file:
 
    ```text
+   # AI Services
    LEONARDO_API_KEY=your_leonardo_api_key_here
    GEMINI_API_KEY=your_gemini_api_key_here
+
+   # Database
+   DATABASE_URL="prisma+postgres://accelerate.prisma-data.net/?api_key=your_database_api_key_here"
+   PULSE_API_KEY=your_pulse_api_key_here
+
+   # Email Service
    ZOHO_CLIENT_ID=your_zoho_client_id_here
    ZOHO_CLIENT_SECRET=your_zoho_client_secret_here
    ZOHO_REFRESH_TOKEN=your_zoho_refresh_token_here
-   ZOHO_EMAIL_FROM=your_sender_email_here
+   ZOHO_MAIL_FROM_EMAIL=your_sender_email_here
+   ZOHO_ACCOUNT_ID=your_zoho_account_id_here
    ```
 
    - Get a Leonardo AI API key from [Leonardo AI's platform](https://leonardo.ai/)
    - Get a Gemini API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
+   - Get a database URL from [Prisma Data Platform](https://cloud.prisma.io)
    - Set up Zoho Mail API credentials:
      1. Create a Zoho account and set up Zoho Mail
      2. Create a new project in [Zoho API Console](https://api-console.zoho.com/)
@@ -86,20 +140,32 @@ The application will be available at [http://localhost:3000](http://localhost:30
 
 1. Connect your repository to Netlify
 
-2. Configure environment variables in Netlify:
+2. Set up the database:
+   - Create a new database in Prisma Data Platform for production
+   - Get the production database URL
+
+3. Configure environment variables in Netlify:
    - Go to Site settings > Environment variables
    - Add the following environment variables:
 
      ```text
+     # AI Services
      LEONARDO_API_KEY=your_leonardo_api_key_here
      GEMINI_API_KEY=your_gemini_api_key_here
+
+     # Database
+     DATABASE_URL=your_production_database_url_here
+     PULSE_API_KEY=your_pulse_api_key_here
+
+     # Email Service
      ZOHO_CLIENT_ID=your_zoho_client_id_here
      ZOHO_CLIENT_SECRET=your_zoho_client_secret_here
      ZOHO_REFRESH_TOKEN=your_zoho_refresh_token_here
-     ZOHO_EMAIL_FROM=your_sender_email_here
+     ZOHO_MAIL_FROM_EMAIL=your_sender_email_here
+     ZOHO_ACCOUNT_ID=your_zoho_account_id_here
      ```
 
-3. Deploy your site:
+4. Deploy your site:
    - Netlify will automatically deploy when you push to your main branch
    - You can also trigger manual deploys from the Netlify dashboard
 
