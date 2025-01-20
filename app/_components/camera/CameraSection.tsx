@@ -12,7 +12,7 @@ interface CameraSectionProps {
 export function CameraSection({ onPhotoTaken, isGenerating = false }: CameraSectionProps): JSX.Element {
   const t = useTranslations();
   return (
-    <div className="bg-white/10 backdrop-blur-md rounded-xl shadow-lg p-4 md:p-8 border border-white/20 w-full max-w-2xl mx-auto">
+    <div className="bg-white/5 rounded-lg border border-white/20 w-full max-w-2xl mx-auto p-4 md:p-8">
       {isGenerating ? (
         <div className="min-h-[70vh] flex flex-col items-center justify-center">
           <LoadingSpinner size="lg" />

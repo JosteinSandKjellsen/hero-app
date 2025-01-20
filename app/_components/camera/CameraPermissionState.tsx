@@ -58,7 +58,7 @@ export function CameraPermissionState({ onPermissionGranted, onSkip }: CameraPer
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[70vh] px-4 text-center">
-      <div className="bg-white/20 backdrop-blur-lg rounded-2xl p-6 md:p-8 max-w-md w-full border border-white/20 shadow-2xl">
+      <div className="bg-white/5 rounded-lg p-6 md:p-8 max-w-md w-full border border-white/20">
         <div className="mb-6">
           <div className="w-16 h-16 bg-gradient-to-r from-purple to-blue rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
             <Camera className="w-8 h-8 text-white" />

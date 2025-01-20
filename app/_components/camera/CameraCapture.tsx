@@ -140,7 +140,7 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
   return (
     <div className="relative max-w-md mx-auto h-[70vh]">
       {isInitializing && !isStreaming && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white/20 backdrop-blur-lg rounded-lg border border-white/20">
+        <div className="absolute inset-0 flex items-center justify-center bg-white/5 rounded-lg border border-white/20">
           <div className="text-center">
             <LoadingSpinner size="lg" />
             <p className="text-white mt-4">{t('camera.start')}</p>
@@ -151,7 +151,7 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
         ref={videoRef}
         autoPlay
         playsInline
-        className="w-full h-full object-cover rounded-lg border-4 border-white/20 shadow-xl"
+        className="w-full h-full object-cover rounded-lg border border-white/20 bg-white/5 shadow-xl"
       />
       {isStreaming && (
         <div className="absolute inset-x-0 bottom-4 flex flex-col items-center space-y-3">
