@@ -24,7 +24,7 @@ export function MatchingTipText({ color }: MatchingTipTextProps): JSX.Element {
       </span>{' '}
       {t('meets')}{' '}
       <span className={`font-bold ${colorClasses[matchingColor]}`}>
-        {t(`descriptions.${matchingColor}.target`)}
+        {t(`descriptions.${color}.target`)}
       </span>
     </>
   );
