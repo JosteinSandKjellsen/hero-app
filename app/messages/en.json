@@ -420,7 +420,10 @@
       "printHero": "Print hero",
       "deleteHero": "Delete hero",
       "deleteError": "Failed to delete hero",
-      "fetchError": "Failed to load heroes"
+      "fetchError": "Failed to load heroes",
+      "deleteConfirm": "Are you sure you want to delete this hero?",
+      "confirmDelete": "Yes, delete",
+      "cancelDelete": "Cancel"
     }
   },
   "matchingTips": {

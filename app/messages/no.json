@@ -420,7 +420,10 @@
       "printHero": "Skriv ut helt",
       "deleteHero": "Slett helt",
       "deleteError": "Kunne ikke slette helt",
-      "fetchError": "Kunne ikke laste inn helter"
+      "fetchError": "Kunne ikke laste inn helter",
+      "deleteConfirm": "Er du sikker på at du vil slette denne helten?",
+      "confirmDelete": "Ja, slett",
+      "cancelDelete": "Avbryt"
     }
   },
   "matchingTips": {

@@ -45,6 +45,9 @@ export function GeneratedHeroRow({ hero, onDelete }: GeneratedHeroRowProps): JSX
 
   const handleDelete = async (): Promise<void> => {
     if (isDeleting) return;
+
+    const confirmDelete = window.confirm(t('deleteConfirm'));
+    if (!confirmDelete) return;
     
     try {
       setIsDeleting(true);
