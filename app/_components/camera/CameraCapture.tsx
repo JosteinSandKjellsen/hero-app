@@ -173,7 +173,7 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
             onClick={takePhoto}
             disabled={isCapturing || isGenerating}
             className="text-light py-4 px-8 rounded-lg transition-all duration-300 
-                      bg-gradient-to-r from-purple to-blue bg-[length:200%_100%] bg-[position:0%] 
+                      bg-gradient-to-r from-dark to-dark bg-[length:200%_100%] bg-[position:0%]
                       hover:bg-[position:100%]
                       font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5
                       flex items-center space-x-3 text-lg

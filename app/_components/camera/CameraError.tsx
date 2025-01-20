@@ -17,7 +17,7 @@ export function CameraError({ error, onRetry }: CameraErrorProps): JSX.Element {
       <button
         onClick={onRetry}
         className="text-light px-6 py-3 rounded-lg transition-all duration-300 
-                  bg-gradient-to-r from-purple to-blue bg-[length:200%_100%] bg-[position:0%] 
+                  bg-gradient-to-r from-dark to-dark bg-[length:200%_100%] bg-[position:0%]
                   hover:bg-[position:100%]
                   font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5
                   flex items-center justify-center gap-2 mx-auto"

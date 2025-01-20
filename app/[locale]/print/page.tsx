@@ -63,8 +63,8 @@ function PrintContent(): JSX.Element {
   // Construct personality object
   const personality = {
     color: color,
-    bgClass: heroColors[color]?.bg || 'bg-purple',
-    textClass: heroColors[color]?.text || 'text-purple',
+    bgClass: heroColors[color]?.bg || 'bg-dark',
+    textClass: heroColors[color]?.text || 'text-dark',
     name: personalityName,
     heroName: heroName
   };

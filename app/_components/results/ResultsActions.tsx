@@ -136,7 +136,7 @@ export function ResultsActions({ printData, onReset }: ResultsActionsProps): JSX
           <button
             onClick={handlePrint}
             className="group text-light py-3 px-4 rounded-lg transition-all duration-300 
-                      bg-gradient-to-r from-purple to-blue bg-[length:200%_100%] bg-[position:0%] 
+                      bg-gradient-to-r from-dark to-dark bg-[length:200%_100%] bg-[position:0%] 
                       hover:bg-[position:100%]
                       font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5
                       flex items-center justify-center gap-2"
@@ -148,7 +148,7 @@ export function ResultsActions({ printData, onReset }: ResultsActionsProps): JSX
           <button
             onClick={handleCopyUrl}
             className="group text-light py-3 px-4 rounded-lg transition-all duration-300 
-                      bg-gradient-to-r from-purple to-blue bg-[length:200%_100%] bg-[position:0%] 
+                      bg-gradient-to-r from-dark to-dark bg-[length:200%_100%] bg-[position:0%] 
                       hover:bg-[position:100%]
                       font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5
                       flex items-center justify-center gap-2"
@@ -171,7 +171,7 @@ export function ResultsActions({ printData, onReset }: ResultsActionsProps): JSX
           <button
             onClick={() => setShowEmailPopover(true)}
             className="group w-full text-light py-3 px-6 rounded-lg transition-all duration-300 
-                      bg-gradient-to-r from-purple to-blue bg-[length:200%_100%] bg-[position:0%] 
+                      bg-gradient-to-r from-dark to-dark bg-[length:200%_100%] bg-[position:0%] 
                       hover:bg-[position:100%]
                       font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5
                       flex items-center justify-center gap-2"
@@ -185,7 +185,7 @@ export function ResultsActions({ printData, onReset }: ResultsActionsProps): JSX
           {showEmailPopover && (
             <div
               ref={popoverRef}
-              className="absolute bottom-full left-0 right-0 mb-2 p-6 bg-white rounded-lg shadow-lg border border-purple/20 animate-fade-in min-h-[180px]"
+              className="absolute bottom-full left-0 right-0 mb-2 p-6 bg-white rounded-lg shadow-lg border border-dark/20 animate-fade-in min-h-[180px]"
               role="dialog"
               aria-label={t('sendEmail')}
             >
@@ -204,7 +204,7 @@ export function ResultsActions({ printData, onReset }: ResultsActionsProps): JSX
                   onChange={(e) => setEmail(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder={t('emailPlaceholder')}
-                  className="w-full px-4 py-3 border border-purple/20 rounded-md focus:outline-none focus:ring-2 focus:ring-purple mt-2"
+                  className="w-full px-4 py-3 border border-dark/20 rounded-md focus:outline-none focus:ring-2 focus:ring-dark mt-2"
                   aria-label={t('emailPlaceholder')}
                   aria-invalid={!!emailError}
                   disabled={emailStatus === 'sending'}
@@ -223,7 +223,7 @@ export function ResultsActions({ printData, onReset }: ResultsActionsProps): JSX
                   onClick={handleSendEmail}
                   disabled={emailStatus === 'sending'}
                   className="group w-full text-light py-3 px-4 rounded-lg transition-all duration-300 
-                            bg-gradient-to-r from-purple to-blue bg-[length:200%_100%] bg-[position:0%] 
+                            bg-gradient-to-r from-dark to-dark bg-[length:200%_100%] bg-[position:0%] 
                             hover:bg-[position:100%]
                             font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5
                             disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0

@@ -89,7 +89,7 @@ export function GeneratedHeroRow({ hero, onDelete }: GeneratedHeroRowProps): JSX
         {hero.name}
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
-        <div className={`inline-flex items-center px-3 py-1 rounded-full ${heroColors[hero.color]?.bg || 'bg-purple'}`}>
+        <div className={`inline-flex items-center px-3 py-1 rounded-full ${heroColors[hero.color]?.bg || 'bg-blue'}`}>
           <div className="w-4 h-4 mr-2">
             {getHeroCardIcon(hero.color)}
           </div>

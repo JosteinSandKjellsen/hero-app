@@ -82,7 +82,7 @@ export function GeneratedHeroesTable(): JSX.Element {
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <div className="text-sm font-medium text-gray-900">{hero.name}</div>
-                  <div className={`inline-flex items-center px-3 py-1 rounded-full ${heroColors[hero.color]?.bg || 'bg-purple'}`}>
+                  <div className={`inline-flex items-center px-3 py-1 rounded-full ${heroColors[hero.color]?.bg || 'bg-blue'}`}>
                     <div className="w-4 h-4 mr-2">
                       {getHeroCardIcon(hero.color)}
                     </div>

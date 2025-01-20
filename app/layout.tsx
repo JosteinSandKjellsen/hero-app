@@ -49,7 +49,7 @@ export default function RootLayout({
 }): JSX.Element {
   return (
     <html lang="en" className={`${inter.variable} ${bangers.variable}`}>
-      <body className={`${inter.className} min-h-screen bg-gradient-to-b from-purple-900 via-purple-800 to-purple-900`}>
+      <body className={`${inter.className} min-h-screen bg-gradient-to-b from-dark via-dark to-dark`}>
         {children}
       </body>
     </html>

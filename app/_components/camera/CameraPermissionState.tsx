@@ -60,7 +60,7 @@ export function CameraPermissionState({ onPermissionGranted, onSkip }: CameraPer
     <div className="flex flex-col items-center justify-center min-h-[70vh] px-4 text-center">
       <div className="bg-white/5 rounded-lg p-6 md:p-8 max-w-md w-full border border-white/20">
         <div className="mb-6">
-          <div className="w-16 h-16 bg-gradient-to-r from-purple to-blue rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+          <div className="w-16 h-16 bg-gradient-to-r from-dark to-dark rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
             <Camera className="w-8 h-8 text-white" />
           </div>
           <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
@@ -74,7 +74,7 @@ export function CameraPermissionState({ onPermissionGranted, onSkip }: CameraPer
         <button
           onClick={requestPermission}
           className="w-full text-light py-4 px-6 rounded-lg transition-all duration-300 
-                    bg-gradient-to-r from-purple to-blue bg-[length:200%_100%] bg-[position:0%] 
+                    bg-gradient-to-r from-dark to-dark bg-[length:200%_100%] bg-[position:0%]
                     hover:bg-[position:100%]
                     font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5
                     flex items-center justify-center space-x-2 mb-6"
@@ -97,7 +97,7 @@ export function CameraPermissionState({ onPermissionGranted, onSkip }: CameraPer
             <p className="mb-4">{getBrowserInstructions()}</p>
             <button
               onClick={requestPermission}
-              className="text-purple-300 hover:text-purple-200 flex items-center justify-center space-x-1 mx-auto
+              className="text-dark/60 hover:text-dark/80 flex items-center justify-center space-x-1 mx-auto
                        focus:outline-none focus:underline"
             >
               <RefreshCw className="w-4 h-4" />
