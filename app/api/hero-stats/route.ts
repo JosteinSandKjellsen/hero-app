@@ -4,7 +4,7 @@ import { prisma } from '@/app/_lib/prisma'
 
 // Input validation schema
 const ColorSchema = z.object({
-  color: z.string().min(1).max(50)
+  color: z.enum(['red', 'yellow', 'green', 'blue'])
 })
 
 export async function POST(request: Request): Promise<Response> {

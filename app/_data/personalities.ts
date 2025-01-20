@@ -9,22 +9,22 @@ export interface PersonalityStyle {
 export const personalities: PersonalityStyle[] = [
   {
     color: 'red',
-    bgClass: 'bg-red-600',
-    textClass: 'text-red-600'
+    bgClass: 'bg-red',
+    textClass: 'text-red'
   },
   {
     color: 'yellow',
-    bgClass: 'bg-yellow-500',
-    textClass: 'text-yellow-500'
+    bgClass: 'bg-yellow',
+    textClass: 'text-yellow'
   },
   {
     color: 'green',
-    bgClass: 'bg-green-600',
-    textClass: 'text-green-600'
+    bgClass: 'bg-green',
+    textClass: 'text-green'
   },
   {
     color: 'blue',
-    bgClass: 'bg-blue-600',
-    textClass: 'text-blue-600'
+    bgClass: 'bg-blue',
+    textClass: 'text-blue'
   }
 ];

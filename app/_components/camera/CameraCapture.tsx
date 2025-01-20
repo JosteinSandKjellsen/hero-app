@@ -140,7 +140,7 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
   return (
     <div className="relative max-w-md mx-auto h-[70vh]">
       {isInitializing && !isStreaming && (
-        <div className="absolute inset-0 flex items-center justify-center bg-purple-900/30 backdrop-blur-sm rounded-lg">
+        <div className="absolute inset-0 flex items-center justify-center bg-white/20 backdrop-blur-lg rounded-lg border border-white/20">
           <div className="text-center">
             <LoadingSpinner size="lg" />
             <p className="text-white mt-4">{t('camera.start')}</p>
@@ -151,7 +151,7 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
         ref={videoRef}
         autoPlay
         playsInline
-        className="w-full h-full object-cover rounded-lg border-4 border-purple-600 shadow-xl"
+        className="w-full h-full object-cover rounded-lg border-4 border-white/20 shadow-xl"
       />
       {isStreaming && (
         <div className="absolute inset-x-0 bottom-4 flex flex-col items-center space-y-3">
@@ -162,8 +162,8 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
                 setIsFrontCamera(!isFrontCamera);
                 startCamera(true);
               }}
-              className="bg-purple-600/80 backdrop-blur-sm text-white p-2 rounded-full hover:bg-purple-700 
-                       transition-colors shadow-lg mb-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="bg-white/20 backdrop-blur-lg text-white p-2 rounded-full hover:bg-white/30 
+                       transition-all duration-300 shadow-lg hover:shadow-xl mb-2 focus:outline-none focus:ring-2 focus:ring-white/30"
               aria-label={t('camera.switchCamera')}
             >
               <FlipHorizontal className="w-6 h-6" />
@@ -172,10 +172,12 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
           <button
             onClick={takePhoto}
             disabled={isCapturing || isGenerating}
-            className="bg-green-600 text-white px-8 py-4 rounded-lg hover:bg-green-700 
-                     transition-colors shadow-lg flex items-center space-x-3 text-lg
-                     focus:outline-none focus:ring-2 focus:ring-green-500 active:bg-green-800
-                     disabled:opacity-50 disabled:cursor-not-allowed"
+            className="text-light py-4 px-8 rounded-lg transition-all duration-300 
+                      bg-gradient-to-r from-purple to-blue bg-[length:200%_100%] bg-[position:0%] 
+                      hover:bg-[position:100%]
+                      font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5
+                      flex items-center space-x-3 text-lg
+                      disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
           >
             {isCapturing ? (
               <>

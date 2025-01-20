@@ -127,16 +127,19 @@ export function ResultsActions({ printData, onReset }: ResultsActionsProps): JSX
   return (
     <div className="w-full max-w-md mx-auto space-y-6">
       {/* Hero Management Group */}
-      <div className="p-4 bg-white/50 rounded-lg shadow-sm border border-white/20 space-y-3">
+      <div className="p-4 bg-white/20 backdrop-blur-lg rounded-lg shadow-2xl border border-white/20 space-y-3">
         <div className="flex items-center gap-2 mb-3">
-          <Share2 className="w-4 h-4 text-purple-800" />
-          <h3 className="text-sm font-medium text-purple-800">{t('manageHero')}</h3>
+          <Share2 className="w-4 h-4 text-light" />
+          <h3 className="text-sm font-medium text-light">{t('manageHero')}</h3>
         </div>
         <div className="grid grid-cols-2 gap-3">
           <button
             onClick={handlePrint}
-            className="group bg-purple-600 text-white py-3 px-4 rounded-lg 
-                      hover:bg-purple-700 transition-colors font-medium flex items-center justify-center gap-2"
+            className="group text-light py-3 px-4 rounded-lg transition-all duration-300 
+                      bg-gradient-to-r from-purple to-blue bg-[length:200%_100%] bg-[position:0%] 
+                      hover:bg-[position:100%]
+                      font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5
+                      flex items-center justify-center gap-2"
           >
             <Printer className="w-5 h-5 transition-transform group-hover:scale-110" />
             <span>{t('download')}</span>
@@ -144,12 +147,15 @@ export function ResultsActions({ printData, onReset }: ResultsActionsProps): JSX
 
           <button
             onClick={handleCopyUrl}
-            className="group bg-purple-600 text-white py-3 px-4 rounded-lg 
-                      hover:bg-purple-700 transition-colors font-medium flex items-center justify-center gap-2"
+            className="group text-light py-3 px-4 rounded-lg transition-all duration-300 
+                      bg-gradient-to-r from-purple to-blue bg-[length:200%_100%] bg-[position:0%] 
+                      hover:bg-[position:100%]
+                      font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5
+                      flex items-center justify-center gap-2"
           >
             {copyStatus === 'success' ? (
               <>
-                <Check className="w-5 h-5 text-white animate-fade-in" />
+                <Check className="w-5 h-5 text-light animate-fade-in" />
                 <span>{t('linkCopied')}</span>
               </>
             ) : (
@@ -164,8 +170,11 @@ export function ResultsActions({ printData, onReset }: ResultsActionsProps): JSX
         <div className="relative">
           <button
             onClick={() => setShowEmailPopover(true)}
-            className="group w-full bg-purple-600 text-white py-3 px-6 rounded-lg 
-                      hover:bg-purple-700 transition-colors font-medium flex items-center justify-center gap-2"
+            className="group w-full text-light py-3 px-6 rounded-lg transition-all duration-300 
+                      bg-gradient-to-r from-purple to-blue bg-[length:200%_100%] bg-[position:0%] 
+                      hover:bg-[position:100%]
+                      font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5
+                      flex items-center justify-center gap-2"
             aria-expanded={showEmailPopover}
             aria-haspopup="true"
           >
@@ -176,13 +185,13 @@ export function ResultsActions({ printData, onReset }: ResultsActionsProps): JSX
           {showEmailPopover && (
             <div
               ref={popoverRef}
-              className="absolute bottom-full left-0 right-0 mb-2 p-6 bg-white rounded-lg shadow-lg border border-gray-200 animate-fade-in min-h-[180px]"
+              className="absolute bottom-full left-0 right-0 mb-2 p-6 bg-white rounded-lg shadow-lg border border-purple/20 animate-fade-in min-h-[180px]"
               role="dialog"
               aria-label={t('sendEmail')}
             >
               <button
                 onClick={() => setShowEmailPopover(false)}
-                className="absolute top-3 right-4 text-gray-500 hover:text-gray-700 transition-transform hover:rotate-90 duration-200"
+                className="absolute top-3 right-4 text-dark/50 hover:text-dark transition-transform hover:rotate-90 duration-200"
                 aria-label="Close"
               >
                 <X className="w-4 h-4" />
@@ -195,27 +204,29 @@ export function ResultsActions({ printData, onReset }: ResultsActionsProps): JSX
                   onChange={(e) => setEmail(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder={t('emailPlaceholder')}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 mt-2"
+                  className="w-full px-4 py-3 border border-purple/20 rounded-md focus:outline-none focus:ring-2 focus:ring-purple mt-2"
                   aria-label={t('emailPlaceholder')}
                   aria-invalid={!!emailError}
                   disabled={emailStatus === 'sending'}
                 />
                 {emailError && (
-                  <p className="text-red-500 text-sm animate-shake" role="alert">
+                  <p className="text-red text-sm animate-shake" role="alert">
                     {emailError}
                   </p>
                 )}
                 {emailStatus === 'success' && (
-                  <p className="text-green-500 text-sm animate-fade-in" role="alert">
+                  <p className="text-green text-sm animate-fade-in" role="alert">
                     {t('emailSuccess')}
                   </p>
                 )}
                 <button
                   onClick={handleSendEmail}
                   disabled={emailStatus === 'sending'}
-                  className="group w-full bg-purple-600 text-white py-3 px-4 rounded-md 
-                            hover:bg-purple-700 transition-colors font-medium
-                            disabled:bg-purple-400 disabled:cursor-not-allowed
+                  className="group w-full text-light py-3 px-4 rounded-lg transition-all duration-300 
+                            bg-gradient-to-r from-purple to-blue bg-[length:200%_100%] bg-[position:0%] 
+                            hover:bg-[position:100%]
+                            font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5
+                            disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0
                             flex items-center justify-center gap-2"
                 >
                   {emailStatus === 'sending' ? (
@@ -239,8 +250,9 @@ export function ResultsActions({ printData, onReset }: ResultsActionsProps): JSX
       {/* Create New Hero Button */}
       <button
         onClick={onReset}
-        className="group w-full bg-white border-2 border-purple-600 text-purple-600 py-3 px-6 rounded-lg 
-                  hover:bg-purple-50 transition-colors font-medium flex items-center justify-center gap-2"
+        className="group w-full bg-white/30 backdrop-blur-sm border border-white/40 text-light py-3 px-6 rounded-lg 
+                  hover:bg-white/40 transition-all duration-300 font-medium shadow-lg hover:shadow-xl
+                  flex items-center justify-center gap-2"
       >
         <RefreshCw className="w-5 h-5 transition-transform group-hover:rotate-180 duration-500" />
         <span>{t('newHero')}</span>

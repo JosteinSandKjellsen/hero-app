@@ -6,6 +6,7 @@ import { PersonalityType } from '../../_lib/types/personality';
 import { UserData } from '../../_lib/types';
 import { getPersonalityIcon } from '@/app/_lib/utils/personalityIcons';
 import { getHeroCardIcon } from '@/app/_lib/utils/heroCardIcons';
+import { heroColors } from '@/app/_lib/constants/colors';
 
 interface SuperheroCardProps {
   photoUrl: string;
@@ -19,22 +20,16 @@ export function SuperheroCard({ photoUrl, personality, userData, results = [] }:
 
   const getColorValue = (color: string): string => {
     switch (color) {
-      case 'red': return 'rgb(220, 38, 38)'; // text-red-600
-      case 'yellow': return 'rgb(234, 179, 8)'; // text-yellow-500
-      case 'green': return 'rgb(22, 163, 74)'; // text-green-600
-      case 'blue': return 'rgb(37, 99, 235)'; // text-blue-600
-      default: return 'rgb(147, 51, 234)'; // text-purple-600
+      case 'red': return '#d17785';
+      case 'yellow': return '#dcb184ff';
+      case 'green': return '#a9ca98';
+      case 'blue': return '#414f98';
+      default: return '#11133C';
     }
   };
 
   const getBorderColorClass = (): string => {
-    switch (personality.color) {
-      case 'red': return 'border-red-600';
-      case 'yellow': return 'border-yellow-500';
-      case 'green': return 'border-green-600';
-      case 'blue': return 'border-blue-600';
-      default: return 'border-purple-600';
-    }
+    return heroColors[personality.color]?.border || 'border-purple';
   };
 
   return (
@@ -46,7 +41,7 @@ export function SuperheroCard({ photoUrl, personality, userData, results = [] }:
         maxWidth: '600px', 
         margin: '0 auto',
         backgroundColor: 'white',
-        boxShadow: 'none',
+        boxShadow: `0 0 40px -5px ${getColorValue(personality.color)}80`,
         WebkitPrintColorAdjust: 'exact',
         printColorAdjust: 'exact',
         colorAdjust: 'exact'

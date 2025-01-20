@@ -7,6 +7,7 @@ import { HeroImage } from '../ui/HeroImage';
 import { getPersonalityIcon } from '@/app/_lib/utils/personalityIcons';
 import { getHeroCardIcon } from '@/app/_lib/utils/heroCardIcons';
 import { HeroColor } from '@/app/_lib/types/api';
+import { heroColors } from '@/app/_lib/constants/colors';
 
 interface LatestHeroCardProps {
   hero: {
@@ -47,22 +48,16 @@ export const LatestHeroCard = forwardRef<HTMLDivElement, LatestHeroCardProps>(
 
   const getColorValue = (color: string): string => {
     switch (color) {
-      case 'red': return 'rgb(220, 38, 38)'; // text-red-600
-      case 'yellow': return 'rgb(234, 179, 8)'; // text-yellow-500
-      case 'green': return 'rgb(22, 163, 74)'; // text-green-600
-      case 'blue': return 'rgb(37, 99, 235)'; // text-blue-600
-      default: return 'rgb(147, 51, 234)'; // text-purple-600
+      case 'red': return '#d17785';
+      case 'yellow': return '#dcb184ff';
+      case 'green': return '#a9ca98';
+      case 'blue': return '#414f98';
+      default: return '#11133C';
     }
   };
 
   const getBorderColorClass = (): string => {
-    switch (hero.color) {
-      case 'red': return 'border-red-600';
-      case 'yellow': return 'border-yellow-500';
-      case 'green': return 'border-green-600';
-      case 'blue': return 'border-blue-600';
-      default: return 'border-purple-600';
-    }
+    return heroColors[hero.color]?.border || 'border-purple';
   };
 
   return (
@@ -88,7 +83,7 @@ export const LatestHeroCard = forwardRef<HTMLDivElement, LatestHeroCardProps>(
               </div>
             </div>
             <div className="flex-1 flex flex-col justify-center -mt-0.5 py-2">
-              <h3 className={`text-3xl font-bangers tracking-wide text-${hero.color}-600 leading-none mb-1`}>
+              <h3 className={`text-3xl font-bangers tracking-wide ${heroColors[hero.color]?.text} leading-none mb-1`}>
                 {hero.name}
               </h3>
               <p className="text-xs text-gray-600 uppercase tracking-wider font-medium leading-none">

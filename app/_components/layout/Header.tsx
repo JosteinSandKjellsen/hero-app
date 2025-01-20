@@ -10,7 +10,7 @@ interface HeaderProps {
 
 export function Header({ variant = 'quiz' }: HeaderProps): JSX.Element {
   const t = useTranslations('header');
-  const textColor = variant === 'results' ? 'text-gray-900' : 'text-white';
+  const textColor = 'text-light';
 
   if (variant === 'stats') {
     return (
@@ -42,7 +42,7 @@ export function Header({ variant = 'quiz' }: HeaderProps): JSX.Element {
       <h1 className={`text-5xl font-bangers tracking-wider ${textColor} mb-4 drop-shadow-lg`}>
         {t('title')}
       </h1>
-      <p className={`text-lg ${variant === 'results' ? 'text-gray-600' : 'text-white/90'}`}>
+      <p className="text-lg text-light/90">
         {t('subtitle')}
       </p>
     </div>

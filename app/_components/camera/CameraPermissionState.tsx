@@ -58,9 +58,9 @@ export function CameraPermissionState({ onPermissionGranted, onSkip }: CameraPer
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[70vh] px-4 text-center">
-      <div className="bg-purple-900/30 backdrop-blur-sm rounded-2xl p-6 md:p-8 max-w-md w-full">
+      <div className="bg-white/20 backdrop-blur-lg rounded-2xl p-6 md:p-8 max-w-md w-full border border-white/20 shadow-2xl">
         <div className="mb-6">
-          <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-gradient-to-r from-purple to-blue rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
             <Camera className="w-8 h-8 text-white" />
           </div>
           <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
@@ -73,9 +73,11 @@ export function CameraPermissionState({ onPermissionGranted, onSkip }: CameraPer
 
         <button
           onClick={requestPermission}
-          className="w-full bg-green-600 hover:bg-green-700 text-white rounded-lg py-4 px-6 
-                   flex items-center justify-center space-x-2 mb-6 transition-colors
-                   focus:outline-none focus:ring-2 focus:ring-green-500 active:bg-green-800"
+          className="w-full text-light py-4 px-6 rounded-lg transition-all duration-300 
+                    bg-gradient-to-r from-purple to-blue bg-[length:200%_100%] bg-[position:0%] 
+                    hover:bg-[position:100%]
+                    font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5
+                    flex items-center justify-center space-x-2 mb-6"
         >
           <Camera className="w-5 h-5" />
           <span>{t('camera.activate')}</span>

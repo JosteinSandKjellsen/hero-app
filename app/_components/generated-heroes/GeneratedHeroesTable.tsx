@@ -4,13 +4,15 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { GeneratedHeroRow } from './GeneratedHeroRow';
 import { getHeroCardIcon } from '@/app/_lib/utils/heroCardIcons';
+import { heroColors } from '@/app/_lib/constants/colors';
+import { HeroColor } from '@/app/_lib/types/api';
 
 interface GeneratedHero {
   id: number;
   name: string;
   userName: string | null;
   imageId: string;
-  color: string;
+  color: HeroColor;
   gender: string;
   personalityType: string;
   colorScores: Record<string, number>;
@@ -80,9 +82,9 @@ export function GeneratedHeroesTable(): JSX.Element {
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <div className="text-sm font-medium text-gray-900">{hero.name}</div>
-                  <div className={`inline-flex items-center px-3 py-1 rounded-full bg-${hero.color.toLowerCase()}-600`}>
+                  <div className={`inline-flex items-center px-3 py-1 rounded-full ${heroColors[hero.color]?.bg || 'bg-purple'}`}>
                     <div className="w-4 h-4 mr-2">
-                      {getHeroCardIcon(hero.color.toLowerCase() as 'red' | 'yellow' | 'green' | 'blue')}
+                      {getHeroCardIcon(hero.color)}
                     </div>
                     <span className="text-sm font-medium text-white capitalize">
                       {hero.color}
@@ -114,7 +116,7 @@ export function GeneratedHeroesTable(): JSX.Element {
                       });
                       window.open(`/print?${printParams.toString()}`, '_blank');
                     }}
-                    className="p-2 text-indigo-600 hover:text-indigo-900 rounded-full hover:bg-indigo-50 transition-all duration-200"
+                    className={`p-2 ${heroColors['blue'].text} hover:opacity-80 rounded-full hover:bg-gray-50 transition-all duration-200`}
                     title={t('printHero')}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -123,7 +125,7 @@ export function GeneratedHeroesTable(): JSX.Element {
                   </button>
                   <button
                     onClick={() => handleDelete(hero.id)}
-                    className="p-2 text-red-600 hover:text-red-900 rounded-full hover:bg-red-50 transition-all duration-200"
+                    className={`p-2 ${heroColors['red'].text} hover:opacity-80 rounded-full hover:bg-gray-50 transition-all duration-200`}
                     title={t('deleteHero')}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

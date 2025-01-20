@@ -56,17 +56,16 @@ export function StatsSection(): JSX.Element {
       {
         data: colors.map(color => stats.byColor[color] || 0),
         backgroundColor: colors.map(color => {
-          const colorClass = heroColors[color as keyof typeof heroColors].bg;
-          // Convert Tailwind classes to actual colors with higher brightness for better visibility
-          switch (colorClass) {
-            case 'bg-red-600':
-              return '#ef4444';  // Brighter red
-            case 'bg-yellow-500':
-              return '#fbbf24'; // Brighter yellow
-            case 'bg-green-600':
-              return '#22c55e'; // Brighter green
-            case 'bg-blue-600':
-              return '#3b82f6'; // Brighter blue
+          // Convert color names to actual colors with higher brightness for better visibility
+          switch (color) {
+            case 'red':
+              return '#d17785';  // Red from tailwind config
+            case 'yellow':
+              return '#dcb184'; // Yellow from tailwind config
+            case 'green':
+              return '#a9ca98'; // Green from tailwind config
+            case 'blue':
+              return '#414f98'; // Blue from tailwind config
             default:
               return '#000000';
           }

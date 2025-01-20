@@ -5,6 +5,7 @@ import './print.css';
 import { useSearchParams } from 'next/navigation';
 import { SuperheroCard } from '../../_components/results/SuperheroCard';
 import { HeroColor } from '../../_lib/types/api';
+import { heroColors } from '@/app/_lib/constants/colors';
 
 function PrintContent(): JSX.Element {
   const searchParams = useSearchParams();
@@ -62,8 +63,8 @@ function PrintContent(): JSX.Element {
   // Construct personality object
   const personality = {
     color: color,
-    bgClass: `bg-${color}-600`,
-    textClass: `text-${color}-600`,
+    bgClass: heroColors[color]?.bg || 'bg-purple',
+    textClass: heroColors[color]?.text || 'text-purple',
     name: personalityName,
     heroName: heroName
   };

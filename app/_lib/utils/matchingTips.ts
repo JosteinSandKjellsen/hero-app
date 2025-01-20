@@ -31,10 +31,10 @@ export const colorTranslations: ColorTranslation = {
 } as const;
 
 export const colorClasses: ColorClass = {
-  red: 'text-red-600',
-  yellow: 'text-yellow-500',
-  green: 'text-green-600',
-  blue: 'text-blue-600'
+  red: 'text-red',
+  yellow: 'text-yellow',
+  green: 'text-green',
+  blue: 'text-blue'
 } as const;
 
 export const matchingDescriptions: MatchingDescriptions = {
@@ -48,10 +48,10 @@ export const matchingDescriptions: MatchingDescriptions = {
   },
   blue: {
     source: 'blåes struktur',
-    target: 'rødes fart'
+    target: 'rødes energi'
   },
   green: {
-    source: 'grønnes harmoni',
+    source: 'grønne harmoni',
     target: 'gules inspirasjon'
   }
 } as const;

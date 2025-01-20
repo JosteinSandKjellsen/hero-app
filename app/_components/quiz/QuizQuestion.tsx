@@ -28,7 +28,7 @@ export function QuizQuestion({ question, onAnswer }: QuizQuestionProps): JSX.Ele
             }}
             className="w-full text-left p-4 rounded-lg border border-white/20 bg-white/5 
                      hover:bg-white/20 transition-all duration-200 ease-in-out text-white 
-                     focus:outline-none focus:ring-2 focus:ring-purple-500 active:bg-white/30"
+                     focus:outline-none focus:ring-2 focus:ring-purple active:bg-white/30"
           >
             {t(`${question.id}.options.${option.type}`)}
           </button>

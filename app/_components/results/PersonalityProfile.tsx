@@ -15,7 +15,7 @@ export function PersonalityProfile({ results }: PersonalityProfileProps): JSX.El
 
   return (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bangers tracking-wide text-center mb-8 text-purple-900">
+      <h2 className="text-3xl font-bangers tracking-wide text-center mb-8 text-light">
         {t('title')}
       </h2>
       

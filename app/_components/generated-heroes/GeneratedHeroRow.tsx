@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { getHeroCardIcon } from '@/app/_lib/utils/heroCardIcons';
+import { heroColors } from '@/app/_lib/constants/colors';
+import { HeroColor } from '@/app/_lib/types/api';
 interface GeneratedHeroRowProps {
   hero: {
     id: number;
     name: string;
     userName: string | null;
     imageId: string;
-    color: string;
+    color: HeroColor;
     gender: string;
     personalityType: string;
     colorScores: Record<string, number>;
@@ -87,9 +89,9 @@ export function GeneratedHeroRow({ hero, onDelete }: GeneratedHeroRowProps): JSX
         {hero.name}
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
-        <div className={`inline-flex items-center px-3 py-1 rounded-full bg-${hero.color.toLowerCase()}-600`}>
+        <div className={`inline-flex items-center px-3 py-1 rounded-full ${heroColors[hero.color]?.bg || 'bg-purple'}`}>
           <div className="w-4 h-4 mr-2">
-            {getHeroCardIcon(hero.color.toLowerCase() as 'red' | 'yellow' | 'green' | 'blue')}
+            {getHeroCardIcon(hero.color)}
           </div>
           <span className="text-sm font-medium text-white capitalize">
             {hero.color}
@@ -99,7 +101,7 @@ export function GeneratedHeroRow({ hero, onDelete }: GeneratedHeroRowProps): JSX
       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
         <button
           onClick={handlePrint}
-          className="p-2 text-indigo-600 hover:text-indigo-900 mr-2 rounded-full hover:bg-indigo-50 transition-all duration-200"
+          className={`p-2 ${heroColors['blue'].text} hover:opacity-80 mr-2 rounded-full hover:bg-gray-50 transition-all duration-200`}
           title={t('printHero')}
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -109,7 +111,7 @@ export function GeneratedHeroRow({ hero, onDelete }: GeneratedHeroRowProps): JSX
         <button
           onClick={handleDelete}
           disabled={isDeleting}
-          className={`p-2 text-red-600 hover:text-red-900 rounded-full hover:bg-red-50 transition-all duration-200 ${
+          className={`p-2 ${heroColors['red'].text} hover:opacity-80 rounded-full hover:bg-gray-50 transition-all duration-200 ${
             isDeleting ? 'opacity-50 cursor-not-allowed' : ''
           }`}
           title={t('deleteHero')}

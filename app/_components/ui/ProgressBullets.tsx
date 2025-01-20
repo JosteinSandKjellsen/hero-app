@@ -21,7 +21,7 @@ export function ProgressBullets({ currentStep }: ProgressBulletsProps): JSX.Elem
           key={step.step}
           className={`w-3 h-3 rounded-full transition-colors duration-300 ${
             index <= getCurrentStepIndex()
-              ? 'bg-purple-500'
+              ? 'bg-red'
               : 'bg-white/20'
           }`}
           title={t(step.step)}

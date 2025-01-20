@@ -8,8 +8,9 @@ export function SubmitButton({ children }: SubmitButtonProps): JSX.Element {
   return (
     <button
       type="submit"
-      className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 px-6 
-                rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-300 
+      className="w-full text-light py-3 px-6 rounded-lg transition-all duration-300 
+                bg-gradient-to-r from-purple to-blue bg-[length:200%_100%] bg-[position:0%] 
+                hover:bg-[position:100%]
                 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
     >
       {children}
