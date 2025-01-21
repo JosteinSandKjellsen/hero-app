@@ -45,8 +45,23 @@ const config: Config = {
         shimmer: 'shimmer 2s infinite',
         'fade-in': 'fade-in 0.3s ease-out forwards',
         shake: 'shake 0.5s ease-in-out',
+        'glow-wave': 'glow-wave 2s ease-in-out infinite',
       },
       keyframes: {
+        'glow-wave': {
+          '0%': { 
+            'box-shadow': '0 0 5px rgba(255, 255, 255, 0.3), 0 0 10px rgba(255, 255, 255, 0.2)',
+            'border-color': 'rgba(255, 255, 255, 0.4)'
+          },
+          '50%': { 
+            'box-shadow': '0 0 10px rgba(255, 255, 255, 0.4), 0 0 20px rgba(255, 255, 255, 0.3)',
+            'border-color': 'rgba(255, 255, 255, 0.5)'
+          },
+          '100%': { 
+            'box-shadow': '0 0 5px rgba(255, 255, 255, 0.3), 0 0 10px rgba(255, 255, 255, 0.2)',
+            'border-color': 'rgba(255, 255, 255, 0.4)'
+          }
+        },
         fadeIn: {
           '0%': { opacity: '0', transform: 'translateY(10px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
