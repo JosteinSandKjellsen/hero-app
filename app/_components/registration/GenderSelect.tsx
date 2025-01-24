@@ -14,6 +14,7 @@ export function GenderSelect({ value, onChange, error }: GenderSelectProps): JSX
   const genderOptions = [
     { value: 'male', label: t('male') },
     { value: 'female', label: t('female') },
+    { value: 'robot', label: t('robot') },
   ];
 
   return (

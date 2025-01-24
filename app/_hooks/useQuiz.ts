@@ -68,13 +68,18 @@ export function useQuiz(): UseQuizReturn {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(prev => prev + 1);
     } else {
-      setShowCamera(true);
+      // Skip camera step if gender is robot
+      if (userData?.gender === 'robot') {
+        handlePhotoTaken(null);
+      } else {
+        setShowCamera(true);
+      }
     }
   };
 
   const generateHeroImage = async (
     personality: string,
-    gender: 'male' | 'female',
+    gender: 'male' | 'female' | 'robot',
     color: HeroColor,
     photo?: string,
     retryCount = 0

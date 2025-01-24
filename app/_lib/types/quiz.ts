@@ -18,5 +18,5 @@ export interface QuizResult {
 
 export interface UserData {
   name: string;
-  gender: 'male' | 'female';
+  gender: 'male' | 'female' | 'robot';
 }

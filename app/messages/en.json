@@ -158,9 +158,10 @@
       "required": "Name is required"
     },
     "gender": {
-      "label": "Gender",
+      "label": "My hero is a..",
       "male": "Male",
-      "female": "Female"
+      "female": "Female",
+      "robot": "Robot"
     },
     "start": "Start"
   },

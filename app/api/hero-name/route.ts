@@ -12,7 +12,7 @@ const requestSchema = z.object({
     // Prevent common injection patterns
     .regex(/^[a-zA-ZæøåÆØÅ\s,.-]+$/, 'Invalid characters in personality')
     .transform(str => str.trim()),
-  gender: z.enum(['male', 'female'] as const),
+  gender: z.enum(['male', 'female', 'robot'] as const),
   color: z.enum(['red', 'yellow', 'green', 'blue'] as const),
   language: z.enum(['en', 'no'] as const),
 });

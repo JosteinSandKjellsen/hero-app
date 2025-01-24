@@ -22,6 +22,7 @@ export interface GenerateImageParams {
   public?: boolean;
   controlnets?: ControlNet[];
   initImageId?: string;
+  gender?: 'male' | 'female' | 'robot';
 }
 
 export interface GenerationResponse {

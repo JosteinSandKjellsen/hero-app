@@ -2,7 +2,7 @@ export type HeroColor = 'red' | 'yellow' | 'green' | 'blue';
 
 export interface HeroNameRequest {
   personality: string;
-  gender: 'male' | 'female';
+  gender: 'male' | 'female' | 'robot';
   color: HeroColor;
 }
 
@@ -13,7 +13,7 @@ export interface HeroNameResponse {
 
 export interface HeroImageRequest {
   personality: string;
-  gender: 'male' | 'female';
+  gender: 'male' | 'female' | 'robot';
   color: HeroColor;
   originalPhoto?: string;
 }

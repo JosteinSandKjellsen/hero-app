@@ -158,9 +158,10 @@
       "required": "Navn er påkrevd"
     },
     "gender": {
-      "label": "Kjønn",
+      "label": "Min helt er en..",
       "male": "Mann",
-      "female": "Kvinne"
+      "female": "Kvinne",
+      "robot": "Robot"
     },
     "start": "Start"
   },
