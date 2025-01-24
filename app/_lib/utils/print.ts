@@ -3,7 +3,7 @@ import { HeroColor } from '../types/api';
 export interface PrintCardData {
   photoUrl: string;
   name: string;
-  gender: 'male' | 'female';
+  gender: 'male' | 'female' | 'robot';
   heroName: string;
   personalityName: string;
   color: HeroColor;
