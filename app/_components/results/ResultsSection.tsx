@@ -5,6 +5,7 @@ import { UserData } from '../../_lib/types';
 import { SuperheroCard } from './SuperheroCard';
 import { PersonalityProfile } from './PersonalityProfile';
 import { ResultsActions } from './ResultsActions';
+import { HeroStory } from './HeroStory';
 import { useEffect, useMemo, useRef } from 'react';
 
 interface ResultsSectionProps {
@@ -13,9 +14,17 @@ interface ResultsSectionProps {
   userData: UserData;
   onReset: () => void;
   heroName: string;
+  language: 'en' | 'no';
 }
 
-export function ResultsSection({ results, photoUrl, userData, onReset, heroName }: ResultsSectionProps): JSX.Element {
+export function ResultsSection({ 
+  results, 
+  photoUrl, 
+  userData, 
+  onReset, 
+  heroName,
+  language
+}: ResultsSectionProps): JSX.Element {
   const scoreResults = useMemo(() => results.map(r => ({
     color: r.color,
     percentage: r.percentage
@@ -26,13 +35,10 @@ export function ResultsSection({ results, photoUrl, userData, onReset, heroName 
   useEffect(() => {
     let mounted = true;
 
-    // Save to latest heroes
     const saveToLatestHeroes = async (): Promise<void> => {
       try {
-        // Check if already saved to prevent double saves
         if (!mounted || hasSavedRef.current) return;
         const dominantPersonality = results[0];
-        // Extract generation ID from the URL
         const match = photoUrl.match(/generations\/([^/]+)\//) || [];
         const imageId = match[1];
         
@@ -53,7 +59,7 @@ export function ResultsSection({ results, photoUrl, userData, onReset, heroName 
             imageId,
             color: dominantPersonality.color,
             gender: userData.gender,
-            promptStyle: 'default', // You might want to make this dynamic if you have different styles
+            promptStyle: 'default',
             basePrompt: `Generate a ${userData.gender === 'male' ? 'male' : 'female'} superhero with ${dominantPersonality.color} color scheme`,
             negativePrompt: null,
             colorScores: scoreResults.reduce((acc, { color, percentage }) => ({
@@ -89,6 +95,14 @@ export function ResultsSection({ results, photoUrl, userData, onReset, heroName 
       </div>
 
       <PersonalityProfile results={results} />
+
+      <HeroStory
+        personality={dominantPersonality.name}
+        gender={userData.gender}
+        color={dominantPersonality.color}
+        language={language}
+        heroName={heroName}
+      />
 
       <ResultsActions 
         printData={{
