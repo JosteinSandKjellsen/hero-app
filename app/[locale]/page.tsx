@@ -10,7 +10,7 @@ import { LoadingState } from '../_components/ui/LoadingState';
 import { useQuiz } from '../_hooks/useQuiz';
 import { useToast } from '../_hooks/useToast';
 
-export default function Home({ params }: { params: { locale: 'en' | 'no' } }): JSX.Element {
+export default function Home(): JSX.Element {
   const {
     userData,
     currentQuestion,
@@ -57,7 +57,6 @@ export default function Home({ params }: { params: { locale: 'en' | 'no' } }): J
           userData={userData}
           onReset={resetQuiz}
           heroName={heroName}
-          language={params.locale}
         />
         {toast && <Toast message={toast.message} onClose={hideToast} />}
       </QuizLayout>

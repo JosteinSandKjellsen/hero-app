@@ -5,7 +5,6 @@ import { UserData } from '../../_lib/types';
 import { SuperheroCard } from './SuperheroCard';
 import { PersonalityProfile } from './PersonalityProfile';
 import { ResultsActions } from './ResultsActions';
-import { HeroStory } from './HeroStory';
 import { useEffect, useMemo, useRef } from 'react';
 
 interface ResultsSectionProps {
@@ -14,7 +13,6 @@ interface ResultsSectionProps {
   userData: UserData;
   onReset: () => void;
   heroName: string;
-  language: 'en' | 'no';
 }
 
 export function ResultsSection({ 
@@ -22,8 +20,7 @@ export function ResultsSection({
   photoUrl, 
   userData, 
   onReset, 
-  heroName,
-  language
+  heroName
 }: ResultsSectionProps): JSX.Element {
   const scoreResults = useMemo(() => results.map(r => ({
     color: r.color,
@@ -95,14 +92,6 @@ export function ResultsSection({
       </div>
 
       <PersonalityProfile results={results} />
-
-      <HeroStory
-        personality={dominantPersonality.name}
-        gender={userData.gender}
-        color={dominantPersonality.color}
-        language={language}
-        heroName={heroName}
-      />
 
       <ResultsActions 
         printData={{
