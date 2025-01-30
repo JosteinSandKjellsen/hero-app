@@ -37,7 +37,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       
       // Initialize model
       const model = genAI.getGenerativeModel({ 
-        model: 'gemini-pro'
+        model: 'gemini-1.5-flash'
       });
 
       // Structured prompt to prevent injection
