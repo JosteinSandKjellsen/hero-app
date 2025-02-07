@@ -6,6 +6,12 @@ interface UseHeroNameProps {
   personality: string;
   gender: 'male' | 'female';
   color: string;
+  scores: {
+    red: number;
+    yellow: number;
+    green: number;
+    blue: number;
+  };
 }
 
 interface UseHeroNameReturn {
@@ -14,7 +20,7 @@ interface UseHeroNameReturn {
   error: string | null;
 }
 
-export function useHeroName({ personality, gender, color }: UseHeroNameProps): UseHeroNameReturn {
+export function useHeroName({ personality, gender, color, scores }: UseHeroNameProps): UseHeroNameReturn {
   const [heroName, setHeroName] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -23,7 +29,7 @@ export function useHeroName({ personality, gender, color }: UseHeroNameProps): U
     let isMounted = true;
 
     async function getHeroName(): Promise<void> {
-      if (!personality || !gender || !color) return;
+      if (!personality || !gender || !color || !scores) return;
       
       try {
         const name = await fetch('/api/hero-name', {
@@ -31,7 +37,7 @@ export function useHeroName({ personality, gender, color }: UseHeroNameProps): U
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ personality, gender, color }),
+          body: JSON.stringify({ personality, gender, color, scores }),
         }).then(res => res.json());
 
         if (isMounted && name) {
@@ -55,7 +61,7 @@ export function useHeroName({ personality, gender, color }: UseHeroNameProps): U
     return () => {
       isMounted = false;
     };
-  }, [personality, gender, color]);
+  }, [personality, gender, color, scores]);
 
   return {
     heroName,

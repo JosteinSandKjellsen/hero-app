@@ -9,7 +9,13 @@ function getRandomDefaultName(): string {
 export async function generateHeroName(
   personality: string,
   gender: string,
-  color: string
+  color: string,
+  scores: {
+    red: number;
+    yellow: number;
+    green: number;
+    blue: number;
+  }
 ): Promise<string> {
   try {
     const response = await fetch('/api/hero-name', {
@@ -21,6 +27,7 @@ export async function generateHeroName(
         personality,
         gender,
         color,
+        scores,
       }),
     });
 
