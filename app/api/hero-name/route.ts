@@ -15,6 +15,12 @@ const requestSchema = z.object({
   gender: z.enum(['male', 'female', 'robot'] as const),
   color: z.enum(['red', 'yellow', 'green', 'blue'] as const),
   language: z.enum(['en', 'no'] as const),
+  scores: z.object({
+    red: z.number(),
+    yellow: z.number(),
+    green: z.number(),
+    blue: z.number()
+  })
 });
 
 function getRandomDefaultName(): string {
@@ -37,7 +43,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       
       // Initialize model
       const model = genAI.getGenerativeModel({ 
-        model: 'gemini-1.5-flash'
+        model: 'gemini-2.0-flash'
       });
 
       // Structured prompt to prevent injection
@@ -47,8 +53,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         `Gender: "${validatedData.gender}"`,
         `Color theme: "${validatedData.color}"`,
         '',
+        'Personality Score Analysis:',
+        `Red (Power/Confidence): ${validatedData.scores.red}%`,
+        `Yellow (Energy/Creativity): ${validatedData.scores.yellow}%`,
+        `Green (Harmony/Balance): ${validatedData.scores.green}%`,
+        `Blue (Logic/Intelligence): ${validatedData.scores.blue}%`,
+        '',
         'Rules:',
         '- Name must be 1-3 words',
+        '- Name should reflect the personality scores, especially high-scoring traits',
         `- Must be in ${validatedData.language === 'no' ? 'Norwegian' : 'English'}`,
         '- No common terms like "man", "woman", "boy", "girl"',
         '- Must be creative and unique',

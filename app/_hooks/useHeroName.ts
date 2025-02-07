@@ -10,7 +10,17 @@ interface HeroNameResponse {
 }
 
 interface UseHeroNameReturn {
-  generateHeroName: (personality: string, gender: 'male' | 'female', color: HeroColor) => Promise<string>;
+  generateHeroName: (
+    personality: string,
+    gender: 'male' | 'female',
+    color: HeroColor,
+    scores: {
+      red: number;
+      yellow: number;
+      green: number;
+      blue: number;
+    }
+  ) => Promise<string>;
   isGenerating: boolean;
 }
 
@@ -20,7 +30,13 @@ export function useHeroName(): UseHeroNameReturn {
   const generateHeroName = async (
     personality: string,
     gender: 'male' | 'female',
-    color: HeroColor
+    color: HeroColor,
+    scores: {
+      red: number;
+      yellow: number;
+      green: number;
+      blue: number;
+    }
   ): Promise<string> => {
     setIsGenerating(true);
     try {
@@ -29,7 +45,7 @@ export function useHeroName(): UseHeroNameReturn {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ personality, gender, color }),
+        body: JSON.stringify({ personality, gender, color, scores }),
       });
 
       if (!response.ok) {

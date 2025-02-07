@@ -148,6 +148,15 @@ export function useQuiz(): UseQuizReturn {
       const dominantPersonality = results[0];
 
       // Generate hero name
+      // Calculate percentage scores
+      const total = Object.values(answers).reduce((a: number, b: number) => a + b, 0);
+      const scores = {
+        red: Math.round((answers.red / total) * 100),
+        yellow: Math.round((answers.yellow / total) * 100),
+        green: Math.round((answers.green / total) * 100),
+        blue: Math.round((answers.blue / total) * 100)
+      };
+      
       const nameResponse = await fetch(`${window.location.origin}/api/hero-name`, {
         method: 'POST',
         headers: {
@@ -158,6 +167,7 @@ export function useQuiz(): UseQuizReturn {
           gender: userData.gender,
           color: dominantPersonality.color,
           language: locale,
+          scores,
         }),
       });
 
