@@ -59,13 +59,13 @@ export function StatsSection(): JSX.Element {
           // Convert color names to actual colors with higher brightness for better visibility
           switch (color) {
             case 'red':
-              return '#d17785';  // Red from tailwind config
+              return '#ae1819';  // Red from tailwind config
             case 'yellow':
-              return '#dcb184'; // Yellow from tailwind config
+              return '#eea328'; // Yellow from tailwind config
             case 'green':
-              return '#a9ca98'; // Green from tailwind config
+              return '#1f4735'; // Green from tailwind config
             case 'blue':
-              return '#414f98'; // Blue from tailwind config
+              return '#162b62'; // Blue from tailwind config
             default:
               return '#000000';
           }

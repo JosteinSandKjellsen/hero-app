@@ -53,16 +53,16 @@ html, body {
   }
 
   /* Preserve text colors */
-  .text-yellow-500 {
-    color: rgb(234, 179, 8) !important;
+  .text-yellow {
+    color: #eea328 !important;
   }
-  .text-red-600 {
-    color: rgb(220, 38, 38) !important;
+  .text-red {
+    color: #ae1819 !important;
   }
-  .text-green-600 {
-    color: rgb(22, 163, 74) !important;
+  .text-green {
+    color: #1f4735 !important;
   }
-  .text-blue-600 {
-    color: rgb(37, 99, 235) !important;
+  .text-blue {
+    color: #162b62 !important;
   }
 }

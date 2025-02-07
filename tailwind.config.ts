@@ -12,20 +12,20 @@ const config: Config = {
           light: 'rgba(17, 19, 60, 0.2)'
         },
         red: {
-          DEFAULT: '#d17785',
-          light: 'rgba(209, 119, 133, 0.2)'
+          DEFAULT: '#ae1819ff',
+          light: 'rgba(174, 24, 25, 0.2)'
         },
         green: {
-          DEFAULT: '#a9ca98',
-          light: 'rgba(169, 202, 152, 0.2)'
+          DEFAULT: '#1f4735ff',
+          light: 'rgba(31, 71, 53, 0.2)'
         },
         blue: {
-          DEFAULT: '#414f98',
-          light: 'rgba(65, 79, 152, 0.2)'
+          DEFAULT: '#162b62ff',
+          light: 'rgba(22, 43, 98, 0.2)'
         },
         yellow: {
-          DEFAULT: '#dcb184ff',
-          light: 'rgba(221, 178, 133, 0.2)'
+          DEFAULT: '#eea328ff',
+          light: 'rgba(238, 163, 40, 0.2)'
         },
         light: '#FCF8F3',
         dark: '#11133C',

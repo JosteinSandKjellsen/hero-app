@@ -20,10 +20,10 @@ export function SuperheroCard({ photoUrl, personality, userData, results = [] }:
 
   const getColorValue = (color: string): string => {
     switch (color) {
-      case 'red': return '#d17785';
-      case 'yellow': return '#dcb184ff';
-      case 'green': return '#a9ca98';
-      case 'blue': return '#414f98';
+      case 'red': return '#ae1819';
+      case 'yellow': return '#eea328';
+      case 'green': return '#1f4735';
+      case 'blue': return '#162b62';
       default: return '#11133C';
     }
   };
