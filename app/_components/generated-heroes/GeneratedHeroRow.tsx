@@ -26,7 +26,7 @@ export function GeneratedHeroRow({ hero, onDelete }: GeneratedHeroRowProps): JSX
     // Convert colorScores to the format "red:8,blue:5,green:3,yellow:4"
     const scores = Object.entries(hero.colorScores).map(([color, percentage]) => ({
       color,
-      score: Math.round(percentage / 10)
+      score: percentage
     }));
 
     const params = new URLSearchParams({

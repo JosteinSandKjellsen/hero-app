@@ -110,7 +110,7 @@ export function GeneratedHeroesTable(): JSX.Element {
                         gender: hero.gender,
                         color: hero.color,
                         scores: Object.entries(hero.colorScores)
-                          .map(([color, percentage]) => `${color}:${Math.round(percentage / 10)}`)
+                          .map(([color, percentage]) => `${color}:${percentage}`)
                           .join(','),
                         print: 'true'
                       });
