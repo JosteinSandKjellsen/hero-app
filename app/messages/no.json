@@ -407,6 +407,9 @@
   "latest": {
     "title": "Siste Helter"
   },
+  "personalitiesPage": {
+    "title": "Heltepersonligheter"
+  },
   "generatedHeroes": {
     "title": "Genererte Helter",
     "description": "En liste over alle genererte helter i systemet, viser de siste 50 oppføringene. Oppføringer eldre enn en måned fjernes automatisk.",

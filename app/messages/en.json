@@ -407,6 +407,9 @@
   "latest": {
     "title": "Latest Heroes"
   },
+  "personalitiesPage": {
+    "title": "Hero Personalities"
+  },
   "generatedHeroes": {
     "title": "Generated Heroes",
     "description": "A list of all generated heroes in the system, showing the last 50 entries. Entries older than a month are automatically removed.",
