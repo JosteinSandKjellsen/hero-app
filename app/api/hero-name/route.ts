@@ -63,7 +63,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         '- Name must be 1-3 words',
         '- Name should reflect the personality scores, especially high-scoring traits',
         `- Must be in ${validatedData.language === 'no' ? 'Norwegian' : 'English'}`,
-        '- No common terms like "man", "woman", "boy", "girl"',
+        '- Can be inspired by mythology, nature, or technology',
         '- Must be creative and unique',
         '- Must reflect personality and color',
         '- Return ONLY the name, nothing else'
