@@ -5,6 +5,7 @@ A Next.js application that generates personalized superhero identities based on 
 ## Features
 
 ### Core Features
+
 - Personality quiz to determine superhero traits and matching hero colors
 - AI-powered superhero image generation using Leonardo AI
 - Superhero name generation using Google's Gemini AI
@@ -17,6 +18,7 @@ A Next.js application that generates personalized superhero identities based on 
 - Gallery view of all generated heroes
 
 ### Personality Quiz & Assessment
+
 - Interactive quiz with dynamically loaded questions
 - Real-time progress tracking
 - Personality type matching algorithm
@@ -24,13 +26,16 @@ A Next.js application that generates personalized superhero identities based on 
 - Immediate feedback and trait matching
 
 ### AI Integration
+
 - Leonardo AI integration for superhero image generation
 - Google's Gemini AI for personalized hero name creation
 - Real-time image processing and transformation
 - Custom prompts based on personality traits and colors
 
 ### Latest Heroes
+
 View the three most recently generated superheroes on the `/latest` page. This feature showcases:
+
 - The three most recent hero transformations in a card layout
 - Interactive cards displaying personality types and traits
 - Generated hero names with AI-created images
@@ -38,7 +43,9 @@ View the three most recently generated superheroes on the `/latest` page. This f
 - Language-specific hero descriptions
 
 ### Statistics & Analytics
+
 Access today's hero generation statistics on the `/stats` page to see:
+
 - Total heroes generated for the current day
 - Real-time distribution of personality types
 - Popular hero colors and traits for the day
@@ -47,7 +54,9 @@ Access today's hero generation statistics on the `/stats` page to see:
 - Color distribution visualization
 
 ### Generated Heroes Gallery
+
 Browse and manage all generated heroes on the `/generated-heroes` page, featuring:
+
 - Complete list of all generated heroes with pagination
 - Quick actions for printing individual heroes
 - Ability to delete unwanted hero entries
@@ -56,6 +65,7 @@ Browse and manage all generated heroes on the `/generated-heroes` page, featurin
 - Sort and filter capabilities
 
 ### Camera Integration
+
 - Real-time camera capture functionality
 - Image preview and retake options
 - Automatic image quality optimization
@@ -63,6 +73,7 @@ Browse and manage all generated heroes on the `/generated-heroes` page, featurin
 - Fallback to file upload when camera is unavailable
 
 ### Internationalization
+
 - Full support for English and Norwegian languages
 - Language-specific personality descriptions
 - Localized user interface elements
@@ -70,6 +81,7 @@ Browse and manage all generated heroes on the `/generated-heroes` page, featurin
 - Easy language switching with preserved state
 
 ### Results Sharing
+
 - Email delivery of personalized hero results
 - Print-friendly view with custom layouts
 - Shareable URLs for hero profiles
@@ -146,11 +158,13 @@ The database includes two main models:
 1. The project uses Prisma's Data Platform for the database. Get your database URL from [Prisma Data Platform](https://cloud.prisma.io).
 
 2. Add the database URL to your environment variables:
-   ```
+
+   ```bash
    DATABASE_URL="prisma+postgres://accelerate.prisma-data.net/?api_key=your_database_api_key_here"
    ```
 
 3. Initialize the database:
+
    ```bash
    # Install Prisma CLI globally (if not already installed)
    npm install -g prisma
@@ -163,6 +177,7 @@ The database includes two main models:
    ```
 
 4. (Optional) Use Prisma Studio to view and edit data:
+
    ```bash
    npx prisma studio
    ```
@@ -202,6 +217,7 @@ The database includes two main models:
      2. Create a new project in [Zoho API Console](https://api-console.zoho.com/)
      3. Create a self-client with Mail.Send scope
      4. Use the provided script to get refresh token:
+
         ```bash
         npm run get-zoho-token
         ```
@@ -283,4 +299,3 @@ Example:
 
 ```bash
 http://localhost:3000/print?name=John%20Doe&heroName=Thunder%20Strike&imageId=abc123&personalityName=The%20Protector&color=blue&heroScore=8&gender=male
-```
