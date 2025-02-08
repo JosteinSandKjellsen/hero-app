@@ -65,7 +65,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         `- Must be in ${validatedData.language === 'no' ? 'Norwegian' : 'English'}`,
         '- Can be inspired by mythology, nature, or technology',
         '- Must be creative and unique',
-        '- Must reflect personality and color',
+        '- Should reflect personality and color',
         '- Return ONLY the name, nothing else'
       ].join('\n');
 
