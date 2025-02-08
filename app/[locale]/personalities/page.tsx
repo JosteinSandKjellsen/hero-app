@@ -1,5 +1,4 @@
 import { useTranslations } from 'next-intl';
-import { getTranslations } from 'next-intl/server';
 import { PersonalitySection } from '@/app/_components/personalities/PersonalitySection';
 import { personalities } from '@/app/_data/personalities';
 
