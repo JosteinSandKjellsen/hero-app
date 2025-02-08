@@ -5,32 +5,122 @@ A Next.js application that generates personalized superhero identities based on 
 ## Features
 
 ### Core Features
-- Personality quiz to determine superhero traits
+- Personality quiz to determine superhero traits and matching hero colors
 - AI-powered superhero image generation using Leonardo AI
 - Superhero name generation using Google's Gemini AI
-- Email delivery of hero results
-- Print view for saving hero results
+- Real-time camera capture for hero transformation photos
+- Multi-language support (English and Norwegian)
+- Email delivery of personalized hero results
+- Print view with shareable URLs
+- Interactive personality type exploration
+- Daily statistics and hero generation tracking
+- Gallery view of all generated heroes
+
+### Personality Quiz & Assessment
+- Interactive quiz with dynamically loaded questions
+- Real-time progress tracking
+- Personality type matching algorithm
+- Color profile analysis based on responses
+- Immediate feedback and trait matching
+
+### AI Integration
+- Leonardo AI integration for superhero image generation
+- Google's Gemini AI for personalized hero name creation
+- Real-time image processing and transformation
+- Custom prompts based on personality traits and colors
 
 ### Latest Heroes
 View the three most recently generated superheroes on the `/latest` page. This feature showcases:
 - The three most recent hero transformations in a card layout
 - Interactive cards displaying personality types and traits
 - Generated hero names with AI-created images
-- Quick access to print individual hero results
+- Quick access to print individual results
+- Language-specific hero descriptions
 
-### Statistics
+### Statistics & Analytics
 Access today's hero generation statistics on the `/stats` page to see:
 - Total heroes generated for the current day
 - Real-time distribution of personality types
 - Popular hero colors and traits for the day
 - Insights into personality matching patterns
+- Trend analysis and popularity metrics
+- Color distribution visualization
 
-### Generated Heroes
+### Generated Heroes Gallery
 Browse and manage all generated heroes on the `/generated-heroes` page, featuring:
 - Complete list of all generated heroes with pagination
 - Quick actions for printing individual heroes
 - Ability to delete unwanted hero entries
 - Detailed view of hero information including names, personality types, and images
+- Multi-language support for hero descriptions
+- Sort and filter capabilities
+
+### Camera Integration
+- Real-time camera capture functionality
+- Image preview and retake options
+- Automatic image quality optimization
+- Mobile-responsive camera interface
+- Fallback to file upload when camera is unavailable
+
+### Internationalization
+- Full support for English and Norwegian languages
+- Language-specific personality descriptions
+- Localized user interface elements
+- Cultural adaptation of hero names and traits
+- Easy language switching with preserved state
+
+### Results Sharing
+- Email delivery of personalized hero results
+- Print-friendly view with custom layouts
+- Shareable URLs for hero profiles
+- Social media sharing capabilities
+- Option to download hero cards as images
+
+## Pages & Routes
+
+The application supports multiple languages through the `[locale]` parameter (e.g., 'en' for English, 'no' for Norwegian). All routes are available in both languages.
+
+### Main Pages
+
+- **`/[locale]`**: Home page
+  - Take the personality quiz
+  - Answer questions to determine your superhero traits
+  - Upload a photo for AI transformation
+  - Get your personalized superhero identity
+
+- **`/[locale]/personalities`**: Personality Types
+  - View all available personality types
+  - Learn about different hero archetypes
+  - Understand traits and characteristics of each type
+
+- **`/[locale]/latest`**: Latest Heroes
+  - View the three most recently generated heroes
+  - Interactive cards showing personality types and traits
+  - Generated names and AI-created images
+  - Quick access to print individual results
+
+- **`/[locale]/generated-heroes`**: Hero Gallery
+  - Browse complete list of generated heroes
+  - Pagination for easy navigation
+  - Delete unwanted entries
+  - Print individual hero results
+
+- **`/[locale]/stats`**: Statistics Dashboard
+  - View today's hero generation statistics
+  - See personality type distribution
+  - Track popular hero colors and traits
+  - Real-time insights into matching patterns
+
+- **`/[locale]/print`**: Print View
+  - Printer-friendly display of hero results
+  - Accessible via query parameters:
+    - `name`: Person's real name
+    - `heroName`: Generated superhero name
+    - `imageId`: Generated image identifier
+    - `personalityName`: Personality type
+    - `color`: Personality color (red, yellow, green, blue)
+    - `heroScore`: Hero score (0-10)
+    - `gender`: (optional) 'male' or 'female'
 
 ## Database Setup
 
