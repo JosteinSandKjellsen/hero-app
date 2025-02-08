@@ -8,12 +8,12 @@ interface CombinedLogoProps {
 
 export function CombinedLogo({ alt }: CombinedLogoProps): JSX.Element {
   return (
-    <div className="w-12 h-12 relative animate-float-subtle mt-1">
+    <div className="w-16 h-16 relative animate-float-subtle">
       <Image
         src="/images/superheroes/heroapp-icon.png"
         alt={alt}
         fill
-        sizes="48px"
+        sizes="64px"
         className="object-contain"
         priority
       />

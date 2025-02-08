@@ -16,7 +16,7 @@ export function Header({ variant = 'quiz' }: HeaderProps): JSX.Element {
     return (
       <div className="relative text-center mb-8">
         <div className="flex justify-center">
-          <Link href="/" locale={false} className="bg-white/10 p-3 rounded-full shadow-2xl backdrop-blur-lg border border-white/20 hover:bg-white/20 transition-colors" onClick={(e) => {
+          <Link href="/" locale={false} className="bg-white/10 p-1 rounded-full shadow-2xl backdrop-blur-lg border border-white/20 hover:bg-white/20 transition-colors" onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
             window.location.href = '/';
@@ -31,7 +31,7 @@ export function Header({ variant = 'quiz' }: HeaderProps): JSX.Element {
   return (
     <div className="relative text-center mb-8">
       <div className="flex justify-center mb-4">
-          <Link href="/" locale={false} className="bg-white/10 p-3 rounded-full shadow-2xl backdrop-blur-lg border border-white/20 hover:bg-white/20 transition-colors" onClick={(e) => {
+          <Link href="/" locale={false} className="bg-white/10 p-1 rounded-full shadow-2xl backdrop-blur-lg border border-white/20 hover:bg-white/20 transition-colors" onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
             window.location.href = '/';
