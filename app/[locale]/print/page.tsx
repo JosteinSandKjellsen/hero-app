@@ -135,12 +135,14 @@ function PrintContent(): JSX.Element {
         alignItems: 'flex-start',
         overflow: 'hidden'
       }}>
-        <SuperheroCard
-          photoUrl={photoUrl}
-          personality={personality}
-          userData={userData}
-          results={scores}
-        />
+        {photoUrl && (
+          <SuperheroCard
+            photoUrl={photoUrl}
+            personality={personality}
+            userData={userData}
+            results={scores}
+          />
+        )}
       </div>
     </div>
   );
