@@ -147,11 +147,11 @@
   },
   "header": {
     "title": "Hvilken Superhelt Er Du?",
-    "subtitle": "Oppdag din indre superhelt gjennom denne personlighetstesten!",
+    "subtitle": "",
     "logoAlt": "Hero App Logo"
   },
   "registration": {
-    "title": "Finn din superhelt-identitet",
+    "title": "Oppdag din indre superhelt gjennom denne personlighetstesten!",
     "name": {
       "label": "Fornavn",
       "placeholder": "Skriv inn ditt fornavn",
