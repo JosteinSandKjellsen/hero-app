@@ -5,20 +5,181 @@ html, body {
   padding: 0;
 }
 
+/* Screen preview styles */
+@media screen {
+  .min-h-screen {
+    min-height: 100vh !important;
+    padding: 2rem !important;
+    overflow: visible !important;
+  }
+
+  [data-card-clone] {
+    width: 100mm !important;
+    height: 148mm !important;
+    margin: 0 auto !important;
+    border-width: 10px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* Header area */
+  [data-card-clone] > div:first-child {
+    flex-shrink: 0 !important;
+    height: 15mm !important;
+    padding: 2mm 3mm !important;
+  }
+
+  /* Image container */
+  .aspect-\[3\/4\] {
+    flex: 1 !important;
+    height: 110mm !important;
+    overflow: hidden !important;
+  }
+
+  .aspect-\[3\/4\] > img {
+    object-position: top !important;
+    min-height: 100% !important;
+  }
+
+  /* Footer with name and scores */
+  [data-card-clone] > div:last-child {
+    padding: 1mm 3mm !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  /* Score indicators */
+  .score-circle {
+    height: 7mm !important;
+    width: 11mm !important;
+    padding-left: 2mm !important;
+    gap: 1mm !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .score-circle > div {
+    width: 4mm !important;
+    height: 4mm !important;
+  }
+}
+
 /* Print-specific styles */
 @media print {
+  @viewport {
+    width: 100mm;
+    height: 148mm;
+  }
+
+  @-ms-viewport {
+    width: 100mm;
+    height: 148mm;
+  }
+
   @page {
-    size: A4 portrait;
+    size: 100mm 148mm;
     margin: 0;
+    transform-origin: top left;
+    -webkit-transform-origin: top left;
   }
   
-  html, body {
+  html {
+    width: 100mm !important;
+    height: 148mm !important;
+    transform: scale(1) !important;
+    -webkit-transform: scale(1) !important;
+  }
+
+  body {
     background-color: white !important;
-    margin: 0;
-    padding: 0;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100mm !important;
+    height: 148mm !important;
+    overflow: hidden !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     color-adjust: exact !important;
+    transform-origin: top left !important;
+    -webkit-transform-origin: top left !important;
+  }
+
+  /* Ensure content fits paper width */
+  .min-h-screen {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100mm !important;
+    height: 148mm !important;
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+  }
+
+  /* Card container */
+  [data-card-clone] {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 148mm !important;
+    width: 100mm !important;
+    max-width: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    border-width: 10px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Header area (personality) */
+  [data-card-clone] > div:first-child {
+    flex-shrink: 0 !important;
+    height: 15mm !important;
+    padding: 2mm 3mm !important;
+  }
+
+  /* Image container */
+  .aspect-\[3\/4\] {
+    flex: 1 !important;
+    position: relative !important;
+    height: 110mm !important; /* 148mm - 15mm (header) - 13mm (footer) - 10mm (borders) */
+    overflow: hidden !important;
+  }
+
+  /* Keep image top-aligned and allow bottom crop */
+  .aspect-\[3\/4\] > img {
+    object-position: top !important;
+    height: auto !important;
+    min-height: 100% !important;
+  }
+
+  /* Footer with name and scores */
+  [data-card-clone] > div:last-child {
+    flex-shrink: 0 !important;
+    height: 13mm !important;
+    border-top: none !important;
+    padding: 1mm 3mm !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  /* Adjust score circles in footer */
+  .score-circle {
+    height: 7mm !important;
+    width: 11mm !important;
+    padding-left: 2mm !important;
+    gap: 1mm !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  /* Adjust icon and score text size */
+  .score-circle > div {
+    width: 4mm !important;
+    height: 4mm !important;
+  }
+
+  .score-circle span {
+    font-size: 10px !important;
   }
 
   /* Remove shadows */
