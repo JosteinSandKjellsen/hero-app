@@ -1,7 +1,7 @@
 import { env } from '../config/env';
 import { API_CONFIG } from '../config/api';
 import { sleep } from '../utils/async';
-import { ApiError } from '../errors';
+import { ApiError, RateLimitError } from '../errors';
 import type { GenerateImageParams, UploadUrlResponse } from '../types/leonardo';
 
 export class LeonardoAiService {
@@ -90,67 +90,89 @@ export class LeonardoAiService {
     }
   }
 
-  async generateImage(params: GenerateImageParams): Promise<string> {
-    try {
-      const response = await fetch(`${API_CONFIG.leonardo.baseUrl}/generations`, {
-        method: 'POST',
-        headers: this.headers,
-        body: JSON.stringify({
-          height: params.height || 768,
-          width: params.width || 512,
-          modelId: API_CONFIG.leonardo.modelId,
-          styleUUID: API_CONFIG.leonardo.styleUUID,
-          num_images: 1,
-          presetStyle: 'LEONARDO',
-          sd_version: API_CONFIG.leonardo.version,
-          prompt: params.prompt,
-          nsfw: false,
-          negative_prompt: params.negativePrompt,
-          contrast: 1.3,
-          controlnets: params.initImageId ? [
-            {
-              preprocessorId: 133, // ID for the image preprocessor
-              initImageType: "UPLOADED",
-              initImageId: params.initImageId,
-              strengthType: "High"
-            }
-          ] : [],
-          elements: [],
-          guidance_scale: 7,
-          highContrast: false,
-          num_inference_steps: 10,
-          photoReal: false,
-          scheduler: "LEONARDO",
-          tiling: false,
-          transparency: "disabled",
-          ultra: false,
-          userElements: [],
-          weighting: 0.75
-        }),
-      });
+  async generateImage(params: GenerateImageParams, maxRetries = 1): Promise<string> {
+    let attempts = 0;
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new ApiError(
-          errorData.error || `API request failed: ${response.statusText}`,
-          response.status
-        );
+    while (attempts <= maxRetries) {
+      try {
+        const response = await fetch(`${API_CONFIG.leonardo.baseUrl}/generations`, {
+          method: 'POST',
+          headers: this.headers,
+          body: JSON.stringify({
+            height: params.height || 768,
+            width: params.width || 512,
+            modelId: API_CONFIG.leonardo.modelId,
+            styleUUID: API_CONFIG.leonardo.styleUUID,
+            num_images: 1,
+            presetStyle: 'LEONARDO',
+            sd_version: API_CONFIG.leonardo.version,
+            prompt: params.prompt,
+            nsfw: false,
+            negative_prompt: params.negativePrompt,
+            contrast: 1.3,
+            controlnets: params.initImageId ? [
+              {
+                preprocessorId: 133, // ID for the image preprocessor
+                initImageType: "UPLOADED",
+                initImageId: params.initImageId,
+                strengthType: "High"
+              }
+            ] : [],
+            elements: [],
+            guidance_scale: 7,
+            highContrast: false,
+            num_inference_steps: 10,
+            photoReal: false,
+            scheduler: "LEONARDO",
+            tiling: false,
+            transparency: "disabled",
+            ultra: false,
+            userElements: [],
+            weighting: 0.75
+          }),
+        });
+
+        if (response.status === 429) {
+          if (attempts === maxRetries) {
+            throw new RateLimitError(
+              'Many users are creating heroes right now. Please wait a moment and try again.',
+              10
+            );
+          }
+          console.log('Rate limited, waiting 10 seconds before retry...');
+          await sleep(10000); // 10 second delay
+          attempts++;
+          continue;
+        }
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new ApiError(
+            errorData.error || `API request failed: ${response.statusText}`,
+            response.status
+          );
+        }
+
+        const data = await response.json();
+
+        if (!data.sdGenerationJob?.generationId) {
+          throw new ApiError('No generation ID received', 500);
+        }
+
+        return data.sdGenerationJob.generationId;
+      } catch (error) {
+        if (error instanceof RateLimitError) {
+          throw error; // Let the UI handle rate limit errors specifically
+        }
+        console.error('Error generating image:', error);
+        if (error instanceof ApiError) {
+          throw error;
+        }
+        throw new ApiError('Failed to generate image', 500);
       }
-
-      const data = await response.json();
-
-      if (!data.sdGenerationJob?.generationId) {
-        throw new ApiError('No generation ID received', 500);
-      }
-
-      return data.sdGenerationJob.generationId;
-    } catch (error) {
-      console.error('Error generating image:', error);
-      if (error instanceof ApiError) {
-        throw error;
-      }
-      throw new ApiError('Failed to generate image', 500);
     }
+
+    throw new ApiError('Maximum retries exceeded', 500);
   }
 
   async deleteImage(imageId: string, type: 'initial' | 'generated' = 'initial'): Promise<void> {

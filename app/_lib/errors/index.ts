@@ -12,6 +12,13 @@ export class ApiError extends AppError {
   }
 }
 
+export class RateLimitError extends ApiError {
+  constructor(message: string, public retryAfter: number = 10) {
+    super(message, 429);
+    this.name = 'RateLimitError';
+  }
+}
+
 export class ValidationError extends AppError {
   constructor(message: string) {
     super(message);
