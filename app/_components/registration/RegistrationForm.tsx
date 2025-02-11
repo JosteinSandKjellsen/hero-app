@@ -23,6 +23,8 @@ export function RegistrationForm({ onSubmit }: RegistrationFormProps): JSX.Eleme
       const errors: Partial<Record<keyof UserData, string>> = {};
       if (!values.name.trim()) {
         errors.name = t('name.required');
+      } else if (values.name.trim().length > 21) {
+        errors.name = t('name.maxLength');
       }
       return errors;
     },

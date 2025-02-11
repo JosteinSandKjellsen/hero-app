@@ -155,7 +155,8 @@
     "name": {
       "label": "Fornavn",
       "placeholder": "Skriv inn ditt fornavn",
-      "required": "Navn er påkrevd"
+      "required": "Navn er påkrevd",
+      "maxLength": "Navn kan ikke være lenger enn 21 tegn"
     },
     "gender": {
       "label": "Min helt er en..",

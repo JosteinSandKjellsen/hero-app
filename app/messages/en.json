@@ -155,7 +155,8 @@
     "name": {
       "label": "First name",
       "placeholder": "Enter your first name",
-      "required": "Name is required"
+      "required": "Name is required",
+      "maxLength": "Name cannot be longer than 21 characters"
     },
     "gender": {
       "label": "My hero is a..",
