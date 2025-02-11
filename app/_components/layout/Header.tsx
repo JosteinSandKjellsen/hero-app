@@ -42,9 +42,6 @@ export function Header({ variant = 'quiz' }: HeaderProps): JSX.Element {
       <h1 className={`text-5xl font-bangers tracking-wider ${textColor} mb-4 drop-shadow-lg`}>
         {t('title')}
       </h1>
-      <p className="text-lg text-light/90">
-        {t('subtitle')}
-      </p>
     </div>
   );
 }
