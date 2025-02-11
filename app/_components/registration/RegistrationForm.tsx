@@ -12,7 +12,7 @@ interface RegistrationFormProps {
 }
 
 export function RegistrationForm({ onSubmit }: RegistrationFormProps): JSX.Element {
-  const t = useTranslations('registration');
+  const t = useTranslations();
   
   const { values, errors, handleChange, handleSubmit } = useForm<UserData>({
     initialValues: {
@@ -22,7 +22,7 @@ export function RegistrationForm({ onSubmit }: RegistrationFormProps): JSX.Eleme
     validate: (values) => {
       const errors: Partial<Record<keyof UserData, string>> = {};
       if (!values.name.trim()) {
-        errors.name = t('name.required');
+        errors.name = t('registration.name.required');
       }
       return errors;
     },
@@ -30,19 +30,25 @@ export function RegistrationForm({ onSubmit }: RegistrationFormProps): JSX.Eleme
   });
 
   return (
-    <div className="bg-white/10 backdrop-blur-lg rounded-xl shadow-2xl p-6 md:p-8 animate-fadeIn border border-white/20">
-      <h2 className="text-2xl font-bold text-white mb-6">
-        {t('title')}
-      </h2>
+    <div className="comic-form-container animate-fadeIn relative">
+      <div className="comic-3d-text">
+        <div className="text-layer" data-text={t('hero.title.3d')}>{t('hero.title.3d')}</div>
+      </div>
+      <div className="mb-8 text-center flex flex-col items-center justify-center gap-2">
+        <div className="text-5xl mb-4" style={{ visibility: 'hidden' }}>Placeholder</div>
+        <p className="text-[22px] text-dark/90 uppercase font-wild-words">
+          {t('header.subtitle')}
+        </p>
+      </div>
       
       <form onSubmit={handleSubmit} className="space-y-6">
         <FormField
           id="name"
           name="name"
-          label={t('name.label')}
+          label={t('registration.name.label')}
           value={values.name}
           onChange={handleChange}
-          placeholder={t('name.placeholder')}
+          placeholder={t('registration.name.placeholder')}
           error={errors.name}
         />
 
@@ -52,7 +58,7 @@ export function RegistrationForm({ onSubmit }: RegistrationFormProps): JSX.Eleme
           error={errors.gender}
         />
 
-        <SubmitButton>{t('start')}</SubmitButton>
+        <SubmitButton>{t('registration.start')}</SubmitButton>
       </form>
     </div>
   );

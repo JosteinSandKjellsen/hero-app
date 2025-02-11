@@ -33,6 +33,7 @@ const config: Config = {
       fontFamily: {
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
         bangers: ['var(--font-bangers)', 'cursive'],
+        'wild-words': ['var(--font-wild-words)', 'system-ui', 'sans-serif'],
       },
       backgroundImage: {
         'hero-gradient': 'linear-gradient(to right, #11133C, #d17785)',

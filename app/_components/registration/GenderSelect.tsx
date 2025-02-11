@@ -9,36 +9,36 @@ interface GenderSelectProps {
 }
 
 export function GenderSelect({ value, onChange, error }: GenderSelectProps): JSX.Element {
-  const t = useTranslations('registration.gender');
+  const t = useTranslations();
 
   const genderOptions = [
-    { value: 'male', label: t('male') },
-    { value: 'female', label: t('female') },
-    { value: 'robot', label: t('robot') },
+    { value: 'male', label: t('registration.gender.male') },
+    { value: 'female', label: t('registration.gender.female') },
+    { value: 'robot', label: t('registration.gender.robot') },
   ];
 
   return (
     <div>
-      <label className="block text-sm font-medium text-white mb-1">
-        {t('label')}
+      <label className="flex items-center text-lg text-dark mb-2 uppercase min-h-[2rem] font-wild-words">
+        {t('registration.gender.label')}
       </label>
-      <div className="flex gap-4">
+      <div className="comic-radio-group">
         {genderOptions.map((option) => (
-          <label key={option.value} className="flex items-center">
+          <label key={option.value} className="comic-radio-label">
             <input
               type="radio"
               name="gender"
               value={option.value}
               checked={value === option.value}
               onChange={onChange}
-              className="w-4 h-4 text-purple-600 focus:ring-purple-500 bg-white/10 border-white/20"
+              className="comic-radio-input"
             />
-            <span className="ml-2 text-white">{option.label}</span>
+            <span className="text-dark">{option.label}</span>
           </label>
         ))}
       </div>
       {error && (
-        <p className="mt-1 text-sm text-red-300">{error}</p>
+        <p className="mt-2 text-sm font-bold text-red-600">{error}</p>
       )}
     </div>
   );

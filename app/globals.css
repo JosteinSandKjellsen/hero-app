@@ -2,6 +2,204 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .comic-footer {
+    @apply w-full;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 50;
+  }
+
+  @media (max-width: 768px) {
+    .comic-footer {
+      position: relative;
+    }
+  }
+
+  .comic-footer-content {
+    @apply w-full relative bg-white px-6;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.8);
+    border-top: 3px solid black;
+  }
+
+  .comic-footer-content::before {
+    content: '';
+    position: absolute;
+    left: 4px;
+    right: 4px;
+    top: 4px;
+    height: 2px;
+    border-top: 2px dashed black;
+    pointer-events: none;
+    opacity: 0.1;
+  }
+
+  .comic-footer-button {
+    @apply text-black/80 hover:text-black transition-colors;
+    transform: scale(1);
+    transition: transform 0.2s ease;
+  }
+
+  .comic-footer-button:hover {
+    transform: scale(1.1);
+  }
+
+  .comic-footer-logo {
+    @apply h-6 w-[120px] object-contain opacity-80 transition-all;
+  }
+
+  .comic-footer-logo:hover {
+    @apply opacity-100;
+    transform: scale(1.05);
+  }
+
+  .comic-dots-overlay {
+    pointer-events: none;
+    position: relative;
+    mix-blend-mode: overlay;
+    background-image: radial-gradient(#fff 1px, transparent 1.5px);
+    background-size: 12px 12px;
+    opacity: 0.5;
+    mask-image: radial-gradient(circle at center, transparent 0%, black 70%);
+    -webkit-mask-image: radial-gradient(circle at center, transparent 0%, black 70%);
+  }
+
+  .comic-frame {
+    @apply bg-white p-6 mx-auto my-8 max-w-4xl relative;
+    box-shadow: 0 0 0 8px white,
+                0 0 0 10px #000,
+                10px 10px 20px rgba(0, 0, 0, 0.3);
+    background-image: repeating-linear-gradient(to bottom, transparent, transparent 31px, rgba(0, 0, 0, 0.05) 31px, rgba(0, 0, 0, 0.05) 32px);
+  }
+
+  .comic-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 3px solid black;
+    pointer-events: none;
+  }
+
+  .comic-frame::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border: 2px solid #000;
+    opacity: 0.1;
+    pointer-events: none;
+  }
+
+  .comic-form-container {
+    @apply bg-white px-6 py-12 relative;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.8);
+    border: 3px solid black;
+  }
+
+  .comic-form-container::before {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border: 2px solid black;
+    border-style: dashed;
+    pointer-events: none;
+  }
+
+  .comic-input {
+    @apply bg-white border-2 border-black px-3 w-full uppercase;
+    height: 3rem;
+    line-height: 3rem;
+    background-image: repeating-linear-gradient(to bottom, transparent, transparent 31px, rgba(0, 0, 0, 0.05) 31px, rgba(0, 0, 0, 0.05) 32px);
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.8);
+    @apply font-wild-words;
+  }
+
+  .comic-input::placeholder {
+    text-transform: uppercase;
+  }
+
+  .comic-input:focus {
+    @apply outline-none;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.8);
+    transform: translate(-1px, -1px);
+  }
+
+  .comic-radio-group {
+    @apply flex flex-wrap gap-4 mt-2;
+  }
+
+  .comic-radio-label {
+    @apply inline-flex items-center justify-center bg-white border-2 border-black px-4 cursor-pointer uppercase;
+    min-height: 3rem;
+    min-width: 120px;
+    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.8);
+    @apply font-wild-words;
+    padding-top: 0.25rem;
+  }
+
+  .comic-radio-label span {
+    @apply text-center;
+  }
+
+  .comic-radio-label:has(input:checked) {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.8);
+    background: linear-gradient(135deg, #ffd700 0%, #ff4500 100%);
+    color: white;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .comic-radio-label:has(input:checked)::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(#fff 1px, transparent 1.5px);
+    background-size: 8px 8px;
+    opacity: 0.3;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+  }
+
+  .comic-radio-input {
+    @apply sr-only;
+  }
+
+  .comic-button {
+    @apply text-black border-2 border-black w-full text-xl uppercase;
+    height: 3rem;
+    @apply font-wild-words;
+    @apply flex items-center justify-center;
+    padding-top: 0.25rem;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.8);
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #ffd700 0%, #ff4500 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .comic-button::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(#fff 1px, transparent 1.5px);
+    background-size: 8px 8px;
+    opacity: 0.3;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+  }
+
+  .comic-button:hover {
+    background: linear-gradient(135deg, #ffed4a 0%, #ff5722 100%);
+  }
+
+  .comic-button:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.8);
+  }
+}
+
 @layer base {
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-bangers);
@@ -11,6 +209,10 @@
 @layer utilities {
   .font-bangers {
     font-family: var(--font-bangers);
+  }
+
+  .font-wild-words {
+    font-family: var(--font-wild-words);
   }
 
   .animate-fadeIn {
@@ -40,6 +242,49 @@
   50% {
     transform: translateY(-10px);
   }
+}
+
+.comic-3d-text {
+  position: absolute;
+  top: -45px;
+  left: 0;
+  width: 100%;
+  font-family: var(--font-bangers);
+  font-size: 6.5rem;
+  text-align: center;
+  transform: rotate(-8deg) skew(-5deg);
+  line-height: 1;
+  z-index: 10;
+  mix-blend-mode: normal;
+  isolation: isolate;
+}
+
+.comic-3d-text .text-layer {
+  position: relative;
+  display: inline-block;
+  color: #ffd700;
+  text-shadow: 
+    3px 3px 0 #ff4500,
+    -3px -3px 0 #ff4500,
+    6px 6px 0 #000,
+    -6px -6px 0 #000,
+    9px 9px 0 #000,
+    12px 12px 0 #000,
+    15px 15px 20px rgba(0,0,0,0.4);
+  animation: float 4s ease-in-out infinite;
+  letter-spacing: 2px;
+}
+
+.comic-3d-text .text-layer::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  background-image: radial-gradient(circle, black 2px, transparent 2.1px);
+  background-size: 7px 7px;
+  mask-image: linear-gradient(to top, black 70%, transparent);
+  -webkit-mask-image: linear-gradient(to top, black 70%, transparent);
+  opacity: 0.15;
+  pointer-events: none;
 }
 
 @keyframes shimmer {

@@ -18,13 +18,13 @@ export function Footer({ variant }: FooterProps = {}): JSX.Element {
   const showLanguageSwitcher = variant === 'registration' || variant === 'stats';
 
   return (
-    <footer className="w-full">
-      <div className="w-full bg-white/20 backdrop-blur-lg border-t border-white/30 shadow-lg relative">
-        <div className="max-w-3xl mx-auto flex items-center px-6 py-4">
+    <footer className="comic-footer">
+      <div className="comic-footer-content">
+        <div className="max-w-3xl mx-auto flex items-center h-10">
           <div className="w-[120px] flex items-center">
             <button
               onClick={() => setIsPrivacyOpen(true)}
-              className="text-white/80 hover:text-white transition-colors"
+              className="comic-footer-button"
               title={t('button')}
               aria-label={t('button')}
             >
@@ -33,11 +33,11 @@ export function Footer({ variant }: FooterProps = {}): JSX.Element {
           </div>
           <div className="flex-1 flex justify-center">
             <Image
-              src="https://bouvet.fotoware.cloud/fotoweb/resources/logos/main.png"
+              src="https://upload.wikimedia.org/wikipedia/commons/f/fd/Bouvet_Logo_Colossus.svg"
               alt="Bouvet Logo"
               width={120}
               height={24}
-              className="h-6 w-[120px] object-contain opacity-90 hover:opacity-100 transition-opacity"
+              className="comic-footer-logo [filter:brightness(0)]"
             />
           </div>
           <div className="w-[120px] flex justify-end">

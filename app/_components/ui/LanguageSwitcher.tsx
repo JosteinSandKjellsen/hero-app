@@ -18,34 +18,35 @@ export function LanguageSwitcher(): React.JSX.Element {
   };
 
   return (
-    <div className="flex items-center gap-[0.4rem]">
-      <span className={`text-xs font-medium text-white ${locale === 'no' ? 'opacity-100' : 'opacity-50'}`}>no</span>
+    <div className="flex items-center gap-2">
       <button
-        onClick={() => switchLocale(locale === 'en' ? 'no' : 'en')}
-        disabled={isChanging}
-        className={`relative w-[2.3rem] h-[1.5rem] rounded-full transition-colors duration-200 flex items-center bg-white/10 border border-white/20 overflow-hidden ${isChanging ? 'opacity-50 cursor-not-allowed' : ''}`}
+        onClick={() => switchLocale('no')}
+        disabled={isChanging || locale === 'no'}
+        className={`relative h-7 px-2 bg-white border-2 border-black text-sm uppercase font-wild-words transition-all ${
+          locale === 'no'
+            ? 'text-white transform translate-y-[1px] shadow-[1px_1px_0_rgba(0,0,0,0.8)]'
+            : 'text-black hover:translate-y-[-1px] shadow-[2px_2px_0_rgba(0,0,0,0.8)]'
+        } ${isChanging ? 'opacity-50 cursor-not-allowed' : ''}`}
+        style={{
+          background: locale === 'no' ? 'linear-gradient(135deg, #ffd700 0%, #ff4500 100%)' : 'white',
+        }}
       >
-        {isChanging ? (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <LoadingSpinner size="sm" />
-          </div>
-        ) : (
-          <div
-            className="absolute inset-[2px] rounded-full overflow-hidden"
-            style={{
-              backgroundImage: `url('/images/flags/${locale === 'en' ? 'uk' : 'no'}.svg')`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center'
-            }}
-          />
-        )}
-        <span
-          className={`absolute block w-[calc(1.5rem-6px)] h-[calc(1.5rem-6px)] bg-white rounded-full shadow transform transition-transform duration-200 ${
-            locale === 'en' ? 'translate-x-[calc(2.3rem-1.5rem+2px)]' : 'translate-x-[2px]'
-          }`}
-        />
+        NO
       </button>
-      <span className={`text-xs font-medium text-white ${locale === 'en' ? 'opacity-100' : 'opacity-50'}`}>en</span>
+      <button
+        onClick={() => switchLocale('en')}
+        disabled={isChanging || locale === 'en'}
+        className={`relative h-7 px-2 bg-white border-2 border-black text-sm uppercase font-wild-words transition-all ${
+          locale === 'en'
+            ? 'text-white transform translate-y-[1px] shadow-[1px_1px_0_rgba(0,0,0,0.8)]'
+            : 'text-black hover:translate-y-[-1px] shadow-[2px_2px_0_rgba(0,0,0,0.8)]'
+        } ${isChanging ? 'opacity-50 cursor-not-allowed' : ''}`}
+        style={{
+          background: locale === 'en' ? 'linear-gradient(135deg, #ffd700 0%, #ff4500 100%)' : 'white',
+        }}
+      >
+        EN
+      </button>
     </div>
   );
 }

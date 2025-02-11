@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { ComicFrame } from './_components/layout/ComicFrame';
 
 export const metadata: Metadata = {
   title: 'Bouvet - Superhelt Profilen',
@@ -28,6 +29,7 @@ export const metadata: Metadata = {
 };
 
 import { Inter, Bangers } from 'next/font/google';
+import localFont from 'next/font/local';
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -42,15 +44,28 @@ const bangers = Bangers({
   display: 'swap',
 });
 
+const wildWords = localFont({
+  src: '../public/fonts/Wild-Words-Roman-PL.woff2',
+  variable: '--font-wild-words',
+  display: 'swap',
+});
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }): JSX.Element {
   return (
-    <html lang="en" className={`${inter.variable} ${bangers.variable}`}>
-      <body className={`${inter.className} min-h-screen bg-gradient-to-b from-dark via-dark to-dark`}>
-        {children}
+    <html lang="en" className={`${inter.variable} ${bangers.variable} ${wildWords.variable}`}>
+      <body className={`${inter.className} h-screen overflow-hidden`} 
+        style={{
+          backgroundColor: '#f1f1f1'
+        }}>
+        <main className="container mx-auto px-4 h-full flex items-center">
+          <ComicFrame>
+            {children}
+          </ComicFrame>
+        </main>
       </body>
     </html>
   );

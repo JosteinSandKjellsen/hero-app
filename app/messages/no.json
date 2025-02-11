@@ -145,6 +145,11 @@
       "email": "E-post: jostein.kjellsen@bouvet.no"
     }
   },
+  "hero": {
+    "title": {
+      "3d": "DIN SUPERHELT!"
+    }
+  },
   "header": {
     "title": "Hvilken Superhelt Er Du?",
     "subtitle": "Oppdag din indre superhelt gjennom denne personlighetstesten!",
