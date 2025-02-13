@@ -392,7 +392,7 @@
   "stats": {
     "title": "Hero Stats",
     "total": {
-      "title": "Total Heroes Generated Today",
+      "title": "Total Heroes Today",
       "loading": "Loading stats..."
     },
     "distribution": {

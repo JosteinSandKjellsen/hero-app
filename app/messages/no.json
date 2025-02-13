@@ -392,7 +392,7 @@
   "stats": {
     "title": "Helt-statistikk",
     "total": {
-      "title": "Totalt Antall Helter Generert I Dag",
+      "title": "Totalt Antall Helter I Dag",
       "loading": "Laster statistikk..."
     },
     "distribution": {
