@@ -14,9 +14,9 @@ export function CameraSection({ onPhotoTaken, isGenerating = false }: CameraSect
   return (
     <div className="bg-white/5 rounded-lg border border-white/20 w-full max-w-2xl mx-auto p-4 md:p-8">
       {isGenerating ? (
-        <div className="min-h-[70vh] flex flex-col items-center justify-center">
+        <div className="h-[60vh] md:h-[70vh] flex flex-col items-center justify-center">
           <LoadingSpinner size="lg" />
-          <p className="text-white mt-4 text-center text-base md:text-lg">
+          <p className="text-white mt-6 text-center text-base md:text-lg">
             {t('camera.generating.status')}
           </p>
           <p className="text-white/70 text-xs md:text-sm mt-2 text-center">
