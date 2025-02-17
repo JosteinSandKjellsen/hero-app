@@ -1,18 +1,20 @@
 'use client';
 
-import React, { Suspense, useEffect } from 'react';
+import React, { Suspense, useEffect, useRef } from 'react';
 import './print.css';
 import { useSearchParams } from 'next/navigation';
 import { SuperheroCard } from '../../_components/results/SuperheroCard';
 import { HeroColor } from '../../_lib/types/api';
 import { heroColors } from '@/app/_lib/constants/colors';
+import { ResourceTracker, preloadRequiredImages, initializePrint } from '../../_lib/utils/print';
 
 function PrintContent(): JSX.Element {
   const searchParams = useSearchParams();
+  const resourceTracker = useRef(new ResourceTracker());
+  const [photoUrl, setPhotoUrl] = React.useState('');
   
   // Get parameters from URL
   const imageId = searchParams.get('imageId') || '';
-  const [photoUrl, setPhotoUrl] = React.useState('');
   
   useEffect(() => {
     async function fetchImageUrl(): Promise<void> {
@@ -22,18 +24,41 @@ function PrintContent(): JSX.Element {
         const response = await fetch(`/api/hero-image/${imageId}`);
         const contentType = response.headers.get('content-type');
         
+        let url: string;
         if (contentType?.includes('application/json')) {
           const data = await response.json();
-          setPhotoUrl(data.url);
+          url = data.url;
         } else {
           // If not JSON, use the proxied endpoint (development)
-          setPhotoUrl(`/api/hero-image/${imageId}`);
+          url = `/api/hero-image/${imageId}`;
+        }
+        
+        setPhotoUrl(url);
+        
+        // Start preloading images
+        try {
+          await preloadRequiredImages(url);
+          resourceTracker.current.markLoaded('heroImage');
+          resourceTracker.current.markLoaded('bouvetLogo');
+        } catch (error) {
+          console.error('Error preloading images:', error);
+          // Mark as loaded anyway to prevent hanging
+          resourceTracker.current.markLoaded('heroImage');
+          resourceTracker.current.markLoaded('bouvetLogo');
         }
       } catch (error) {
         console.error('Error fetching image URL:', error);
       }
     }
     fetchImageUrl();
+
+    // Mark icons as loaded since they're SVG components
+    resourceTracker.current.markLoaded('personalityIcon');
+    resourceTracker.current.markLoaded('heroCardIcons');
+
+    return () => {
+      resourceTracker.current.reset();
+    };
   }, [imageId]);
   
   const name = searchParams.get('name') || '';
@@ -78,49 +103,9 @@ function PrintContent(): JSX.Element {
   // Check if we should trigger print
   const shouldPrint = searchParams.get('print') === 'true';
 
-  // Add effect to trigger print if requested
   useEffect(() => {
     if (shouldPrint && photoUrl) {
-      // Create a new image element to check when it's loaded
-      const img = new Image();
-      img.src = photoUrl;
-      
-      img.onload = () => {
-        // Set print settings
-        const style = document.createElement('style');
-        style.textContent = `
-          @page {
-            size: 100mm 148mm;
-            margin: 0;
-            transform-origin: top left;
-            -webkit-transform-origin: top left;
-          }
-          @media print {
-            @viewport {
-              width: 100mm;
-              height: 148mm;
-            }
-            body {
-              width: 100mm !important;
-              height: 148mm !important;
-              margin: 0 !important;
-              padding: 0 !important;
-              transform-origin: top left !important;
-              -webkit-transform-origin: top left !important;
-              transform: scale(1) !important;
-              -webkit-transform: scale(1) !important;
-              -webkit-print-color-adjust: exact !important;
-              print-color-adjust: exact !important;
-            }
-          }
-        `;
-        document.head.appendChild(style);
-
-        // Add a small delay to ensure styles are applied
-        setTimeout(() => {
-          window.print();
-        }, 100);
-      };
+      initializePrint(resourceTracker.current);
     }
   }, [shouldPrint, photoUrl]);
 
