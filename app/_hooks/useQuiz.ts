@@ -7,6 +7,7 @@ import { questions } from '../_data/questions';
 import { personalities } from '../_data/personalities';
 import { AppError, ValidationError } from '../_lib/errors';
 import { photoSchema } from '../_lib/utils/validation/photoValidation';
+import { validateColorConsistency, logColorMismatch, getConsistentColor } from '../_lib/utils/validation/colorValidation';
 import type { QuizResult, UserData } from '../_lib/types/quiz';
 import type { PersonalityResult } from '../_lib/types/personality';
 import type { GenerationStep } from '../_lib/types/loading';
@@ -55,7 +56,6 @@ export function useQuiz(): UseQuizReturn {
   const [isGeneratingName, setIsGeneratingName] = useState(false);
   const [heroName, setHeroName] = useState<string | null>(null);
   const [generationStep, setGenerationStep] = useState<GenerationStep>('upload');
-  
   const { showToast } = useToast();
 
   const handleRegistration = (data: UserData): void => {
@@ -133,6 +133,8 @@ export function useQuiz(): UseQuizReturn {
       setGenerationStep('upload');
       
       const results = calculateResults();
+      const dominantPersonality = results[0];
+      const selectedColor = dominantPersonality.color;
 
       // Only validate photo if one was provided
       if (photo !== null) {
@@ -145,10 +147,8 @@ export function useQuiz(): UseQuizReturn {
           throw error;
         }
       }
-      const dominantPersonality = results[0];
 
-      // Generate hero name
-      // Calculate percentage scores
+      // Calculate percentage scores once and reuse
       const total = Object.values(answers).reduce((a: number, b: number) => a + b, 0);
       const scores = {
         red: Math.round((answers.red / total) * 100),
@@ -156,16 +156,17 @@ export function useQuiz(): UseQuizReturn {
         green: Math.round((answers.green / total) * 100),
         blue: Math.round((answers.blue / total) * 100)
       };
-      
+
+      // Step 1: Generate hero name first
       const nameResponse = await fetch(`${window.location.origin}/api/hero-name`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          personality: t(`personalities.${dominantPersonality.color}.name`),
+          personality: t(`personalities.${selectedColor}.name`),
           gender: userData.gender,
-          color: dominantPersonality.color,
+          color: selectedColor,
           language: locale,
           scores,
         }),
@@ -180,50 +181,65 @@ export function useQuiz(): UseQuizReturn {
       if (!nameData.name) {
         throw new AppError(tErrors('heroNameError'));
       }
-      
+
+      // Step 2: Generate AI image
       setGenerationStep('process');
+      setGenerationStep('generate');
 
-      // Generate AI image with retries and error handling
-      try {
-        setGenerationStep('generate');
-        const imageUrl = await generateHeroImage(
-          t(`personalities.${dominantPersonality.color}.name`),
-          userData.gender,
-          dominantPersonality.color,
-          photo || undefined
-        );
+      const imageUrl = await generateHeroImage(
+        t(`personalities.${selectedColor}.name`),
+        userData.gender,
+        selectedColor,
+        photo || undefined
+      );
 
-        setPhotoUrl(imageUrl);
-        setHeroName(nameData.name);
-        setGenerationStep('complete');
+      // Step 3: Validate color consistency before updating state
+      const colorValidation = {
+        cardColor: selectedColor,
+        nameColor: selectedColor,
+        imageColor: selectedColor
+      };
+
+      if (!validateColorConsistency(colorValidation)) {
+        logColorMismatch({
+          expected: selectedColor,
+          actual: {
+            card: selectedColor,
+            name: selectedColor,
+            image: selectedColor
+          }
+        });
         
-        // Track hero generation statistics
-        try {
-          await fetch(`${window.location.origin}/api/hero-stats`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              color: dominantPersonality.color
-            }),
-          });
-        } catch (statsError) {
-          // Log but don't fail if stats tracking fails
-          console.error('Failed to track hero statistics:', statsError);
+        // If we detect a mismatch, ensure we're using the dominant color
+        const consistentColor = getConsistentColor(colorValidation) || selectedColor;
+        
+        if (consistentColor !== dominantPersonality.color) {
+          return handlePhotoTaken(photo); // Retry with consistent color
         }
-        
-        setShowResults(true);
-      } catch (error) {
-        console.error('Error generating hero image:', error);
-        const message = error instanceof AppError 
-          ? error.message 
-          : tErrors('heroImageGenerationError');
-        
-        showToast(message);
-        setShowCamera(true);
-        return;
       }
+
+      // Step 4: Update state only after validation
+      setPhotoUrl(imageUrl);
+      setHeroName(nameData.name);
+      setGenerationStep('complete');
+        
+      // Track hero generation statistics
+      try {
+        await fetch(`${window.location.origin}/api/hero-stats`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            color: selectedColor
+          }),
+        });
+      } catch (statsError) {
+        // Log but don't fail if stats tracking fails
+        console.error('Failed to track hero statistics:', statsError);
+      }
+      
+      setShowResults(true);
     } catch (error) {
       console.error('Error in photo processing flow:', error);
       let message = tErrors('generic');
