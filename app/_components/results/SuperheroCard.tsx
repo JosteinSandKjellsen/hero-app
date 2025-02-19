@@ -6,7 +6,6 @@ import { PersonalityType } from '../../_lib/types/personality';
 import { UserData } from '../../_lib/types';
 import { getPersonalityIcon } from '@/app/_lib/utils/personalityIcons';
 import { getHeroCardIcon } from '@/app/_lib/utils/heroCardIcons';
-import { heroColors } from '@/app/_lib/constants/colors';
 
 interface SuperheroCardProps {
   photoUrl: string;
@@ -28,23 +27,22 @@ export function SuperheroCard({ photoUrl, personality, userData, results = [] }:
     }
   };
 
-  const getBorderColorClass = (): string => {
-    return heroColors[personality.color]?.border || 'border-purple';
-  };
-
   return (
-    <div 
+    <div
       data-card-clone
-      className={`rounded-xl overflow-hidden border-[10px] ${getBorderColorClass()} transform hover:scale-[1.02] transition-transform duration-300 print:transform-none print:transition-none`}
-      style={{ 
-        width: '100%', 
-        maxWidth: '600px', 
+      className={`rounded-xl overflow-hidden transform hover:scale-[1.02] transition-transform duration-300 print:transform-none print:transition-none`}
+      style={{
+        width: '100%',
+        maxWidth: '600px',
         margin: '0 auto',
         backgroundColor: 'white',
         boxShadow: `0 0 40px -5px ${getColorValue(personality.color)}80`,
         WebkitPrintColorAdjust: 'exact',
         printColorAdjust: 'exact',
-        colorAdjust: 'exact'
+        colorAdjust: 'exact',
+        borderWidth: '10px',
+        borderStyle: 'solid',
+        borderColor: getColorValue(personality.color)
       }}
     >
       <div 

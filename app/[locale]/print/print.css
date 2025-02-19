@@ -126,8 +126,12 @@ html, body {
     max-width: none !important;
     display: flex !important;
     flex-direction: column !important;
-    border-width: 10px !important;
     box-sizing: border-box !important;
+    /* Ensure border styles from inline styles are not overridden */
+    border-style: solid !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
   }
 
   /* Header area (personality) */

@@ -57,7 +57,11 @@ function PrintContent(): JSX.Element {
     resourceTracker.current.markLoaded('heroCardIcons');
 
     return () => {
-      resourceTracker.current.reset();
+      // Store ref value to avoid potential changes during cleanup
+      const tracker = resourceTracker.current;
+      if (tracker) {
+        tracker.reset();
+      }
     };
   }, [imageId]);
   
