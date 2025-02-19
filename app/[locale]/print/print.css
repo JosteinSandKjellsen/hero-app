@@ -79,24 +79,64 @@ html, body {
 
   @page {
     size: 100mm 148mm;
-    margin: 0;
+    margin: 0mm !important;
+    padding: 0mm !important;
+    marks: none;
     transform-origin: top left;
     -webkit-transform-origin: top left;
+  }
+
+  /* Target Windows browsers specifically */
+  @media print and (-ms-high-contrast: none),
+         print and (-ms-high-contrast: active),
+         print and (forced-colors: none) {
+    @page {
+      margin: 0mm !important;
+      padding: 0mm !important;
+    }
+
+    html, body {
+      margin: 0mm !important;
+      padding: 0mm !important;
+      width: 100mm !important;
+      height: 148mm !important;
+    }
+
+    /* Additional Windows-specific fixes */
+    [data-card-clone] {
+      /* Force GPU acceleration in IE/Edge */
+      -ms-transform: translateZ(0) !important;
+      /* Prevent margin bleed */
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      /* Ensure colors print */
+      -ms-print-color-adjust: exact !important;
+    }
+
+    /* Ensure backgrounds print in Edge */
+    * {
+      -ms-high-contrast-adjust: none !important;
+    }
   }
   
   html {
     width: 100mm !important;
     height: 148mm !important;
+    margin: 0mm !important;
+    padding: 0mm !important;
     transform: scale(1) !important;
     -webkit-transform: scale(1) !important;
   }
 
   body {
     background-color: white !important;
-    margin: 0 !important;
-    padding: 0 !important;
+    margin: 0mm !important;
+    padding: 0mm !important;
     width: 100mm !important;
     height: 148mm !important;
+    min-height: 148mm !important;
+    max-height: 148mm !important;
     overflow: hidden !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
@@ -105,12 +145,14 @@ html, body {
     -webkit-transform-origin: top left !important;
   }
 
-  /* Ensure content fits paper width */
+  /* Ensure content fits exactly */
   .min-h-screen {
-    margin: 0 !important;
-    padding: 0 !important;
     width: 100mm !important;
     height: 148mm !important;
+    min-height: 148mm !important;
+    max-height: 148mm !important;
+    margin: 0mm !important;
+    padding: 0mm !important;
     overflow: hidden !important;
     display: flex !important;
     align-items: flex-start !important;
@@ -119,19 +161,31 @@ html, body {
 
   /* Card container */
   [data-card-clone] {
-    margin: 0 !important;
-    padding: 0 !important;
+    margin: 0mm !important;
+    padding: 0mm !important;
     height: 148mm !important;
+    min-height: 148mm !important;
+    max-height: 148mm !important;
     width: 100mm !important;
-    max-width: none !important;
+    min-width: 100mm !important;
+    max-width: 100mm !important;
     display: flex !important;
     flex-direction: column !important;
     box-sizing: border-box !important;
     /* Ensure border styles from inline styles are not overridden */
     border-style: solid !important;
+    border-width: 10px !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     color-adjust: exact !important;
+    /* Force hardware acceleration to prevent rendering issues */
+    transform: translateZ(0) !important;
+    -webkit-transform: translateZ(0) !important;
+    backface-visibility: hidden !important;
+    -webkit-backface-visibility: hidden !important;
+    /* Ensure content stays within bounds */
+    position: relative !important;
+    overflow: hidden !important;
   }
 
   /* Header area (personality) */
