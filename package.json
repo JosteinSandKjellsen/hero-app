@@ -17,7 +17,7 @@
   "dependencies": {
     "@google/generative-ai": "^0.2.1",
     "@netlify/plugin-nextjs": "^4.41.3",
-    "@prisma/client": "^6.3.1",
+    "@prisma/client": "^6.4.1",
     "@types/dotenv": "^6.1.1",
     "chart.js": "^4.4.7",
     "dotenv": "^16.4.7",
@@ -46,7 +46,7 @@
     "postcss": "^8",
     "prettier": "^3.2.4",
     "prettier-plugin-tailwindcss": "^0.5.11",
-    "prisma": "^6.3.1",
+    "prisma": "^6.4.1",
     "rimraf": "^5.0.5",
     "tailwindcss": "^3.3.0",
     "ts-node": "^10.9.2",

@@ -41,14 +41,21 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     try {
       const genAI = new GoogleGenerativeAI(getGeminiApiKey());
       
-      // Initialize model
+      // Initialize model with maximum creativity settings
       const model = genAI.getGenerativeModel({ 
-        model: 'gemini-2.0-flash'
+        model: 'gemini-2.0-flash',
+        generationConfig: {
+          temperature: 1.0,    // Maximum creativity
+          topP: 0.95,         // Very diverse sampling
+          topK: 40,           // Consider more token options
+          maxOutputTokens: 20  // Keep names concise
+        }
       });
 
-      // Structured prompt to prevent injection
+      // Structured prompt to prevent injection and encourage unique names
       const prompt = [
-        'Generate a superhero name with these exact characteristics:',
+        'Generate a highly unique and creative superhero name. STRICTLY AVOID common patterns, generic combinations, or predictable word pairs.',
+        'IMPORTANT: Each generated name must be completely different from typical superhero names.',
         `Personality: "${validatedData.personality}"`,
         `Gender: "${validatedData.gender}"`,
         `Color theme: "${validatedData.color}"`,
@@ -60,12 +67,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         `Blue (Logic/Intelligence): ${validatedData.scores.blue}%`,
         '',
         'Rules:',
-        '- Name must be 1-3 words',
+        '- IMPORTANT: Vary between 1, 2, and 3 word names with equal probability',
+        '- Avoid common superhero name patterns and overused words',
         '- Name should reflect the personality scores, especially high-scoring traits',
+        '- Create unexpected and imaginative word combinations',
         `- Must be in ${validatedData.language === 'no' ? 'Norwegian' : 'English'}`,
-        '- Can be inspired by mythology, nature, or technology',
-        '- Must be creative and unique',
-        '- Should reflect personality and color',
+        '- Draw inspiration from unconventional sources like quantum physics, ancient folklore, or abstract concepts',
+        '- Must be highly creative and unique',
+        '- Should reflect personality and color in unexpected ways',
         '- Return ONLY the name, nothing else'
       ].join('\n');
 
@@ -78,14 +87,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         return NextResponse.json({ name: getRandomDefaultName() });
       }
 
-      // Validate generated name
       const generatedName = text.trim();
-      if (generatedName.length > 50) { // Sanity check on output
+      
+      if (generatedName.length > 50) {
         console.error('[HeroName] Generated name too long:', generatedName);
         return NextResponse.json({ name: getRandomDefaultName() });
       }
 
       return NextResponse.json({ name: generatedName });
+
     } catch (error) {
       // Structured error logging
       console.error('[HeroName] Generation error:', {
