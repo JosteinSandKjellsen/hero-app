@@ -9,8 +9,6 @@ const nextConfig = {
     serverActions: {
       bodySizeLimit: '10mb',
     },
-    optimizeServerReact: true,
-    optimizeCss: true
   },
   compress: true, // Enable compression for non-edge routes
   poweredByHeader: false, // Remove X-Powered-By header for security
@@ -122,33 +120,11 @@ const nextConfig = {
       ];
     }
 
+    // Let Next.js handle optimization in production
     if (!dev) {
       config.optimization = {
         ...config.optimization,
-        minimize: true,
-        minimizer: [
-          '...', // Keep default minimizers
-          new (require('css-minimizer-webpack-plugin'))(),
-        ],
-        splitChunks: {
-          chunks: 'all',
-          minSize: 20000,
-          maxSize: 244000,
-          cacheGroups: {
-            commons: {
-              test: /[\\/]node_modules[\\/]/,
-              name: 'vendors',
-              chunks: 'all',
-              priority: 10,
-              reuseExistingChunk: true,
-            },
-            default: {
-              minChunks: 2,
-              priority: -20,
-              reuseExistingChunk: true,
-            },
-          },
-        },
+        minimize: true
       };
     }
 
