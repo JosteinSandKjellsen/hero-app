@@ -19,13 +19,14 @@ export function GenderSelect({ value, onChange, error }: GenderSelectProps): JSX
 
   return (
     <div>
-      <label className="block text-sm font-medium text-white mb-1">
+      <label htmlFor="gender-group" className="block text-sm font-medium text-white mb-1">
         {t('label')}
       </label>
-      <div className="flex gap-4">
+      <div id="gender-group" className="flex gap-4">
         {genderOptions.map((option) => (
-          <label key={option.value} className="flex items-center">
+          <label key={option.value} htmlFor={`gender-${option.value}`} className="flex items-center">
             <input
+              id={`gender-${option.value}`}
               type="radio"
               name="gender"
               value={option.value}

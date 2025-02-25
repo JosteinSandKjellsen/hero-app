@@ -67,6 +67,7 @@ export function RegistrationForm({ onSubmit }: RegistrationFormProps): JSX.Eleme
           onChange={handleChange}
           placeholder={t('name.placeholder')}
           error={errors.name}
+          autoComplete="name"
         />
 
         <GenderSelect
