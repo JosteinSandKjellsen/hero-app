@@ -8,8 +8,7 @@ export const runtime = 'edge';
 export const revalidate = 3600; // Revalidate every hour
 
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  request: NextRequest
 ): Promise<NextResponse> {
   try {
     // Check if we have the API key in the environment
