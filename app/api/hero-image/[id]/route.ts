@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { LeonardoAiService } from '../../../_lib/services/leonardoAi';
 import { API_CONFIG } from '../../../_lib/config/api';
 
 // Use runtime edge for optimal performance on Netlify
@@ -13,8 +12,16 @@ export async function GET(
   { params }: { params: { id: string } }
 ): Promise<NextResponse> {
   try {
-    const leonardoService = new LeonardoAiService();
-    
+    // Check if we have the API key in the environment
+    const apiKey = process.env.LEONARDO_API_KEY;
+    if (!apiKey) {
+      console.error('LEONARDO_API_KEY is not set in environment');
+      return NextResponse.json(
+        { error: 'API configuration error', details: 'Missing API key' },
+        { status: 500 }
+      );
+    }
+
     // The ID should already be the generation ID
     const generationId = params.id;
     
@@ -29,16 +36,27 @@ export async function GET(
     
     console.log(`Fetching generation data for ID: ${generationId}`);
     
-    // Get the image URL using the service
+    // Construct headers directly for edge compatibility
+    const headers = {
+      'accept': 'application/json',
+      'content-type': 'application/json',
+      'authorization': `Bearer ${apiKey}`
+    };
+    
+    // Get the image URL using direct fetch
     const response = await fetch(
       `${API_CONFIG.leonardo.baseUrl}/generations/${generationId}`,
-      { headers: leonardoService['headers'] }
+      { headers }
     );
 
     if (!response.ok) {
       const errorText = await response.text().catch(() => 'No error details available');
-      console.error(`Failed to get image URL (Status ${response.status}): ${response.statusText}`, errorText);
-      throw new Error(`Failed to get image URL: ${response.statusText}`);
+      const errorMessage = `Failed to get image URL (Status ${response.status}): ${response.statusText}. Error details: ${errorText}`;
+      console.error(errorMessage);
+      return NextResponse.json(
+        { error: 'Failed to get image URL', details: errorMessage },
+        { status: response.status }
+      );
     }
 
     const data = await response.json();
@@ -82,9 +100,9 @@ export async function GET(
     console.log(`Fetching image data from: ${imageUrl}`);
     
     try {
-      // Try with Leonardo headers first
+      // Try with authorization headers first
       const imageResponse = await fetch(imageUrl, {
-        headers: leonardoService['headers']
+        headers: headers
       });
       
       if (!imageResponse.ok) {
