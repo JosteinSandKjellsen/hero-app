@@ -18,11 +18,11 @@ export function GenderSelect({ value, onChange, error }: GenderSelectProps): JSX
   ];
 
   return (
-    <div>
-      <label htmlFor="gender-group" className="block text-sm font-medium text-white mb-1">
+    <fieldset>
+      <legend className="block text-sm font-medium text-white mb-1">
         {t('label')}
-      </label>
-      <div id="gender-group" className="flex gap-4">
+      </legend>
+      <div className="flex gap-4">
         {genderOptions.map((option) => (
           <label key={option.value} htmlFor={`gender-${option.value}`} className="flex items-center">
             <input
@@ -41,6 +41,6 @@ export function GenderSelect({ value, onChange, error }: GenderSelectProps): JSX
       {error && (
         <p className="mt-1 text-sm text-red-300">{error}</p>
       )}
-    </div>
+    </fieldset>
   );
 }
