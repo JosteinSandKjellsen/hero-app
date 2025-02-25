@@ -36,12 +36,24 @@ function PrintContent(): JSX.Element {
         return;
       }
       try {
+        console.log('Fetching image with ID:', imageId);
+        
+        // Construct the URL carefully
+        const apiUrl = `/api/hero-image/${encodeURIComponent(imageId)}`;
+        console.log('Constructed API URL:', apiUrl);
+        
         // Try to get JSON response first (production)
-        const response = await fetch(`/api/hero-image/${imageId}`);
+        const response = await fetch(apiUrl);
         
         if (!response.ok) {
-          // If the response isn't successful, try fallback images
-          console.error('Error fetching hero image, using fallback');
+          // If the response isn't successful, log details and use fallback
+          const errorText = await response.text().catch(() => 'No error details');
+          console.error('Error fetching hero image:', {
+            status: response.status,
+            statusText: response.statusText,
+            error: errorText,
+            imageId
+          });
           setPhotoUrl(gender === 'female' ? '/images/superheroes/blue-woman.jpeg' : '/images/superheroes/blue-man.jpeg');
           
           // Start preloading fallback image

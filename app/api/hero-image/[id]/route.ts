@@ -22,14 +22,39 @@ export async function GET(
       );
     }
 
-    // The ID should already be the generation ID
-    const generationId = params.id;
+    // Try to get the ID from different sources
+    const paramsId = params.id;
+    const urlId = new URL(request.url).pathname.split('/').pop();
+    
+    console.log('Debug route params:', {
+      paramsId,
+      urlId,
+      fullUrl: request.url,
+      pathname: new URL(request.url).pathname
+    });
+    
+    // Use the ID from URL if params.id is undefined
+    const generationId = paramsId === 'undefined' ? urlId : paramsId;
     
     // Validate that we have a proper ID
     if (!generationId || generationId === 'undefined') {
-      console.error(`Invalid generation ID: "${generationId}"`);
+      console.error('Invalid generation ID. Debug info:', {
+        paramsId,
+        urlId,
+        generationId,
+        fullUrl: request.url,
+        headers: Object.fromEntries(request.headers.entries())
+      });
       return NextResponse.json(
-        { error: 'Invalid generation ID', generationId },
+        { 
+          error: 'Invalid generation ID', 
+          debug: {
+            paramsId,
+            urlId,
+            generationId,
+            fullUrl: request.url
+          }
+        },
         { status: 400 }
       );
     }
