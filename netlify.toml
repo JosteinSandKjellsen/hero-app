@@ -36,12 +36,52 @@
 [build.processing]
   skip_processing = false
 
+[build.processing.html]
+  pretty_urls = true
+
+[build.processing.css]
+  bundle = true
+  minify = true
+
+[build.processing.js]
+  bundle = true
+  minify = true
+
 [build.processing.images]
   compress = true
+  webp = true
+  avif = true
 
+# Add Brotli compression for text files
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Encoding = "br"
+
+# Cache control for static assets
+[[headers]]
+  for = "/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Cache control for _next/static files
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Cache control for images
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# API headers
 [[headers]]
   for = "/api/*"
   [headers.values]
     "Access-Control-Allow-Origin" = "*"
     "Access-Control-Allow-Headers" = "Content-Type"
     "Access-Control-Allow-Methods" = "GET, POST, OPTIONS"
+    "Content-Type" = "application/json"
+    "X-Content-Type-Options" = "nosniff"

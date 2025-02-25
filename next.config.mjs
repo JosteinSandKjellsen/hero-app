@@ -10,6 +10,10 @@ const nextConfig = {
       bodySizeLimit: '10mb',
     },
   },
+  compress: false, // Let Netlify handle compression
+  poweredByHeader: false, // Remove X-Powered-By header for security
+  optimizeFonts: true, // Enable font optimization
+  swcMinify: true, // Use SWC for minification (faster than terser)
   headers: async () => [
     {
       source: '/:path*',
@@ -90,17 +94,10 @@ const nextConfig = {
       ],
     },
   ],
-  webpack: (config, { isServer }) => {
-    if (isServer) {
-      config.ignoreWarnings = [
-        { module: /node_modules\/node-fetch\/lib\/index\.js/ },
-        { module: /node_modules\/punycode\/punycode\.js/ }
-      ];
-    }
-    return config;
-  },
   images: {
     unoptimized: false,
+    formats: ['image/webp', 'image/avif'], // Prefer modern image formats
+    minimumCacheTTL: 31536000, // Cache images for 1 year
     remotePatterns: [
       {
         protocol: 'https',
@@ -113,6 +110,39 @@ const nextConfig = {
     ],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+  },
+  // Webpack optimization configuration
+  webpack: (config, { dev, isServer }) => {
+    // Keep existing webpack config
+    if (isServer) {
+      config.ignoreWarnings = [
+        { module: /node_modules\/node-fetch\/lib\/index\.js/ },
+        { module: /node_modules\/punycode\/punycode\.js/ }
+      ];
+    }
+
+    // Add optimization settings for production
+    if (!dev) {
+      config.optimization = {
+        ...config.optimization,
+        minimize: true,
+        splitChunks: {
+          chunks: 'all',
+          minSize: 20000,
+          maxSize: 244000,
+          cacheGroups: {
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: 'vendor',
+              chunks: 'all',
+            }
+          }
+        },
+        runtimeChunk: { name: 'runtime' }
+      };
+    }
+
+    return config;
   }
 };
 
