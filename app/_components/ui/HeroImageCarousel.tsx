@@ -84,7 +84,7 @@ export function HeroImageCarousel(): JSX.Element {
             key={src}
             src={src}
             alt="Superhero"
-            className={`object-cover transition-opacity duration-1000
+            className={`object-cover object-[center_top] transition-opacity duration-1000
                        ${isVisible ? 'opacity-100' : 'opacity-0'}`}
             fill
             sizes="128px"
