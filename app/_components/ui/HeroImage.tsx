@@ -7,20 +7,52 @@ interface HeroImageProps {
   imageId: string;
   alt: string;
   className?: string;
+  fallbackImage?: string;
 }
 
 // Cache duration in milliseconds (1 hour)
 const CACHE_DURATION = 60 * 60 * 1000;
 
-export function HeroImage({ imageId, alt, className = '' }: HeroImageProps): JSX.Element {
+// Default fallback images by gender
+const DEFAULT_FALLBACKS = {
+  male: '/images/superheroes/blue-man.jpeg',
+  female: '/images/superheroes/blue-woman.jpeg',
+  default: '/images/superheroes/blue-man.jpeg'
+};
+
+export function HeroImage({ 
+  imageId, 
+  alt, 
+  className = '', 
+  fallbackImage
+}: HeroImageProps): JSX.Element {
   const [imageUrl, setImageUrl] = useState<string>('');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<boolean>(false);
+
+  // Determine which fallback to use based on alt text or use provided fallback
+  const getFallbackImage = () => {
+    if (fallbackImage) return fallbackImage;
+    
+    const lowerAlt = alt.toLowerCase();
+    if (lowerAlt.includes('female') || lowerAlt.includes('woman') || lowerAlt.includes('girl')) {
+      return DEFAULT_FALLBACKS.female;
+    } else if (lowerAlt.includes('male') || lowerAlt.includes('man') || lowerAlt.includes('boy')) {
+      return DEFAULT_FALLBACKS.male;
+    }
+    return DEFAULT_FALLBACKS.default;
+  };
 
   useEffect(() => {
     async function fetchImageUrl(): Promise<void> {
-      if (!imageId) return;
+      if (!imageId) {
+        setError(true);
+        setLoading(false);
+        return;
+      }
 
       setLoading(true);
+      setError(false);
       
       try {
         // Check if we have a cached URL and if it's still valid
@@ -32,9 +64,23 @@ export function HeroImage({ imageId, alt, className = '' }: HeroImageProps): JSX
             const now = new Date().getTime();
             
             // If the cached data is still valid, use it
-            if (now - timestamp < CACHE_DURATION) {
+            if (now - timestamp < CACHE_DURATION && url) {
               setImageUrl(url);
               setLoading(false);
+              
+              // Verify the cached URL still works with a HEAD request
+              fetch(url, { method: 'HEAD' })
+                .then(response => {
+                  if (!response.ok) {
+                    console.warn('Cached image URL is no longer valid:', url);
+                    localStorage.removeItem(`hero-image-${imageId}`);
+                    fetchImageUrl(); // Retry fetch
+                  }
+                })
+                .catch(() => {
+                  // Don't take any action here - the image might still load
+                });
+                
               return;
             }
           } catch (e) {
@@ -45,11 +91,23 @@ export function HeroImage({ imageId, alt, className = '' }: HeroImageProps): JSX
         
         // If no valid cache exists, fetch the image URL
         const response = await fetch(`/api/hero-image/${imageId}`);
+        
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          console.error('Error fetching hero image:', errorData);
+          throw new Error('Failed to fetch image data');
+        }
+        
         const contentType = response.headers.get('content-type');
         
         let url: string;
         if (contentType?.includes('application/json')) {
           const data = await response.json();
+          
+          if (!data.url) {
+            throw new Error('No URL in response');
+          }
+          
           url = data.url;
         } else {
           // If not JSON, use the proxied endpoint (development)
@@ -104,6 +162,7 @@ export function HeroImage({ imageId, alt, className = '' }: HeroImageProps): JSX
         setImageUrl(url);
       } catch (error) {
         console.error('Error fetching image URL:', error);
+        setError(true);
       } finally {
         setLoading(false);
       }
@@ -112,9 +171,35 @@ export function HeroImage({ imageId, alt, className = '' }: HeroImageProps): JSX
     fetchImageUrl();
   }, [imageId]);
 
-  if (!imageUrl || loading) {
+  // Handle image load error
+  const handleImageError = () => {
+    console.error(`Image failed to load: ${imageUrl}`);
+    setError(true);
+    
+    // Remove from cache if it failed
+    try {
+      localStorage.removeItem(`hero-image-${imageId}`);
+    } catch (e) {
+      console.error('Failed to remove bad image from cache:', e);
+    }
+  };
+
+  if (loading) {
     return (
       <div className="w-full h-full bg-gray-200 animate-pulse rounded-lg" />
+    );
+  }
+
+  if (error || !imageUrl) {
+    return (
+      <Image
+        src={getFallbackImage()}
+        alt={`${alt} (fallback)`}
+        fill
+        className={`object-cover ${className}`}
+        priority
+        sizes="300px"
+      />
     );
   }
 
@@ -126,6 +211,7 @@ export function HeroImage({ imageId, alt, className = '' }: HeroImageProps): JSX
       className={`object-cover ${className}`}
       priority
       sizes="300px"
+      onError={handleImageError}
     />
   );
 }

@@ -15,6 +15,11 @@ function PrintContent(): JSX.Element {
   
   // Get parameters from URL
   const imageId = searchParams.get('imageId') || '';
+  const name = searchParams.get('name') || '';
+  const gender = (searchParams.get('gender') as 'male' | 'female') || 'male';
+  const heroName = searchParams.get('heroName') || '';
+  const personalityName = searchParams.get('personalityName') || '';
+  const color = (searchParams.get('color') as HeroColor) || 'red';
   
   useEffect(() => {
     // Store ref value at the beginning of effect to capture it for cleanup
@@ -25,11 +30,34 @@ function PrintContent(): JSX.Element {
       try {
         // Try to get JSON response first (production)
         const response = await fetch(`/api/hero-image/${imageId}`);
+        
+        if (!response.ok) {
+          // If the response isn't successful, try fallback images
+          console.error('Error fetching hero image, using fallback');
+          setPhotoUrl(gender === 'female' ? '/images/superheroes/blue-woman.jpeg' : '/images/superheroes/blue-man.jpeg');
+          
+          // Start preloading fallback image
+          try {
+            await preloadRequiredImages(gender === 'female' ? '/images/superheroes/blue-woman.jpeg' : '/images/superheroes/blue-man.jpeg');
+            tracker.markLoaded('heroImage');
+            tracker.markLoaded('bouvetLogo');
+          } catch (error) {
+            console.error('Error preloading fallback images:', error);
+            // Mark as loaded anyway to prevent hanging
+            tracker.markLoaded('heroImage');
+            tracker.markLoaded('bouvetLogo');
+          }
+          return;
+        }
+        
         const contentType = response.headers.get('content-type');
         
         let url: string;
         if (contentType?.includes('application/json')) {
           const data = await response.json();
+          if (!data.url) {
+            throw new Error('No URL in response');
+          }
           url = data.url;
         } else {
           // If not JSON, use the proxied endpoint (development)
@@ -51,6 +79,12 @@ function PrintContent(): JSX.Element {
         }
       } catch (error) {
         console.error('Error fetching image URL:', error);
+        // Use fallback image on error
+        setPhotoUrl(gender === 'female' ? '/images/superheroes/blue-woman.jpeg' : '/images/superheroes/blue-man.jpeg');
+        
+        // Mark resources as loaded to continue with printing
+        tracker.markLoaded('heroImage');
+        tracker.markLoaded('bouvetLogo');
       }
     }
     fetchImageUrl();
@@ -64,13 +98,7 @@ function PrintContent(): JSX.Element {
         tracker.reset();
       }
     };
-  }, [imageId]);
-  
-  const name = searchParams.get('name') || '';
-  const gender = (searchParams.get('gender') as 'male' | 'female') || 'male';
-  const heroName = searchParams.get('heroName') || '';
-  const personalityName = searchParams.get('personalityName') || '';
-  const color = (searchParams.get('color') as HeroColor) || 'red';
+  }, [imageId, gender]);
   
   // Parse scores from URL (format: "red:8,blue:5,green:3,yellow:4")
   const scores = (searchParams.get('scores') || '')
