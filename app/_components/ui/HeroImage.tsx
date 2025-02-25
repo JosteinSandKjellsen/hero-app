@@ -31,7 +31,7 @@ export function HeroImage({
   const [error, setError] = useState<boolean>(false);
 
   // Determine which fallback to use based on alt text or use provided fallback
-  const getFallbackImage = () => {
+  const getFallbackImage = (): string => {
     if (fallbackImage) return fallbackImage;
     
     const lowerAlt = alt.toLowerCase();
@@ -172,7 +172,7 @@ export function HeroImage({
   }, [imageId]);
 
   // Handle image load error
-  const handleImageError = () => {
+  const handleImageError = (): void => {
     console.error(`Image failed to load: ${imageUrl}`);
     setError(true);
     

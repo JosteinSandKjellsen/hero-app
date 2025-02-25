@@ -44,7 +44,7 @@ export function HeroImageCarousel(): JSX.Element {
   }, [updateImage]);
 
   // Handle image error
-  const handleImageError = (index: number) => {
+  const handleImageError = (index: number): void => {
     console.error(`Carousel image at index ${index} failed to load`);
     setFailedImages(prev => ({ ...prev, [index]: true }));
   };
