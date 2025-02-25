@@ -13,6 +13,7 @@ export function FormField({ label, error, autoComplete, ...props }: FormFieldPro
         {label}
       </label>
       <input
+        id={props.id}
         {...props}
         autoComplete={autoComplete}
         className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 
