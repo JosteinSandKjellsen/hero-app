@@ -9,11 +9,13 @@ const nextConfig = {
     serverActions: {
       bodySizeLimit: '10mb',
     },
+    optimizeServerReact: true,
+    optimizeCss: true
   },
-  compress: false, // Let Netlify handle compression
+  compress: true, // Enable compression for non-edge routes
   poweredByHeader: false, // Remove X-Powered-By header for security
   optimizeFonts: true, // Enable font optimization
-  swcMinify: true, // Use SWC for minification (faster than terser)
+  swcMinify: true, // Use SWC for minification
   headers: async () => [
     {
       source: '/:path*',
@@ -113,7 +115,6 @@ const nextConfig = {
   },
   // Webpack optimization configuration
   webpack: (config, { dev, isServer }) => {
-    // Keep existing webpack config
     if (isServer) {
       config.ignoreWarnings = [
         { module: /node_modules\/node-fetch\/lib\/index\.js/ },
@@ -121,24 +122,33 @@ const nextConfig = {
       ];
     }
 
-    // Add optimization settings for production
     if (!dev) {
       config.optimization = {
         ...config.optimization,
         minimize: true,
+        minimizer: [
+          '...', // Keep default minimizers
+          new (require('css-minimizer-webpack-plugin'))(),
+        ],
         splitChunks: {
           chunks: 'all',
           minSize: 20000,
           maxSize: 244000,
           cacheGroups: {
-            vendor: {
+            commons: {
               test: /[\\/]node_modules[\\/]/,
-              name: 'vendor',
+              name: 'vendors',
               chunks: 'all',
-            }
-          }
+              priority: 10,
+              reuseExistingChunk: true,
+            },
+            default: {
+              minChunks: 2,
+              priority: -20,
+              reuseExistingChunk: true,
+            },
+          },
         },
-        runtimeChunk: { name: 'runtime' }
       };
     }
 

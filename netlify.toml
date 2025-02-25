@@ -52,12 +52,6 @@
   webp = true
   avif = true
 
-# Add Brotli compression for text files
-[[headers]]
-  for = "/*"
-  [headers.values]
-    Content-Encoding = "br"
-
 # Cache control for static assets
 [[headers]]
   for = "/static/*"
