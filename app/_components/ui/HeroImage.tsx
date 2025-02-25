@@ -15,9 +15,9 @@ const CACHE_DURATION = 60 * 60 * 1000;
 
 // Default fallback images by gender
 const DEFAULT_FALLBACKS = {
-  male: '/images/superheroes/blue-man.jpeg',
-  female: '/images/superheroes/blue-woman.jpeg',
-  default: '/images/superheroes/blue-man.jpeg'
+  male: '/images/superheroes/blue-man.webp',
+  female: '/images/superheroes/blue-woman.webp',
+  default: '/images/superheroes/blue-man.webp'
 };
 
 export function HeroImage({ 

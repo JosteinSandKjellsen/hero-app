@@ -28,7 +28,7 @@ function PrintContent(): JSX.Element {
     async function fetchImageUrl(): Promise<void> {
       if (!imageId || imageId === 'undefined') {
         console.log('No valid imageId provided, using fallback image');
-        setPhotoUrl(gender === 'female' ? '/images/superheroes/blue-woman.jpeg' : '/images/superheroes/blue-man.jpeg');
+        setPhotoUrl(gender === 'female' ? '/images/superheroes/blue-woman.webp' : '/images/superheroes/blue-man.webp');
         
         // Mark resources as loaded to continue with printing
         tracker.markLoaded('heroImage');
@@ -54,11 +54,11 @@ function PrintContent(): JSX.Element {
             error: errorText,
             imageId
           });
-          setPhotoUrl(gender === 'female' ? '/images/superheroes/blue-woman.jpeg' : '/images/superheroes/blue-man.jpeg');
+          setPhotoUrl(gender === 'female' ? '/images/superheroes/blue-woman.webp' : '/images/superheroes/blue-man.webp');
           
           // Start preloading fallback image
           try {
-            await preloadRequiredImages(gender === 'female' ? '/images/superheroes/blue-woman.jpeg' : '/images/superheroes/blue-man.jpeg');
+            await preloadRequiredImages(gender === 'female' ? '/images/superheroes/blue-woman.webp' : '/images/superheroes/blue-man.webp');
             tracker.markLoaded('heroImage');
             tracker.markLoaded('bouvetLogo');
           } catch (error) {
@@ -100,7 +100,7 @@ function PrintContent(): JSX.Element {
       } catch (error) {
         console.error('Error fetching image URL:', error);
         // Use fallback image on error
-        setPhotoUrl(gender === 'female' ? '/images/superheroes/blue-woman.jpeg' : '/images/superheroes/blue-man.jpeg');
+        setPhotoUrl(gender === 'female' ? '/images/superheroes/blue-woman.webp' : '/images/superheroes/blue-man.webp');
         
         // Mark resources as loaded to continue with printing
         tracker.markLoaded('heroImage');

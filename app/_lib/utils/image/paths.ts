@@ -10,8 +10,8 @@ export function getSuperheroImagePaths(color: HeroColor): SuperheroImagePaths {
   const basePath = IMAGES_CONFIG.superheroes.basePath;
   
   return {
-    male: `${basePath}/${color}-man.jpeg`,
-    female: `${basePath}/${color}-woman.jpeg`
+    male: `${basePath}/${color}-man.webp`,
+    female: `${basePath}/${color}-woman.webp`
   };
 }
 

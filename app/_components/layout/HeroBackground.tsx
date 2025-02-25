@@ -4,10 +4,10 @@ import Image from 'next/image';
 
 export function HeroBackground(): JSX.Element {
   const images = [
-    '/images/superheroes/red-man.jpeg',
-    '/images/superheroes/blue-woman.jpeg',
-    '/images/superheroes/green-man.jpeg',
-    '/images/superheroes/yellow-woman.jpeg',
+    '/images/superheroes/red-man.webp',
+    '/images/superheroes/blue-woman.webp',
+    '/images/superheroes/green-man.webp',
+    '/images/superheroes/yellow-woman.webp',
   ];
 
   return (

@@ -18,7 +18,7 @@ export function PersonalitySection({ personality }: PersonalitySectionProps): JS
     <div className="flex flex-col md:flex-row items-stretch gap-0 max-w-6xl mx-auto shadow-lg rounded-lg overflow-hidden bg-light/5 backdrop-blur-sm">
       <div className="md:w-1/4 relative">
         <Image
-          src={`/images/superheroes/${color}-man.jpeg`}
+          src={`/images/superheroes/${color}-man.webp`}
           alt={`${color} personality male superhero`}
           width={240}
           height={320}
@@ -52,7 +52,7 @@ export function PersonalitySection({ personality }: PersonalitySectionProps): JS
 
       <div className="md:w-1/4 relative">
         <Image
-          src={`/images/superheroes/${color}-woman.jpeg`}
+          src={`/images/superheroes/${color}-woman.webp`}
           alt={`${color} personality female superhero`}
           width={240}
           height={320}

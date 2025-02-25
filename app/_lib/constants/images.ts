@@ -5,14 +5,14 @@ export const IMAGES_CONFIG = {
 } as const;
 
 export const heroImages = [
-  '/images/superheroes/red-man.jpeg',
-  '/images/superheroes/blue-woman.jpeg',
-  '/images/superheroes/green-man.jpeg',
-  '/images/superheroes/yellow-woman.jpeg',
-  '/images/superheroes/red-woman.jpeg',
-  '/images/superheroes/blue-man.jpeg',
-  '/images/superheroes/green-woman.jpeg',
-  '/images/superheroes/yellow-man.jpeg',
+  '/images/superheroes/red-man.webp',
+  '/images/superheroes/blue-woman.webp',
+  '/images/superheroes/green-man.webp',
+  '/images/superheroes/yellow-woman.webp',
+  '/images/superheroes/red-woman.webp',
+  '/images/superheroes/blue-man.webp',
+  '/images/superheroes/green-woman.webp',
+  '/images/superheroes/yellow-man.webp',
 ] as const;
 
 export type HeroImage = typeof heroImages[number];
