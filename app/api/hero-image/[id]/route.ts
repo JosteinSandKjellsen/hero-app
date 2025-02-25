@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { API_CONFIG } from '../../../_lib/config/api';
 
-// Use runtime edge for optimal performance on Netlify
-export const runtime = 'edge';
-
-// Use revalidate instead of force-dynamic to allow controlled caching
-export const revalidate = 3600; // Revalidate every hour
+// Revalidate every hour for optimal caching
+export const revalidate = 3600;
 
 export async function GET(
   request: NextRequest

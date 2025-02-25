@@ -29,8 +29,8 @@ export function Header({ variant = 'quiz' }: HeaderProps): JSX.Element {
   }
 
   return (
-    <div className="relative text-center mb-8">
-      <div className="flex justify-center mb-4">
+    <div className="relative text-center mb-8 md:mb-4">
+      <div className="flex justify-center mb-4 md:mb-2">
           <Link href="/" locale={false} className="bg-white/10 p-1 rounded-full shadow-2xl backdrop-blur-lg border border-white/20 hover:bg-white/20 transition-colors" onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
