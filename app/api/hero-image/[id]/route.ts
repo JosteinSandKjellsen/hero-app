@@ -18,6 +18,15 @@ export async function GET(
     // The ID should already be the generation ID
     const generationId = params.id;
     
+    // Validate that we have a proper ID
+    if (!generationId || generationId === 'undefined') {
+      console.error(`Invalid generation ID: "${generationId}"`);
+      return NextResponse.json(
+        { error: 'Invalid generation ID', generationId },
+        { status: 400 }
+      );
+    }
+    
     console.log(`Fetching generation data for ID: ${generationId}`);
     
     // Get the image URL using the service

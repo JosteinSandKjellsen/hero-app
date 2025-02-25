@@ -26,7 +26,15 @@ function PrintContent(): JSX.Element {
     const tracker = resourceTracker.current;
     
     async function fetchImageUrl(): Promise<void> {
-      if (!imageId) return;
+      if (!imageId || imageId === 'undefined') {
+        console.log('No valid imageId provided, using fallback image');
+        setPhotoUrl(gender === 'female' ? '/images/superheroes/blue-woman.jpeg' : '/images/superheroes/blue-man.jpeg');
+        
+        // Mark resources as loaded to continue with printing
+        tracker.markLoaded('heroImage');
+        tracker.markLoaded('bouvetLogo');
+        return;
+      }
       try {
         // Try to get JSON response first (production)
         const response = await fetch(`/api/hero-image/${imageId}`);
