@@ -22,44 +22,29 @@ export async function GET(
       );
     }
 
-    // Try to get the ID from different sources
-    const paramsId = params.id;
-    const urlId = new URL(request.url).pathname.split('/').pop();
+    // Extract the ID from the URL path as this seems more reliable in production
+    const pathname = new URL(request.url).pathname;
+    const urlId = pathname.split('/').filter(Boolean).pop();
     
     console.log('Debug route params:', {
-      paramsId,
       urlId,
       fullUrl: request.url,
-      pathname: new URL(request.url).pathname
+      pathname
     });
     
-    // Use the ID from URL if params.id is undefined
-    const generationId = paramsId === 'undefined' ? urlId : paramsId;
-    
-    // Validate that we have a proper ID
-    if (!generationId || generationId === 'undefined') {
-      console.error('Invalid generation ID. Debug info:', {
-        paramsId,
-        urlId,
-        generationId,
-        fullUrl: request.url,
-        headers: Object.fromEntries(request.headers.entries())
-      });
+    // Validate the URL ID
+    if (!urlId || urlId === 'undefined') {
+      console.error('Invalid generation ID. Debug info:', { urlId, fullUrl: request.url });
       return NextResponse.json(
         { 
-          error: 'Invalid generation ID', 
-          debug: {
-            paramsId,
-            urlId,
-            generationId,
-            fullUrl: request.url
-          }
+          error: 'Invalid generation ID',
+          debug: { urlId, fullUrl: request.url }
         },
         { status: 400 }
       );
     }
     
-    console.log(`Fetching generation data for ID: ${generationId}`);
+    console.log(`Fetching generation data for ID: ${urlId}`);
     
     // Construct headers directly for edge compatibility
     const headers = {
@@ -70,7 +55,7 @@ export async function GET(
     
     // Get the image URL using direct fetch
     const response = await fetch(
-      `${API_CONFIG.leonardo.baseUrl}/generations/${generationId}`,
+      `${API_CONFIG.leonardo.baseUrl}/generations/${urlId}`,
       { headers }
     );
 
@@ -175,7 +160,7 @@ export async function GET(
       { 
         error: 'Failed to serve hero image', 
         details: error instanceof Error ? error.message : 'Unknown error',
-        generationId: params.id
+        id: new URL(request.url).pathname.split('/').filter(Boolean).pop()
       },
       { status: 500 }
     );
