@@ -17,6 +17,9 @@ function PrintContent(): JSX.Element {
   const imageId = searchParams.get('imageId') || '';
   
   useEffect(() => {
+    // Store ref value at the beginning of effect to capture it for cleanup
+    const tracker = resourceTracker.current;
+    
     async function fetchImageUrl(): Promise<void> {
       if (!imageId) return;
       try {
@@ -38,13 +41,13 @@ function PrintContent(): JSX.Element {
         // Start preloading images
         try {
           await preloadRequiredImages(url);
-          resourceTracker.current.markLoaded('heroImage');
-          resourceTracker.current.markLoaded('bouvetLogo');
+          tracker.markLoaded('heroImage');
+          tracker.markLoaded('bouvetLogo');
         } catch (error) {
           console.error('Error preloading images:', error);
           // Mark as loaded anyway to prevent hanging
-          resourceTracker.current.markLoaded('heroImage');
-          resourceTracker.current.markLoaded('bouvetLogo');
+          tracker.markLoaded('heroImage');
+          tracker.markLoaded('bouvetLogo');
         }
       } catch (error) {
         console.error('Error fetching image URL:', error);
@@ -53,12 +56,10 @@ function PrintContent(): JSX.Element {
     fetchImageUrl();
 
     // Mark icons as loaded since they're SVG components
-    resourceTracker.current.markLoaded('personalityIcon');
-    resourceTracker.current.markLoaded('heroCardIcons');
+    tracker.markLoaded('personalityIcon');
+    tracker.markLoaded('heroCardIcons');
 
     return () => {
-      // Store ref value to avoid potential changes during cleanup
-      const tracker = resourceTracker.current;
       if (tracker) {
         tracker.reset();
       }

@@ -36,6 +36,59 @@ const nextConfig = {
         }
       ],
     },
+    // Add strong caching for static assets
+    {
+      source: '/images/:path*',
+      headers: [
+        {
+          key: 'Cache-Control',
+          value: 'public, max-age=31536000, immutable',
+        },
+        {
+          key: 'CDN-Cache-Control',
+          value: 'public, max-age=31536000, immutable',
+        },
+        {
+          key: 'Netlify-CDN-Cache-Control',
+          value: 'public, max-age=31536000, immutable',
+        }
+      ],
+    },
+    {
+      source: '/fonts/:path*',
+      headers: [
+        {
+          key: 'Cache-Control',
+          value: 'public, max-age=31536000, immutable',
+        },
+        {
+          key: 'CDN-Cache-Control',
+          value: 'public, max-age=31536000, immutable',
+        },
+        {
+          key: 'Netlify-CDN-Cache-Control',
+          value: 'public, max-age=31536000, immutable',
+        }
+      ],
+    },
+    // Add caching for _next/static files (JS, CSS)
+    {
+      source: '/_next/static/:path*',
+      headers: [
+        {
+          key: 'Cache-Control',
+          value: 'public, max-age=31536000, immutable',
+        },
+        {
+          key: 'CDN-Cache-Control',
+          value: 'public, max-age=31536000, immutable',
+        },
+        {
+          key: 'Netlify-CDN-Cache-Control',
+          value: 'public, max-age=31536000, immutable',
+        }
+      ],
+    },
   ],
   webpack: (config, { isServer }) => {
     if (isServer) {

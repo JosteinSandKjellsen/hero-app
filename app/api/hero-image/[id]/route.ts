@@ -2,7 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { LeonardoAiService } from '../../../_lib/services/leonardoAi';
 import { API_CONFIG } from '../../../_lib/config/api';
 
-export const dynamic = 'force-dynamic'; // API routes should be dynamic
+// Use runtime edge for optimal performance on Netlify
+export const runtime = 'edge';
+
+// Use revalidate instead of force-dynamic to allow controlled caching
+export const revalidate = 3600; // Revalidate every hour
 
 export async function GET(
   request: NextRequest,
@@ -33,9 +37,19 @@ export async function GET(
 
     const imageUrl = generation.generated_images[0].url;
     
-    // In production (Netlify), return the CDN URL directly
+    // In production (Netlify), return the CDN URL directly with cache headers
     if (process.env.NODE_ENV === 'production') {
-      return NextResponse.json({ url: imageUrl });
+      // For Netlify's CDN to properly cache the response
+      return NextResponse.json(
+        { url: imageUrl },
+        {
+          headers: {
+            'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400',
+            'CDN-Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400',
+            'Netlify-CDN-Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400'
+          }
+        }
+      );
     }
     
     // In development, proxy the image through our API
@@ -52,7 +66,7 @@ export async function GET(
     return new NextResponse(imageData, {
       headers: {
         'Content-Type': 'image/png',
-        'Cache-Control': 'public, max-age=31536000',
+        'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400',
         'Access-Control-Allow-Origin': '*'
       }
     });

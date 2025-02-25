@@ -23,20 +23,33 @@ export function HeroImageCarousel(): JSX.Element {
     return () => clearInterval(interval);
   }, [updateImage]);
 
+  // Preload next image - assume the next 2 images might be shown soon
+  const preloadIndex = (currentImageIndex + 1) % heroImages.length;
+  const preloadIndexNext = (currentImageIndex + 2) % heroImages.length;
+
   return (
     <div className="w-32 h-32 mx-auto mb-8 rounded-full overflow-hidden relative">
-      {heroImages.map((src, index) => (
-        <Image
-          key={src}
-          src={src}
-          alt="Superhero"
-          className={`object-cover transition-opacity duration-1000
-                     ${index === currentImageIndex ? 'opacity-100' : 'opacity-0'}`}
-          fill
-          sizes="(max-width: 128px) 100vw, 128px"
-          priority={index === 0}
-        />
-      ))}
+      {heroImages.map((src, index) => {
+        // Determine if this image is visible or about to be visible
+        const isVisible = index === currentImageIndex;
+        const isNext = index === preloadIndex || index === preloadIndexNext;
+        
+        return (
+          <Image
+            key={src}
+            src={src}
+            alt="Superhero"
+            className={`object-cover transition-opacity duration-1000
+                       ${isVisible ? 'opacity-100' : 'opacity-0'}`}
+            fill
+            sizes="128px"
+            loading={isVisible || isNext ? "eager" : "lazy"}
+            priority={isVisible || isNext}
+            // Add fetchpriority attribute for important images
+            fetchPriority={isVisible ? "high" : isNext ? "low" : "auto"}
+          />
+        );
+      })}
     </div>
   );
 }

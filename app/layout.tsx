@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { PreloadStaticImages } from './_components/ui/PreloadStaticImages';
 
 export const metadata: Metadata = {
   title: 'Bouvet - Superhelt Profilen',
@@ -49,6 +50,9 @@ export default function RootLayout({
 }): JSX.Element {
   return (
     <html lang="en" className={`${inter.variable} ${bangers.variable}`}>
+      <head>
+        <PreloadStaticImages />
+      </head>
       <body className={`${inter.className} min-h-screen bg-gradient-to-b from-dark via-dark to-dark`}>
         {children}
       </body>
