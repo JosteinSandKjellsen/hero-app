@@ -4,28 +4,31 @@ import { useEffect } from 'react';
 import { heroImages } from '@/app/_lib/constants/images';
 
 /**
- * Component that dynamically injects preload link tags for static hero images
- * when the component mounts
+ * Component that dynamically injects prefetch link tags for static hero images
+ * when the component mounts. Prefetch is used instead of preload because these
+ * images aren't needed immediately on page load but will be used later in the
+ * application flow (typically in the HeroImageCarousel during loading states).
  */
 export function PreloadStaticImages(): JSX.Element {
   useEffect(() => {
-    // Only preload first few images to avoid excessive network requests
-    const imagesToPreload = heroImages.slice(0, 4);
+    // Only prefetch first few images to avoid excessive network requests
+    const imagesToPrefetch = heroImages.slice(0, 4);
 
-    // Create link elements for each image to preload
-    imagesToPreload.forEach((imageSrc) => {
+    // Create link elements for each image to prefetch
+    imagesToPrefetch.forEach((imageSrc) => {
       const linkElement = document.createElement('link');
-      linkElement.rel = 'preload';
+      linkElement.rel = 'prefetch';
       linkElement.href = imageSrc;
+      // 'as' attribute isn't required for prefetch, but helps with resource prioritization
       linkElement.as = 'image';
       linkElement.setAttribute('fetchpriority', 'low');
       document.head.appendChild(linkElement);
     });
 
-    // Cleanup function to remove preload tags when component unmounts
+    // Cleanup function to remove prefetch tags when component unmounts
     return () => {
-      const preloadLinks = document.querySelectorAll('link[rel="preload"][as="image"]');
-      preloadLinks.forEach(link => {
+      const prefetchLinks = document.querySelectorAll('link[rel="prefetch"][as="image"]');
+      prefetchLinks.forEach(link => {
         if (link.parentNode) {
           link.parentNode.removeChild(link);
         }
