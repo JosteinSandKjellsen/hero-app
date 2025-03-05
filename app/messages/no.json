@@ -406,7 +406,9 @@
     }
   },
   "latest": {
-    "title": "Siste Helter"
+    "title": "Siste Helter",
+    "heroes": "Siste Helter",
+    "overview": "Siste Helter"
   },
   "personalitiesPage": {
     "title": "Heltepersonligheter"

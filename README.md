@@ -117,6 +117,13 @@ The application supports multiple languages through the `[locale]` parameter (e.
   - Delete unwanted entries
   - Print individual hero results
 
+- **`/[locale]/overview`**: Hero Overview
+  - Real-time display of the 8 latest heroes in a grid layout
+  - Live-updating statistics and hero distribution
+  - Interactive pie chart showing type distribution
+  - Color-based statistics with percentages
+  - Automatic updates every 20 seconds
+
 - **`/[locale]/stats`**: Statistics Dashboard
   - View today's hero generation statistics
   - See personality type distribution

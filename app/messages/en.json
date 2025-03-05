@@ -406,7 +406,9 @@
     }
   },
   "latest": {
-    "title": "Latest Heroes"
+    "title": "Latest Heroes",
+    "heroes": "Latest Heroes",
+    "overview": "Latest Heroes"
   },
   "personalitiesPage": {
     "title": "Hero Personalities"
