@@ -1,8 +1,12 @@
 import { Background } from '@/app/_components/layout/Background';
 import { OverviewSection } from '@/app/_components/overview/OverviewSection';
 import { getTranslations } from 'next-intl/server';
+import type { Metadata } from 'next';
 
-export async function generateMetadata({ params: { locale } }: { params: { locale: string }}) {
+export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
+
+export async function generateMetadata({ params: { locale } }: { params: { locale: string }}): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: 'latest' });
   return {
     title: t('overview')

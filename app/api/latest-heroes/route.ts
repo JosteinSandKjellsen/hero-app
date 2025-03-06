@@ -12,11 +12,13 @@ export interface LatestHeroWithId {
   createdAt: string;
 }
 
+export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
+
 export async function GET(request: Request): Promise<Response> {
   try {
-    const { searchParams } = new URL(request.url);
-    const count = parseInt(searchParams.get('count') || '3', 10);
-    const limit = Math.min(Math.max(count, 1), 50); // Between 1 and 50
+    const count = new URL(request.url).searchParams.get('count');
+    const limit = Math.min(Math.max(parseInt(count || '3', 10), 1), 50); // Between 1 and 50
 
     const latestHeroes = await prisma.latestHero.findMany({
       orderBy: { createdAt: 'desc' },
