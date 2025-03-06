@@ -42,3 +42,28 @@ export async function GET(request: Request): Promise<Response> {
     return new Response('Failed to fetch latest heroes', { status: 500 });
   }
 }
+
+export async function POST(request: Request): Promise<Response> {
+  try {
+    const data = await request.json();
+    const { name, userName, personalityType, imageId, color, gender, colorScores } = data;
+
+    // Create the new hero
+    const newHero = await prisma.latestHero.create({
+      data: {
+        name,
+        userName,
+        personalityType,
+        imageId,
+        color,
+        gender,
+        colorScores,
+      },
+    });
+
+    return Response.json(newHero);
+  } catch (error) {
+    console.error('Failed to create latest hero:', error);
+    return new Response('Failed to create latest hero', { status: 500 });
+  }
+}
