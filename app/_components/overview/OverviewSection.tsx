@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState, useRef } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 import { OverviewHeroCard } from './OverviewHeroCard';
@@ -176,56 +177,69 @@ export function OverviewSection(): JSX.Element {
       </div>
 
       {/* Stats Section - 25% width */}
-      <div className="w-[25%] bg-white/10 backdrop-blur-lg rounded-xl shadow-2xl border border-white/20 p-4 flex flex-col gap-8">
-        <h2 className={titleClasses}>
-          {statsT('title')}
-        </h2>
-        
-        {/* Total Heroes */}
-        <div className="mb-6 text-center">
-          <p className="text-6xl font-bold text-white font-bangers tracking-wider">
-            {stats?.total ?? 0}
-          </p>
-          <p className="text-sm text-white/80 uppercase tracking-wider">
-            {statsT('total.title')}
-          </p>
-        </div>
-
-        {/* Pie Chart */}
-        {chartData && (
-          <div className="mb-8 w-full" style={{ maxHeight: '30vh' }}>
-            <div className="w-full h-full flex items-center justify-center">
-              <div className="w-4/5 mx-auto">
-                <Pie data={chartData} options={chartOptions} />
-              </div>
-            </div>
+      <div className="w-[25%] bg-white/10 backdrop-blur-lg rounded-xl shadow-2xl border border-white/20 p-4 flex flex-col">
+        <div className="flex-1 flex flex-col gap-8">
+          <h2 className={titleClasses}>
+            {statsT('title')}
+          </h2>
+          
+          {/* Total Heroes */}
+          <div className="mb-6 text-center">
+            <p className="text-6xl font-bold text-white font-bangers tracking-wider">
+              {stats?.total ?? 0}
+            </p>
+            <p className="text-sm text-white/80 uppercase tracking-wider">
+              {statsT('total.title')}
+            </p>
           </div>
-        )}
 
-        {/* Color Stats Grid */}
-        <div className="grid grid-cols-2 gap-3">
-          {colors.map(color => {
-            const colorStats = stats?.byColor[color] || 0;
-            const percentage = stats?.total ? 
-              ((colorStats / stats.total) * 100).toFixed(1) : '0.0';
-            
-            return (
-              <div 
-                key={color}
-                className={`rounded-lg p-4 ${heroColors[color as keyof typeof heroColors].bg} text-white`}
-              >
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8">
-                    {getHeroCardIcon(color as 'red' | 'yellow' | 'green' | 'blue')}
-                  </div>
-                  <div>
-                    <p className="text-base font-bold opacity-90">{percentage}%</p>
-                    <p className="text-sm opacity-90">({colorStats})</p>
-                  </div>
+          {/* Pie Chart */}
+          {chartData && (
+            <div className="mb-8 w-full" style={{ maxHeight: '30vh' }}>
+              <div className="w-full h-full flex items-center justify-center">
+                <div className="w-4/5 mx-auto">
+                  <Pie data={chartData} options={chartOptions} />
                 </div>
               </div>
-            );
-          })}
+            </div>
+          )}
+
+          {/* Color Stats Grid */}
+          <div className="grid grid-cols-2 gap-3">
+            {colors.map(color => {
+              const colorStats = stats?.byColor[color] || 0;
+              const percentage = stats?.total ? 
+                ((colorStats / stats.total) * 100).toFixed(1) : '0.0';
+              
+              return (
+                <div 
+                  key={color}
+                  className={`rounded-lg p-4 ${heroColors[color as keyof typeof heroColors].bg} text-white`}
+                >
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8">
+                      {getHeroCardIcon(color as 'red' | 'yellow' | 'green' | 'blue')}
+                    </div>
+                    <div>
+                      <p className="text-base font-bold opacity-90">{percentage}%</p>
+                      <p className="text-sm opacity-90">({colorStats})</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Footer with Logo */}
+        <div className="mt-auto pt-8 flex justify-center">
+          <Image
+            src="https://bouvet.fotoware.cloud/fotoweb/resources/logos/main.png"
+            alt="Bouvet Logo"
+            width={120}
+            height={24}
+            className="h-6 w-[120px] object-contain opacity-90 hover:opacity-100 transition-opacity"
+          />
         </div>
       </div>
     </div>
