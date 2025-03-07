@@ -1,4 +1,4 @@
-import type { Config } from '@netlify/edge-functions';
+import { Handler } from '@netlify/functions';
 import { PrismaClient } from '@prisma/client';
 
 // Minimal version of LeonardoAiService for cleanup only
@@ -49,10 +49,11 @@ class LeonardoCleanupService {
   }
 }
 
-export default async function handler() {
+const handler: Handler = async (event, context) => {
   if (!process.env.LEONARDO_API_KEY) {
     throw new Error('LEONARDO_API_KEY is required');
   }
+
   try {
     const prisma = new PrismaClient();
     const leonardoService = new LeonardoCleanupService(process.env.LEONARDO_API_KEY);
@@ -96,14 +97,19 @@ export default async function handler() {
       }
     });
 
-    return new Response(`Successfully cleaned up ${count} old heroes`, {
-      headers: { 'Content-Type': 'text/plain' }
-    });
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: `Successfully cleaned up ${count} old heroes` }),
+      headers: { 'Content-Type': 'application/json' }
+    };
   } catch (error) {
     console.error('Error during cleanup:', error);
-    return new Response('Failed to cleanup old heroes', { status: 500 });
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'Failed to cleanup old heroes' }),
+      headers: { 'Content-Type': 'application/json' }
+    };
   }
-}
+};
 
-// Note: Scheduling is handled through Netlify configuration, not in code
-export const config: Config = {};
+export { handler };
