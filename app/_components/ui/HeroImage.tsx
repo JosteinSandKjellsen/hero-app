@@ -13,6 +13,15 @@ interface HeroImageProps {
 // Cache duration in milliseconds (1 hour)
 const CACHE_DURATION = 60 * 60 * 1000;
 
+// Memory cache for URLs to avoid localStorage reads
+const urlMemoryCache = new Map<string, { url: string; timestamp: number }>();
+
+// Cache validation interval (10 minutes) - only validate cached URLs every 10 minutes
+const VALIDATION_INTERVAL = 10 * 60 * 1000;
+
+// Keep track of last validation time for each URL
+const lastValidationTime = new Map<string, number>();
+
 // Default fallback images by gender
 const DEFAULT_FALLBACKS = {
   male: '/images/superheroes/blue-man.webp',
@@ -55,32 +64,49 @@ export function HeroImage({
       setError(false);
       
       try {
-        // Check if we have a cached URL and if it's still valid
+        const now = new Date().getTime();
+        
+        // First check memory cache
+        const memoryCached = urlMemoryCache.get(`hero-image-${imageId}`);
+        if (memoryCached && now - memoryCached.timestamp < CACHE_DURATION) {
+          setImageUrl(memoryCached.url);
+          setLoading(false);
+          
+          // Only validate if enough time has passed since last validation
+          const lastValidated = lastValidationTime.get(memoryCached.url) || 0;
+          if (now - lastValidated > VALIDATION_INTERVAL) {
+            lastValidationTime.set(memoryCached.url, now);
+            
+            // Validate URL in background
+            fetch(memoryCached.url, { method: 'HEAD' })
+              .then(response => {
+                if (!response.ok) {
+                  console.warn('Cached image URL is no longer valid:', memoryCached.url);
+                  urlMemoryCache.delete(`hero-image-${imageId}`);
+                  localStorage.removeItem(`hero-image-${imageId}`);
+                  fetchImageUrl(); // Retry fetch
+                }
+              })
+              .catch(() => {
+                // Don't take any action here - the image might still load
+              });
+          }
+          
+          return;
+        }
+        
+        // Check localStorage if not in memory cache
         const cachedData = localStorage.getItem(`hero-image-${imageId}`);
         
         if (cachedData) {
           try {
             const { url, timestamp } = JSON.parse(cachedData);
-            const now = new Date().getTime();
             
-            // If the cached data is still valid, use it
+            // If the cached data is still valid, use it and update memory cache
             if (now - timestamp < CACHE_DURATION && url) {
+              urlMemoryCache.set(`hero-image-${imageId}`, { url, timestamp });
               setImageUrl(url);
               setLoading(false);
-              
-              // Verify the cached URL still works with a HEAD request
-              fetch(url, { method: 'HEAD' })
-                .then(response => {
-                  if (!response.ok) {
-                    console.warn('Cached image URL is no longer valid:', url);
-                    localStorage.removeItem(`hero-image-${imageId}`);
-                    fetchImageUrl(); // Retry fetch
-                  }
-                })
-                .catch(() => {
-                  // Don't take any action here - the image might still load
-                });
-                
               return;
             }
           } catch (e) {
@@ -116,12 +142,16 @@ export function HeroImage({
         
         // Cache the URL with current timestamp
         try {
+          const cacheData = { 
+            url, 
+            timestamp: new Date().getTime() 
+          };
+          
+          // Update both caches
+          urlMemoryCache.set(`hero-image-${imageId}`, cacheData);
           localStorage.setItem(
             `hero-image-${imageId}`, 
-            JSON.stringify({ 
-              url, 
-              timestamp: new Date().getTime() 
-            })
+            JSON.stringify(cacheData)
           );
         } catch (e) {
           // Handle storage errors (Safari private mode, quota exceeded, etc.)
