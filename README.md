@@ -160,6 +160,15 @@ The database includes two main models:
   - Color scores
   - Timestamps
 
+### Data Retention Policy
+
+The application implements a 30-day data retention policy:
+
+- All generated hero data in Prisma database is automatically deleted after 30 days
+- Associated hero images in Leonardo.ai are also removed after 30 days
+- This cleanup process runs daily using Netlify Edge Functions
+- Users are notified about this retention period in their confirmation email
+
 ### Development Database Setup
 
 1. The project uses Prisma's Data Platform for the database. Get your database URL from [Prisma Data Platform](https://cloud.prisma.io).

@@ -19,7 +19,10 @@ export function getEmailTemplate({ heroUrl, name, heroName, personalityName, col
       </div>
       <p>Klikk på lenken under for å se din superhelt-match:</p>
       <a href="${heroUrl}" style="display: inline-block; background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; margin: 16px 0;">Se Din Helt</a>
-      <p style="color: #666; font-size: 12px; margin-top: 24px;">
+      <p style="color: #666; font-size: 14px; margin-top: 16px;">
+        Din superhelt vil være tilgjengelig i 30 dager før den automatisk blir slettet.
+      </p>
+      <p style="color: #666; font-size: 12px; margin-top: 16px;">
         Denne e-posten ble sendt fordi noen ba om å dele en superhelt-match. 
         Hvis du ikke ba om dette, kan du trygt ignorere denne e-posten.
       </p>

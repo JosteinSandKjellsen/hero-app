@@ -47,7 +47,7 @@
           "Your processed photo is temporarily shared with Leonardo AI for image generation",
           "The original photo is deleted immediately after processing",
           "Leonardo AI's usage is governed by their privacy policy",
-          "The generated superhero image is stored in Leonardo AI's AWS S3 database, while we only store the image ID"
+          "The generated superhero image is stored in Leonardo AI's AWS S3 database and deleted after 30 days"
         ]
       },
       "intro": {
@@ -63,7 +63,7 @@
             "Your processed photo is temporarily shared with Leonardo AI for image generation",
             "The original photo is deleted immediately after processing",
             "Leonardo AI's usage is governed by their privacy policy",
-            "The generated superhero image is stored in Leonardo AI's AWS S3 database, while we only store the image ID"
+            "The generated superhero image is stored in Leonardo AI's AWS S3 database and deleted after 30 days"
           ]
         }
       },
@@ -100,7 +100,7 @@
           "Only stores generated content: hero names, personality results, and image IDs",
           "No personal identification information is stored",
           "Database is secured and regularly maintained",
-          "Automatic deletion of entries older than 30 days (except generated images)"
+          "All data is automatically deleted after 30 days"
         ]
       }
     },
@@ -108,8 +108,7 @@
       "title": "4. Data Storage and Retention",
       "points": [
         "We maintain a rolling list of the 50 most recently generated heroes (name, personality type, and creation time)",
-        "All hero information (except generated images) older than 30 days is automatically deleted",
-        "Generated superhero images are stored indefinitely",
+        "All hero information, including generated images, is automatically deleted after 30 days",
         "Original photos are deleted immediately after processing",
         "Quiz responses are not stored, only the final result"
       ]

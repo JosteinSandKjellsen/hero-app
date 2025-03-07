@@ -175,19 +175,37 @@ export class LeonardoAiService {
     throw new ApiError('Maximum retries exceeded', 500);
   }
 
-  async deleteImage(imageId: string, type: 'initial' | 'generated' = 'initial'): Promise<void> {
-    try {
-      const endpoint = type === 'initial' ? 'init-image' : 'generations';
-      const response = await fetch(`${API_CONFIG.leonardo.baseUrl}/${endpoint}/${imageId}`, {
-        method: 'DELETE',
-        headers: this.headers
-      });
+  async deleteImage(imageId: string, type: 'initial' | 'generated' = 'initial', maxRetries = 3): Promise<void> {
+    let attempts = 0;
+    
+    while (attempts <= maxRetries) {
+      try {
+        const endpoint = type === 'initial' ? 'init-image' : 'generations';
+        const response = await fetch(`${API_CONFIG.leonardo.baseUrl}/${endpoint}/${imageId}`, {
+          method: 'DELETE',
+          headers: this.headers
+        });
 
-      if (!response.ok) {
-        console.error(`Failed to delete ${type} image:`, imageId);
+        if (response.status === 429) {
+          if (attempts === maxRetries) {
+            console.error('Rate limit reached after max retries, skipping deletion for:', imageId);
+            return;
+          }
+          console.log('Rate limited on delete, waiting before retry...');
+          await sleep(2000 * Math.pow(2, attempts)); // Exponential backoff: 2s, 4s, 8s
+          attempts++;
+          continue;
+        }
+
+        if (!response.ok) {
+          console.error(`Failed to delete ${type} image:`, imageId);
+        }
+        return;
+      } catch (error) {
+        console.error(`Error deleting ${type} image:`, error);
+        if (attempts === maxRetries) return;
+        attempts++;
       }
-    } catch (error) {
-      console.error(`Error deleting ${type} image:`, error);
     }
   }
 

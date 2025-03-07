@@ -1,5 +1,6 @@
 import { prisma } from '@/app/_lib/prisma';
 import { Prisma } from '@prisma/client';
+import { LeonardoAiService } from '@/app/_lib/services/leonardoAi';
 
 export interface LatestHeroWithId {
   id: number;
@@ -18,6 +19,44 @@ export const fetchCache = 'force-no-store';
 
 export async function GET(request: Request): Promise<Response> {
   try {
+    // Cleanup old entries as backup to scheduled job
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const oldHeroes = await prisma.latestHero.findMany({
+      where: {
+        createdAt: {
+          lt: thirtyDaysAgo
+        }
+      },
+      select: {
+        id: true,
+        imageId: true
+      }
+    });
+
+    if (oldHeroes.length > 0) {
+      const leonardoService = new LeonardoAiService();
+      
+      // Delete images from Leonardo
+      for (const hero of oldHeroes) {
+        try {
+          await leonardoService.deleteImage(hero.imageId, 'generated');
+        } catch (error) {
+          console.error(`Failed to delete Leonardo image for hero ${hero.id}:`, error);
+        }
+      }
+
+      // Delete heroes from database
+      await prisma.latestHero.deleteMany({
+        where: {
+          createdAt: {
+            lt: thirtyDaysAgo
+          }
+        }
+      });
+    }
+
     const count = new URL(request.url).searchParams.get('count');
     const limit = Math.min(Math.max(parseInt(count || '3', 10), 1), 50); // Between 1 and 50
 

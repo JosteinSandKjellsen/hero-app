@@ -47,7 +47,7 @@
           "Ditt behandlede foto deles midlertidig med Leonardo AI for bildegenerering",
           "Originalbildet slettes umiddelbart etter behandling",
           "Leonardo AIs bruk er regulert av deres personvernerklæring",
-          "Det genererte superheltbildet lagres i Leonardo AIs AWS S3-database, mens vi kun lagrer bilde-ID-en"
+          "Det genererte superheltbildet lagres i Leonardo AIs AWS S3-database og slettes etter 30 dager"
         ]
       },
       "intro": {
@@ -63,7 +63,7 @@
             "Ditt behandlede foto deles midlertidig med Leonardo AI for bildegenerering",
             "Originalbildet slettes umiddelbart etter behandling",
             "Leonardo AIs bruk er regulert av deres personvernerklæring",
-            "Det genererte superheltbildet lagres i Leonardo AIs AWS S3-database, mens vi kun lagrer bilde-ID-en"
+            "Det genererte superheltbildet lagres i Leonardo AIs AWS S3-database og slettes etter 30 dager"
           ]
         }
       },
@@ -100,7 +100,7 @@
           "Lagrer kun generert innhold: heltenavn, personlighetsresultater og bilde-ID-er",
           "Ingen personlig identifikasjonsinformasjon lagres",
           "Databasen er sikret og vedlikeholdes regelmessig",
-          "Automatisk sletting av oppføringer eldre enn 30 dager (unntatt genererte bilder)"
+          "All data slettes automatisk etter 30 dager"
         ]
       }
     },
@@ -108,8 +108,7 @@
       "title": "4. Datalagring og Oppbevaring",
       "points": [
         "Vi oppbevarer en rullerende liste over de 50 siste genererte heltene (navn, personlighetstype og opprettelsestidspunkt)",
-        "All helteinformasjon (unntatt genererte bilder) eldre enn 30 dager slettes automatisk",
-        "Genererte superheltbilder lagres på ubestemt tid",
+        "All helteinformasjon, inkludert genererte bilder, slettes automatisk etter 30 dager",
         "Originalbilder slettes umiddelbart etter behandling",
         "Quiz-svar lagres ikke, kun det endelige resultatet"
       ]
