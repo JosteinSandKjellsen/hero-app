@@ -33,7 +33,7 @@ interface StatsData {
   };
 }
 
-const titleClasses = "text-4xl font-bangers tracking-wider text-white mb-4 text-center drop-shadow-lg";
+const titleClasses = "text-4xl font-bangers tracking-wider text-white pt-4 text-center drop-shadow-lg";
 
 export function OverviewSection(): JSX.Element {
   const statsT = useTranslations('stats');
@@ -177,11 +177,13 @@ export function OverviewSection(): JSX.Element {
       </div>
 
       {/* Stats Section - 25% width */}
-      <div className="w-[25%] bg-white/10 backdrop-blur-lg rounded-xl shadow-2xl border border-white/20 p-4 flex flex-col">
-        <div className="flex-1 flex flex-col gap-8">
-          <h2 className={titleClasses}>
-            {statsT('title')}
-          </h2>
+      <div className="w-[25%] flex flex-col">
+        <h2 className={titleClasses}>
+          {statsT('title')}
+        </h2>
+        <div className="relative h-[calc(100%-4rem)]">
+          <div className="h-full bg-white/10 backdrop-blur-lg rounded-xl shadow-2xl border border-white/20 p-4 flex flex-col absolute inset-0 scale-[0.95]">
+          <div className="flex-1 flex flex-col gap-8 pt-12">
           
           {/* Total Heroes */}
           <div className="mb-6 text-center">
@@ -229,10 +231,10 @@ export function OverviewSection(): JSX.Element {
               );
             })}
           </div>
-        </div>
+          </div>
 
-        {/* Footer with Logo */}
-        <div className="mt-auto pt-8 flex justify-center">
+          {/* Footer with Logo */}
+          <div className="mt-auto pt-8 flex justify-center">
           <Image
             src="https://bouvet.fotoware.cloud/fotoweb/resources/logos/main.png"
             alt="Bouvet Logo"
@@ -240,6 +242,8 @@ export function OverviewSection(): JSX.Element {
             height={24}
             className="h-6 w-[120px] object-contain opacity-90 hover:opacity-100 transition-opacity"
           />
+          </div>
+          </div>
         </div>
       </div>
     </div>
