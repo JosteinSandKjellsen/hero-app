@@ -35,6 +35,8 @@
 
 [functions.cleanup-old-heroes]
   schedule = "@daily"
+  included_files = ["node_modules/@netlify/plugin-nextjs/**/*", "node_modules/@prisma/client/**/*"]
+  external_node_modules = ["@netlify/plugin-nextjs", "@prisma/client"]
 
 [build.processing]
   skip_processing = false

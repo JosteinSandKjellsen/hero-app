@@ -1,11 +1,61 @@
 import type { Config } from '@netlify/edge-functions';
 import { PrismaClient } from '@prisma/client';
-import { LeonardoAiService } from '../../app/_lib/services/leonardoAi';
+
+// Minimal version of LeonardoAiService for cleanup only
+class LeonardoCleanupService {
+  private readonly baseUrl = 'https://cloud.leonardo.ai/api/rest/v1';
+  private readonly headers: HeadersInit;
+
+  constructor(apiKey: string) {
+    this.headers = {
+      'accept': 'application/json',
+      'content-type': 'application/json',
+      'authorization': `Bearer ${apiKey}`,
+    };
+  }
+
+  // Simplified version that only handles deletion with retries
+  async deleteGeneratedImage(imageId: string, maxRetries = 3): Promise<void> {
+    let attempts = 0;
+    
+    while (attempts <= maxRetries) {
+      try {
+        const response = await fetch(`${this.baseUrl}/generations/${imageId}`, {
+          method: 'DELETE',
+          headers: this.headers
+        });
+
+        if (response.status === 429) {
+          if (attempts === maxRetries) {
+            console.error('Rate limit reached after max retries, skipping deletion for:', imageId);
+            return;
+          }
+          console.log('Rate limited on delete, waiting before retry...');
+          await new Promise(resolve => setTimeout(resolve, 2000 * Math.pow(2, attempts))); // Exponential backoff: 2s, 4s, 8s
+          attempts++;
+          continue;
+        }
+
+        if (!response.ok) {
+          console.error('Failed to delete generated image:', imageId);
+        }
+        return;
+      } catch (error) {
+        console.error('Error deleting generated image:', error);
+        if (attempts === maxRetries) return;
+        attempts++;
+      }
+    }
+  }
+}
 
 export default async function handler() {
+  if (!process.env.LEONARDO_API_KEY) {
+    throw new Error('LEONARDO_API_KEY is required');
+  }
   try {
     const prisma = new PrismaClient();
-    const leonardoService = new LeonardoAiService();
+    const leonardoService = new LeonardoCleanupService(process.env.LEONARDO_API_KEY);
 
     // Calculate date 30 days ago
     const thirtyDaysAgo = new Date();
@@ -27,7 +77,7 @@ export default async function handler() {
     // Delete image from Leonardo for each hero with delay between deletions
     for (const hero of oldHeroes) {
       try {
-        await leonardoService.deleteImage(hero.imageId, 'generated');
+        await leonardoService.deleteGeneratedImage(hero.imageId);
         // Add a small delay between deletions to avoid rate limiting
         if (oldHeroes.indexOf(hero) !== oldHeroes.length - 1) {
           await new Promise(resolve => setTimeout(resolve, 500));
