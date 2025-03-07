@@ -1,4 +1,5 @@
 import { prisma } from '@/app/_lib/prisma';
+import { Prisma } from '@prisma/client';
 
 export interface LatestHeroWithId {
   id: number;
@@ -64,6 +65,12 @@ export async function POST(request: Request): Promise<Response> {
     return Response.json(newHero);
   } catch (error) {
     console.error('Failed to create latest hero:', error);
+    
+    // Handle unique constraint violation
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+      return new Response('This hero image has already been saved', { status: 409 });
+    }
+    
     return new Response('Failed to create latest hero', { status: 500 });
   }
 }
