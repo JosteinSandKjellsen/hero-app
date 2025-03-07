@@ -18,13 +18,14 @@ interface OverviewHeroCardProps {
 
 export function OverviewHeroCard({ hero, isNew }: OverviewHeroCardProps): JSX.Element {
   const backgroundColor = heroColors[hero.color]?.bg || 'bg-slate-500';
+  const borderColor = heroColors[hero.color]?.border || 'border-purple';
 
   return (
     <motion.div 
       initial={{ scale: isNew ? 1.05 : 1, opacity: isNew ? 0 : 1 }}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className={`w-full h-full relative ${backgroundColor} rounded-2xl shadow-2xl overflow-hidden group`}
+      className={`w-full h-full relative ${backgroundColor} rounded-2xl shadow-2xl overflow-hidden group border-[6px] ${borderColor}`}
     >
       <div className="absolute inset-0">
         <div className="relative w-full h-full overflow-hidden">
