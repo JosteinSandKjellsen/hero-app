@@ -33,8 +33,7 @@
   function = "generateHeroName"
   path = "/api/hero-name"
 
-[[edge_functions]]
-  function = "cleanup-old-heroes"
+[functions.cleanup-old-heroes]
   schedule = "@daily"
 
 [build.processing]
