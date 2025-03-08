@@ -54,22 +54,6 @@ export class ResourceTracker {
   }
 }
 
-export function preloadImage(src: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve();
-    img.onerror = reject;
-    img.src = src;
-  });
-}
-
-export async function preloadRequiredImages(photoUrl: string): Promise<void> {
-  await Promise.all([
-    preloadImage(photoUrl),
-    preloadImage('/images/logos/bouvet.svg')
-  ]);
-}
-
 export function getPrintUrl(data: PrintCardData, shouldPrint: boolean = true): string {
   // Extract generation ID from Leonardo AI URL
   // URL format: https://cdn.leonardo.ai/users/{userId}/generations/{generationId}/[filename]

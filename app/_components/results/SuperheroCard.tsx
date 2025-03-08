@@ -12,9 +12,10 @@ interface SuperheroCardProps {
   personality: PersonalityType;
   userData: UserData;
   results?: { color: string; percentage: number }[];
+  optimizePrint?: boolean;
 }
 
-export function SuperheroCard({ photoUrl, personality, userData, results = [] }: SuperheroCardProps): JSX.Element {
+export function SuperheroCard({ photoUrl, personality, userData, results = [], optimizePrint = false }: SuperheroCardProps): JSX.Element {
   const t = useTranslations('results');
 
   const getColorValue = (color: string): string => {
@@ -74,9 +75,10 @@ export function SuperheroCard({ photoUrl, personality, userData, results = [] }:
           alt={t('selfieAlt')}
           className="object-cover"
           fill
-          sizes="(max-width: 600px) 100vw, 600px"
+          sizes={optimizePrint ? "500px" : "(max-width: 600px) 100vw, 600px"}
           crossOrigin="anonymous"
-          priority
+          priority={optimizePrint}
+          loading={optimizePrint ? "eager" : "lazy"}
         />
         <div className="absolute bottom-3 right-3 bg-white/30 backdrop-blur-sm py-1.5 rounded-full flex items-center justify-center w-[6.25rem]" style={{ backdropFilter: 'blur(4px)' }}>
           <Image
@@ -86,7 +88,7 @@ export function SuperheroCard({ photoUrl, personality, userData, results = [] }:
             height={32}
             className="w-16 h-8"
             style={{ filter: 'brightness(0)' }}
-            priority
+            loading={optimizePrint ? "eager" : "lazy"}
           />
         </div>
       </div>

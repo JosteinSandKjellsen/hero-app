@@ -8,6 +8,7 @@ interface HeroImageProps {
   alt: string;
   className?: string;
   fallbackImage?: string;
+  priority?: boolean;
 }
 
 // Cache duration in milliseconds (1 hour)
@@ -33,7 +34,8 @@ export function HeroImage({
   imageId, 
   alt, 
   className = '', 
-  fallbackImage
+  fallbackImage,
+  priority = false
 }: HeroImageProps): JSX.Element {
   const [imageUrl, setImageUrl] = useState<string>('');
   const [loading, setLoading] = useState(true);
@@ -227,7 +229,7 @@ export function HeroImage({
         alt={`${alt} (fallback)`}
         fill
         className={`object-cover ${className}`}
-        priority
+        priority={priority}
         sizes="300px"
       />
     );
@@ -239,7 +241,7 @@ export function HeroImage({
       alt={alt}
       fill
       className={`object-cover ${className}`}
-      priority
+      priority={priority}
       sizes="300px"
       onError={handleImageError}
     />

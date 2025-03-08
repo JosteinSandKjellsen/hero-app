@@ -22,7 +22,8 @@ export function HeroBackground(): JSX.Element {
               src={image}
               alt="Superhero"
               fill
-              priority
+              priority={index === 0}
+              loading={index === 0 ? "eager" : "lazy"}
               sizes="(max-width: 768px) 50vw, 25vw"
               className="object-cover scale-105 transition-transform duration-5000 group-hover:scale-110"
             />

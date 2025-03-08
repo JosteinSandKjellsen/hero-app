@@ -1,17 +1,18 @@
 'use client';
 
-import React, { Suspense, useEffect, useRef } from 'react';
+import React, { Suspense } from 'react';
 import './print.css';
 import { useSearchParams } from 'next/navigation';
 import { SuperheroCard } from '../../_components/results/SuperheroCard';
 import { HeroColor } from '../../_lib/types/api';
 import { heroColors } from '@/app/_lib/constants/colors';
-import { ResourceTracker, preloadRequiredImages, initializePrint } from '../../_lib/utils/print';
+import { initializePrint, ResourceTracker } from '../../_lib/utils/print';
+import { useEffect, useRef, useState } from 'react';
 
 function PrintContent(): JSX.Element {
   const searchParams = useSearchParams();
   const resourceTracker = useRef(new ResourceTracker());
-  const [photoUrl, setPhotoUrl] = React.useState('');
+  const [photoUrl, setPhotoUrl] = useState('');
   
   // Get parameters from URL
   const imageId = searchParams.get('imageId') || '';
@@ -30,7 +31,7 @@ function PrintContent(): JSX.Element {
         console.log('No valid imageId provided, using fallback image');
         setPhotoUrl(gender === 'female' ? '/images/superheroes/blue-woman.webp' : '/images/superheroes/blue-man.webp');
         
-        // Mark resources as loaded to continue with printing
+        // Mark resources as loaded
         tracker.markLoaded('heroImage');
         tracker.markLoaded('bouvetLogo');
         return;
@@ -56,17 +57,9 @@ function PrintContent(): JSX.Element {
           });
           setPhotoUrl(gender === 'female' ? '/images/superheroes/blue-woman.webp' : '/images/superheroes/blue-man.webp');
           
-          // Start preloading fallback image
-          try {
-            await preloadRequiredImages(gender === 'female' ? '/images/superheroes/blue-woman.webp' : '/images/superheroes/blue-man.webp');
-            tracker.markLoaded('heroImage');
-            tracker.markLoaded('bouvetLogo');
-          } catch (error) {
-            console.error('Error preloading fallback images:', error);
-            // Mark as loaded anyway to prevent hanging
-            tracker.markLoaded('heroImage');
-            tracker.markLoaded('bouvetLogo');
-          }
+          // Mark resources as loaded
+          tracker.markLoaded('heroImage');
+          tracker.markLoaded('bouvetLogo');
           return;
         }
         
@@ -86,23 +79,16 @@ function PrintContent(): JSX.Element {
         
         setPhotoUrl(url);
         
-        // Start preloading images
-        try {
-          await preloadRequiredImages(url);
-          tracker.markLoaded('heroImage');
-          tracker.markLoaded('bouvetLogo');
-        } catch (error) {
-          console.error('Error preloading images:', error);
-          // Mark as loaded anyway to prevent hanging
-          tracker.markLoaded('heroImage');
-          tracker.markLoaded('bouvetLogo');
-        }
+        // Mark resources as loaded since Next.js Image component handles loading
+        tracker.markLoaded('heroImage');
+        tracker.markLoaded('bouvetLogo');
+        
       } catch (error) {
         console.error('Error fetching image URL:', error);
         // Use fallback image on error
         setPhotoUrl(gender === 'female' ? '/images/superheroes/blue-woman.webp' : '/images/superheroes/blue-man.webp');
         
-        // Mark resources as loaded to continue with printing
+        // Mark resources as loaded
         tracker.markLoaded('heroImage');
         tracker.markLoaded('bouvetLogo');
       }
@@ -180,6 +166,7 @@ function PrintContent(): JSX.Element {
             personality={personality}
             userData={userData}
             results={scores}
+            optimizePrint={true}
           />
         )}
       </div>

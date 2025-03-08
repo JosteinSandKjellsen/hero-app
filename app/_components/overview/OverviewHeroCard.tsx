@@ -14,9 +14,10 @@ interface OverviewHeroCardProps {
     imageId: string;
   };
   isNew?: boolean;
+  priority?: boolean;
 }
 
-export function OverviewHeroCard({ hero, isNew }: OverviewHeroCardProps): JSX.Element {
+export function OverviewHeroCard({ hero, isNew, priority = false }: OverviewHeroCardProps): JSX.Element {
   const backgroundColor = heroColors[hero.color]?.bg || 'bg-slate-500';
   const borderColor = heroColors[hero.color]?.border || 'border-purple';
 
@@ -33,6 +34,7 @@ export function OverviewHeroCard({ hero, isNew }: OverviewHeroCardProps): JSX.El
             imageId={hero.imageId}
             alt={hero.name}
             className="object-top"
+            priority={priority}
           />
         </div>
       </div>
