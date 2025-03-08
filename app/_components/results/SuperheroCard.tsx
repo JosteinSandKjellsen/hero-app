@@ -30,7 +30,7 @@ export function SuperheroCard({ photoUrl, personality, userData, results = [] }:
   return (
     <div
       data-card-clone
-      className={`rounded-xl overflow-hidden transform hover:scale-[1.02] transition-transform duration-300 print:transform-none print:transition-none`}
+      className={`rounded-xl transform hover:scale-[1.02] transition-transform duration-300 print:transform-none print:transition-none hover:z-10 origin-center`}
       style={{
         width: '100%',
         maxWidth: '600px',

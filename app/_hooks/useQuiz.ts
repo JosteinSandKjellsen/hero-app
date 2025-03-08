@@ -223,20 +223,53 @@ export function useQuiz(): UseQuizReturn {
       setHeroName(nameData.name);
       setGenerationStep('complete');
         
-      // Track hero generation statistics
+      // Track hero generation statistics and save to latest heroes
       try {
-        await fetch(`${window.location.origin}/api/hero-stats`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            color: selectedColor
-          }),
-        });
-      } catch (statsError) {
-        // Log but don't fail if stats tracking fails
-        console.error('Failed to track hero statistics:', statsError);
+        // Extract generation ID from image URL
+        const match = imageUrl.match(/generations\/([^/]+)\//) || [];
+        const imageId = match[1];
+        
+        if (!imageId) {
+          console.error('Could not extract generation ID from URL:', imageUrl);
+        } else {
+          await Promise.all([
+            // Track stats
+            fetch(`${window.location.origin}/api/hero-stats`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                color: selectedColor
+              }),
+            }),
+            // Save to latest heroes
+            fetch(`${window.location.origin}/api/latest-heroes`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                name: nameData.name,
+                userName: userData.name,
+                personalityType: t(`personalities.${selectedColor}.name`),
+                imageId,
+                color: selectedColor,
+                gender: userData.gender,
+                promptStyle: 'default',
+                basePrompt: `Generate a ${userData.gender === 'male' ? 'male' : 'female'} superhero with ${selectedColor} color scheme`,
+                negativePrompt: null,
+                colorScores: scores,
+              }),
+            })
+          ]).catch(error => {
+            // Log but don't fail if stats tracking or saving fails
+            console.error('Failed to track hero statistics or save to latest heroes:', error);
+          });
+        }
+      } catch (error) {
+        // Log but don't fail if stats tracking or saving fails
+        console.error('Failed to track hero statistics or save to latest heroes:', error);
       }
       
       setShowResults(true);

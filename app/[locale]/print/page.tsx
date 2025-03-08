@@ -163,15 +163,16 @@ function PrintContent(): JSX.Element {
   }, [shouldPrint, photoUrl]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white p-0 m-0">
+    <div className="min-h-screen print-page flex items-center justify-center bg-white">
       <div style={{ 
         width: '100mm', 
         height: '148mm', 
         margin: 0, 
         padding: 0,
         display: 'flex',
-        alignItems: 'flex-start',
-        overflow: 'hidden'
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'visible'
       }}>
         {photoUrl && (
           <SuperheroCard

@@ -43,7 +43,7 @@ export function QuizLayout({ children, showBackground = false, variant = 'quiz' 
       <div className={`relative z-10 w-full ${
         variant === 'registration'
           ? 'pt-8 md:pt-16 lg:pt-32' /* Responsive padding for registration: small on mobile, large on desktop */
-          : 'pt-8 md:pt-12' /* Standard padding for other variants */
+          : 'pt-4 md:pt-8' /* Reduced padding for other variants */
       }`}>
         <Header variant={variant} key={`header-${variant}-${pathname}-key`} />
       </div>

@@ -4,31 +4,27 @@ import { useEffect } from 'react';
 import { heroImages } from '@/app/_lib/constants/images';
 
 /**
- * Component that dynamically injects prefetch link tags for static hero images
- * when the component mounts. Prefetch is used instead of preload because these
- * images aren't needed immediately on page load but will be used later in the
- * application flow (typically in the HeroImageCarousel during loading states).
+ * Component that dynamically handles image loading strategy for static hero images.
+ * We let Next.js handle image optimization and preloading through its Image component
+ * and only preload the first image that we know will be needed immediately.
  */
 export function PreloadStaticImages(): JSX.Element {
   useEffect(() => {
-    // Only prefetch first few images to avoid excessive network requests
-    const imagesToPrefetch = heroImages.slice(0, 4);
-
-    // Create link elements for each image to prefetch
-    imagesToPrefetch.forEach((imageSrc) => {
+    // Only preload the first image as it's likely to be needed immediately
+    const firstImage = heroImages[0];
+    if (firstImage) {
       const linkElement = document.createElement('link');
-      linkElement.rel = 'prefetch';
-      linkElement.href = imageSrc;
-      // 'as' attribute isn't required for prefetch, but helps with resource prioritization
+      linkElement.rel = 'preload';
+      linkElement.href = firstImage;
       linkElement.as = 'image';
-      linkElement.setAttribute('fetchpriority', 'low');
+      linkElement.setAttribute('type', 'image/webp');
       document.head.appendChild(linkElement);
-    });
+    }
 
-    // Cleanup function to remove prefetch tags when component unmounts
+    // Cleanup function to remove preload tag when component unmounts
     return () => {
-      const prefetchLinks = document.querySelectorAll('link[rel="prefetch"][as="image"]');
-      prefetchLinks.forEach(link => {
+      const preloadLinks = document.querySelectorAll('link[rel="preload"][as="image"]');
+      preloadLinks.forEach(link => {
         if (link.parentNode) {
           link.parentNode.removeChild(link);
         }

@@ -5,7 +5,7 @@ import { UserData } from '../../_lib/types';
 import { SuperheroCard } from './SuperheroCard';
 import { PersonalityProfile } from './PersonalityProfile';
 import { ResultsActions } from './ResultsActions';
-import { useEffect, useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 
 interface ResultsSectionProps {
   results: (PersonalityType & { percentage: number })[];
@@ -27,62 +27,11 @@ export function ResultsSection({
     percentage: r.percentage
   })), [results]);
 
-  const hasSavedRef = useRef(false);
-
-  useEffect(() => {
-    let mounted = true;
-
-    const saveToLatestHeroes = async (): Promise<void> => {
-      try {
-        if (!mounted || hasSavedRef.current) return;
-        const dominantPersonality = results[0];
-        const match = photoUrl.match(/generations\/([^/]+)\//) || [];
-        const imageId = match[1];
-        
-        if (!imageId) {
-          console.error('Could not extract generation ID from URL:', photoUrl);
-          return;
-        }
-
-        await fetch('/api/latest-heroes', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            name: heroName,
-            userName: userData.name,
-            personalityType: dominantPersonality.name,
-            imageId,
-            color: dominantPersonality.color,
-            gender: userData.gender,
-            promptStyle: 'default',
-            basePrompt: `Generate a ${userData.gender === 'male' ? 'male' : 'female'} superhero with ${dominantPersonality.color} color scheme`,
-            negativePrompt: null,
-            colorScores: scoreResults.reduce((acc, { color, percentage }) => ({
-              ...acc,
-              [color]: Math.round(percentage / 10)
-            }), {}),
-          }),
-        });
-        hasSavedRef.current = true;
-      } catch (error) {
-        console.error('Failed to save to latest heroes:', error);
-      }
-    };
-
-    saveToLatestHeroes();
-
-    return () => {
-      mounted = false;
-    };
-  }, [results, photoUrl, userData, heroName, scoreResults]);
-
   const dominantPersonality = results[0];
 
   return (
-    <div className="space-y-12">
-      <div className="w-full max-w-md mx-auto">
+    <div className="space-y-16">
+      <div className="w-full max-w-md mx-auto pt-4 md:pt-6">
         <SuperheroCard
           photoUrl={photoUrl}
           personality={{ ...dominantPersonality, heroName }}
