@@ -175,21 +175,34 @@ export class LeonardoAiService {
     throw new ApiError('Maximum retries exceeded', 500);
   }
 
-  async deleteImage(imageId: string, type: 'initial' | 'generated' = 'initial', maxRetries = 3): Promise<void> {
+  async deleteImage(imageId: string, type: 'initial' | 'generated' = 'initial', maxRetries = 3): Promise<boolean> {
     let attempts = 0;
     
     while (attempts <= maxRetries) {
       try {
+        // Different endpoints for different image types
         const endpoint = type === 'initial' ? 'init-image' : 'generations';
-        const response = await fetch(`${API_CONFIG.leonardo.baseUrl}/${endpoint}/${imageId}`, {
+        const url = `${API_CONFIG.leonardo.baseUrl}/${endpoint}/${imageId}`;
+        console.log(`Attempting to delete ${type} image at: ${url}`);
+
+        const response = await fetch(url, {
           method: 'DELETE',
           headers: this.headers
+        });
+
+        // Log the full response for debugging
+        const responseText = await response.text();
+        console.log(`Delete response for ${type} image:`, {
+          status: response.status,
+          statusText: response.statusText,
+          headers: Object.fromEntries(response.headers.entries()),
+          body: responseText
         });
 
         if (response.status === 429) {
           if (attempts === maxRetries) {
             console.error('Rate limit reached after max retries, skipping deletion for:', imageId);
-            return;
+            return false;
           }
           console.log('Rate limited on delete, waiting before retry...');
           await sleep(2000 * Math.pow(2, attempts)); // Exponential backoff: 2s, 4s, 8s
@@ -197,16 +210,28 @@ export class LeonardoAiService {
           continue;
         }
 
-        if (!response.ok) {
-          console.error(`Failed to delete ${type} image:`, imageId);
+        if (!response.ok && response.status !== 404) {
+          console.error(`Failed to delete ${type} image:`, {
+            imageId,
+            status: response.status,
+            statusText: response.statusText
+          });
+          return false;
         }
-        return;
+
+        // Consider both success and 404 (not found) as successful deletion
+        return true;
       } catch (error) {
-        console.error(`Error deleting ${type} image:`, error);
-        if (attempts === maxRetries) return;
+        console.error(`Network error deleting ${type} image:`, {
+          imageId,
+          type,
+          error: error instanceof Error ? error.message : error
+        });
+        if (attempts === maxRetries) return false;
         attempts++;
       }
     }
+    return false;
   }
 
   async getGeneratedImage(generationId: string): Promise<string> {

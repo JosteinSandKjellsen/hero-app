@@ -31,12 +31,15 @@ export async function GET(): Promise<NextResponse> {
         take: 50
       });
 
-      // Get heroes to delete
+      // Get heroes to delete - ordered by date to ensure we get the oldest ones
       const heroesToDelete = await prisma.latestHero.findMany({
         where: {
           id: {
             notIn: heroesToKeep.map(h => h.id)
           }
+        },
+        orderBy: {
+          createdAt: 'asc' // Get oldest first
         },
         select: {
           id: true,
@@ -45,40 +48,48 @@ export async function GET(): Promise<NextResponse> {
         }
       });
 
+      console.log(`Found ${heroesToDelete.length} heroes to delete`);
+
       // Delete images from Leonardo.ai - generated first since they're guaranteed to exist
       const leonardoService = new LeonardoAiService();
+      
       for (const hero of heroesToDelete) {
+        console.log(`Attempting to delete images for hero ${hero.id} with imageId ${hero.imageId}`);
+        
         try {
-          await leonardoService.deleteImage(hero.imageId, 'generated');
-          // Try to delete initial image but ignore errors since it might not exist
-          await leonardoService.deleteImage(hero.imageId, 'initial').catch(() => {
-            // Ignore errors for initial image deletion since it might not exist
-          });
+          // Delete generated image
+          console.log(`Deleting generated image ${hero.imageId}`);
+          const generatedDeleted = await leonardoService.deleteImage(hero.imageId, 'generated');
+          console.log(`Generated image deletion ${generatedDeleted ? 'succeeded' : 'failed'} for ID ${hero.imageId}`);
+
+          // Try to delete initial image
+          console.log(`Attempting to delete initial image ${hero.imageId}`);
+          const initialDeleted = await leonardoService.deleteImage(hero.imageId, 'initial');
+          console.log(`Initial image deletion ${initialDeleted ? 'succeeded' : 'failed'} for ID ${hero.imageId}`);
         } catch (error) {
           console.error(`Error deleting Leonardo images for hero ${hero.id}:`, error);
-          // Continue with next hero even if image deletion fails
         }
       }
 
-    // Delete heroes from both tables
-    await Promise.all([
-      // Delete from LatestHero table
-      prisma.latestHero.deleteMany({
-        where: {
-          id: {
-            notIn: heroesToKeep.map(h => h.id)
+      // Delete heroes from both tables in a transaction
+      await prisma.$transaction([
+        // Delete from LatestHero table first (due to foreign key constraints)
+        prisma.latestHero.deleteMany({
+          where: {
+            id: {
+              notIn: heroesToKeep.map(h => h.id)
+            }
           }
-        }
-      }),
-      // Delete from HeroStats for the same time period
-      prisma.heroStats.deleteMany({
-        where: {
-          createdAt: {
-            lte: heroesToDelete[heroesToDelete.length - 1]?.createdAt // Using the oldest hero's date
+        }),
+        // Then delete from HeroStats for the same time period
+        prisma.heroStats.deleteMany({
+          where: {
+            createdAt: {
+              lte: heroesToDelete[heroesToDelete.length - 1]?.createdAt // Using the oldest hero's date
+            }
           }
-        }
-      })
-    ]);
+        })
+      ]);
     }
 
     // Get latest 50 heroes
@@ -140,12 +151,16 @@ export async function DELETE(request: Request): Promise<NextResponse> {
     // Initialize Leonardo service and delete images - generated first since it's guaranteed to exist
     const leonardoService = new LeonardoAiService();
     try {
-      // Always delete the generated image first
-      await leonardoService.deleteImage(hero.imageId, 'generated');
-      // Try to delete the initial image, which may or may not exist
-      await leonardoService.deleteImage(hero.imageId, 'initial').catch(() => {
-        // Ignore errors for initial image deletion since it might not exist
-      });
+      // Delete images and log results
+      const generatedDeleted = await leonardoService.deleteImage(hero.imageId, 'generated');
+      console.log(`Generated image deletion ${generatedDeleted ? 'succeeded' : 'failed'} for ID ${hero.imageId}`);
+
+      const initialDeleted = await leonardoService.deleteImage(hero.imageId, 'initial');
+      console.log(`Initial image deletion ${initialDeleted ? 'succeeded' : 'failed'} for ID ${hero.imageId}`);
+
+      if (!generatedDeleted) {
+        console.error(`Failed to delete generated image for hero ${hero.imageId}`);
+      }
     } catch (error) {
       console.error('Error deleting Leonardo images:', error);
       // Continue with database deletion even if image deletion fails
@@ -158,15 +173,15 @@ export async function DELETE(request: Request): Promise<NextResponse> {
     });
 
     if (heroToDelete) {
-      // Delete from both tables
-      await Promise.all([
-        // Delete from LatestHero
+      // Delete from both tables in a transaction
+      await prisma.$transaction([
+        // Delete from LatestHero first (due to foreign key constraints)
         prisma.latestHero.delete({
           where: {
             id: validatedData.id
           }
         }),
-        // Delete from HeroStats
+        // Then delete from HeroStats
         prisma.heroStats.deleteMany({
           where: {
             AND: [
