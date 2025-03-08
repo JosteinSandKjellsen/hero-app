@@ -62,13 +62,15 @@ export function GeneratedHeroRow({ hero, onDelete }: GeneratedHeroRowProps): JSX
       });
 
       if (!response.ok) {
-        throw new Error(t('deleteError'));
+        const errorData = await response.json();
+        throw new Error(errorData.error || t('deleteError'));
       }
 
       // Optimistic update
       onDelete(hero.id);
     } catch (error) {
       console.error('Error deleting hero:', error);
+      alert(error instanceof Error ? error.message : t('deleteError'));
     } finally {
       setIsDeleting(false);
     }
