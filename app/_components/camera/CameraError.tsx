@@ -21,6 +21,7 @@ export function CameraError({ error, onRetry }: CameraErrorProps): JSX.Element {
                   hover:bg-[position:100%]
                   font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5
                   flex items-center justify-center gap-2 mx-auto"
+        aria-label={t('camera.retry')}
       >
         <RefreshCw className="w-5 h-5" />
         <span>{t('camera.retry')}</span>

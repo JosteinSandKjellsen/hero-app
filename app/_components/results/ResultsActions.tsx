@@ -140,6 +140,7 @@ export function ResultsActions({ printData, onReset }: ResultsActionsProps): JSX
                       hover:bg-[position:100%]
                       font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5
                       flex items-center justify-center gap-2"
+            aria-label={t('download')}
           >
             <Printer className="w-5 h-5 transition-transform group-hover:scale-110" />
             <span>{t('download')}</span>
@@ -152,6 +153,7 @@ export function ResultsActions({ printData, onReset }: ResultsActionsProps): JSX
                       hover:bg-[position:100%]
                       font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5
                       flex items-center justify-center gap-2"
+            aria-label={copyStatus === 'success' ? t('linkCopied') : t('copyLink')}
           >
             {copyStatus === 'success' ? (
               <>
@@ -177,6 +179,7 @@ export function ResultsActions({ printData, onReset }: ResultsActionsProps): JSX
                       flex items-center justify-center gap-2"
             aria-expanded={showEmailPopover}
             aria-haspopup="true"
+            aria-label={t('sendEmail')}
           >
             <Mail className="w-5 h-5 transition-transform group-hover:-translate-y-0.5" />
             <span>{t('sendEmail')}</span>
@@ -219,15 +222,16 @@ export function ResultsActions({ printData, onReset }: ResultsActionsProps): JSX
                     {t('emailSuccess')}
                   </p>
                 )}
-                <button
-                  onClick={handleSendEmail}
-                  disabled={emailStatus === 'sending'}
-                  className="group w-full text-light py-3 px-4 rounded-lg transition-all duration-300 
+          <button
+            onClick={handleSendEmail}
+            disabled={emailStatus === 'sending'}
+            className="group w-full text-light py-3 px-4 rounded-lg transition-all duration-300 
                             bg-gradient-to-r from-dark to-dark bg-[length:200%_100%] bg-[position:0%] 
                             hover:bg-[position:100%]
                             font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5
                             disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0
                             flex items-center justify-center gap-2"
+            aria-label={emailStatus === 'sending' ? t('sending') : t('send')}
                 >
                   {emailStatus === 'sending' ? (
                     <>
@@ -253,6 +257,7 @@ export function ResultsActions({ printData, onReset }: ResultsActionsProps): JSX
         className="group w-full bg-white/30 backdrop-blur-sm border border-white/40 text-light py-3 px-6 rounded-lg 
                   hover:bg-white/40 transition-all duration-300 font-medium shadow-lg hover:shadow-xl
                   flex items-center justify-center gap-2"
+        aria-label={t('newHero')}
       >
         <RefreshCw className="w-5 h-5 transition-transform group-hover:rotate-180 duration-500" />
         <span>{t('newHero')}</span>

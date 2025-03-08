@@ -178,6 +178,7 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
                       font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5
                       flex items-center space-x-3 text-lg
                       disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+            aria-label={isCapturing ? t('camera.takingPhoto') : t('camera.takePhoto')}
           >
             {isCapturing ? (
               <>
@@ -198,6 +199,7 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
             }}
             className="text-white/70 text-sm hover:text-white/90 transition-colors
                      underline underline-offset-2 focus:outline-none focus:text-white"
+            aria-label={t('camera.continueWithoutPhoto')}
           >
             {t('camera.continueWithoutPhoto')}
           </button>

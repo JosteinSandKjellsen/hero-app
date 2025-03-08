@@ -18,6 +18,7 @@ export function SubmitButton({ children }: SubmitButtonProps): JSX.Element {
                 border border-white/40
                 outline-none
                 focus:outline-none"
+      aria-label={typeof children === 'string' ? children : 'Start'}
     >
       {children}
     </button>

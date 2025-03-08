@@ -24,6 +24,8 @@ export function LanguageSwitcher(): React.JSX.Element {
         onClick={() => switchLocale(locale === 'en' ? 'no' : 'en')}
         disabled={isChanging}
         className={`relative w-[2.3rem] h-[1.5rem] rounded-full transition-colors duration-200 flex items-center bg-white/10 border border-white/20 overflow-hidden ${isChanging ? 'opacity-50 cursor-not-allowed' : ''}`}
+        aria-label={`Switch to ${locale === 'en' ? 'Norwegian' : 'English'}`}
+        aria-pressed={locale === (locale === 'en' ? 'no' : 'en')}
       >
         {isChanging ? (
           <div className="absolute inset-0 flex items-center justify-center">

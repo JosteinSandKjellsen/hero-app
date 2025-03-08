@@ -84,6 +84,7 @@ export function CameraPermissionState({ onPermissionGranted, onSkip }: CameraPer
                     outline-none
                     focus:outline-none
                     flex items-center justify-center space-x-2 mb-6"
+          aria-label={t('camera.activate')}
         >
           <Camera className="w-5 h-5" />
           <span>{t('camera.activate')}</span>
@@ -93,6 +94,7 @@ export function CameraPermissionState({ onPermissionGranted, onSkip }: CameraPer
           onClick={onSkip}
           className="w-full text-white/70 py-2 text-sm hover:text-white/90 transition-colors
                    underline underline-offset-2 focus:outline-none focus:text-white"
+          aria-label={t('camera.continueWithoutPhoto')}
         >
           {t('camera.continueWithoutPhoto')}
         </button>
@@ -105,6 +107,7 @@ export function CameraPermissionState({ onPermissionGranted, onSkip }: CameraPer
               onClick={requestPermission}
               className="text-dark/60 hover:text-dark/80 flex items-center justify-center space-x-1 mx-auto
                        focus:outline-none focus:underline"
+              aria-label={t('camera.retry')}
             >
               <RefreshCw className="w-4 h-4" />
               <span>{t('camera.retry')}</span>

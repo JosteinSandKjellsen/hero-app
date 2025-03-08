@@ -19,6 +19,7 @@ export function Toast({ message, onClose }: ToastProps): JSX.Element {
         <button
           onClick={onClose}
           className="text-red-600 hover:text-red-800 transition-colors"
+          aria-label="Lukk feilmelding"
         >
           <X className="w-5 h-5" />
         </button>

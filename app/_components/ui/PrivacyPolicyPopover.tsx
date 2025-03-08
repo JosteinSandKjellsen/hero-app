@@ -18,7 +18,7 @@ export function PrivacyPolicyPopover({ isOpen, onClose }: PrivacyPolicyPopoverPr
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-          aria-label="Close"
+          aria-label={t('close')}
         >
           <IoClose size={24} />
         </button>
