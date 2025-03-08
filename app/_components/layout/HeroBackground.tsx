@@ -22,8 +22,8 @@ export function HeroBackground(): JSX.Element {
               src={image}
               alt="Superhero"
               fill
-              priority={index === 0}
-              loading={index === 0 ? "eager" : "lazy"}
+              priority={index === 0} // Only prioritize first image (LCP)
+              loading={index === 0 ? "eager" : "lazy"} // Eager load first image
               sizes="(max-width: 768px) 50vw, 25vw"
               className="object-cover scale-105 transition-transform duration-5000 group-hover:scale-110"
             />
