@@ -175,6 +175,14 @@ function PrintContent(): JSX.Element {
 }
 
 export default function PrintPage(): JSX.Element {
+  // Add print-page class to body when component mounts
+  useEffect(() => {
+    document.body.classList.add('print-page');
+    return () => {
+      document.body.classList.remove('print-page');
+    };
+  }, []);
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <PrintContent />

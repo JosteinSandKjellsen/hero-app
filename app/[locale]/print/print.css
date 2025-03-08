@@ -8,9 +8,21 @@
   background: transparent !important;
 }
 
+/* Print page specific styles (both in print and preview) */
+body.print-page {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+body.print-page .min-h-screen {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
 /* Standard page styles - only applied to non-print pages */
 @media not print {
-  .min-h-screen:not(.print-page) {
+  /* Default padding for regular pages */
+  body:not(.print-page) .min-h-screen {
     min-height: 100vh;
     padding: 2rem;
     overflow: visible;
