@@ -17,6 +17,7 @@ interface GeneratedHero {
   personalityType: string;
   colorScores: Record<string, number>;
   createdAt: string;
+  printed: boolean;
 }
 
 export function GeneratedHeroesTable(): JSX.Element {
@@ -81,7 +82,16 @@ export function GeneratedHeroesTable(): JSX.Element {
             <div key={hero.id} className="bg-white shadow rounded-lg mb-4 p-4">
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <div className="text-sm font-medium text-gray-900">{hero.name}</div>
+                  <div className="flex items-center">
+                    <div className="text-sm font-medium text-gray-900">{hero.name}</div>
+                    {hero.printed && (
+                      <div className="ml-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
                   <div className={`inline-flex items-center px-3 py-1 rounded-full ${heroColors[hero.color]?.bg || 'bg-blue'}`}>
                     <div className="w-4 h-4 mr-2">
                       {getHeroCardIcon(hero.color)}
@@ -101,7 +111,7 @@ export function GeneratedHeroesTable(): JSX.Element {
                 </div>
                 <div className="flex justify-end space-x-2 pt-2">
                   <button
-                    onClick={() => {
+                    onClick={async () => {
                       const printParams = new URLSearchParams({
                         imageId: hero.imageId,
                         name: hero.userName || hero.name,
@@ -115,13 +125,38 @@ export function GeneratedHeroesTable(): JSX.Element {
                         print: 'true'
                       });
                       window.open(`/print?${printParams.toString()}`, '_blank');
+                      
+                      // Mark hero as printed
+                      try {
+                        const response = await fetch('/api/hero-printed', {
+                          method: 'POST',
+                          headers: {
+                            'Content-Type': 'application/json',
+                          },
+                          body: JSON.stringify({ id: hero.id }),
+                        });
+                        
+                        if (response.ok) {
+                          setHeroes(currentHeroes =>
+                            currentHeroes.map(h =>
+                              h.id === hero.id ? { ...h, printed: true } : h
+                            )
+                          );
+                        } else {
+                          const errorData = await response.json();
+                          throw new Error(errorData.error || 'Failed to mark as printed');
+                        }
+                      } catch (error) {
+                        console.error('Failed to mark hero as printed:', error);
+                      }
                     }}
-                    className={`p-2 ${heroColors['blue'].text} hover:opacity-80 rounded-full hover:bg-gray-50 transition-all duration-200`}
-                    title={t('printHero')}
+                    className={`p-2 ${hero.printed ? heroColors['green'].text : heroColors['blue'].text} hover:opacity-80 rounded-full hover:bg-gray-50 transition-all duration-200 relative`}
+                    title={hero.printed ? t('printAgain') : t('printHero')}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clipRule="evenodd" />
                     </svg>
+                    {/* Adding a space for consistency with desktop view */}
                   </button>
                   <button
                     onClick={() => handleDelete(hero.id)}
@@ -160,6 +195,9 @@ export function GeneratedHeroesTable(): JSX.Element {
                       {t('heroName')}
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      {t('printed')}
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       {t('color')}
                     </th>
                     <th scope="col" className="relative px-6 py-3">
@@ -173,6 +211,13 @@ export function GeneratedHeroesTable(): JSX.Element {
                       key={hero.id}
                       hero={hero}
                       onDelete={handleDelete}
+                      onPrinted={(id) => {
+                        setHeroes(currentHeroes =>
+                          currentHeroes.map(h =>
+                            h.id === id ? { ...h, printed: true } : h
+                          )
+                        );
+                      }}
                     />
                   ))}
                   {heroes.length === 0 && (

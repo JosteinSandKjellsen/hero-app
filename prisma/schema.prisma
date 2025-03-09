@@ -24,6 +24,7 @@ model LatestHero {
   color          String
   gender         String
   colorScores    Json     @default("{}")
+  printed        Boolean  @default(false)
   createdAt      DateTime @default(now())
 
   @@index([createdAt])

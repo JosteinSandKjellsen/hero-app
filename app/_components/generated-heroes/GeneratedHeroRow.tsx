@@ -3,6 +3,7 @@ import { useTranslations } from 'next-intl';
 import { getHeroCardIcon } from '@/app/_lib/utils/heroCardIcons';
 import { heroColors } from '@/app/_lib/constants/colors';
 import { HeroColor } from '@/app/_lib/types/api';
+
 interface GeneratedHeroRowProps {
   hero: {
     id: number;
@@ -14,15 +15,17 @@ interface GeneratedHeroRowProps {
     personalityType: string;
     colorScores: Record<string, number>;
     createdAt: string;
+    printed: boolean;
   };
   onDelete: (id: number) => void;
+  onPrinted?: (id: number) => void;
 }
 
-export function GeneratedHeroRow({ hero, onDelete }: GeneratedHeroRowProps): JSX.Element {
+export function GeneratedHeroRow({ hero, onDelete, onPrinted }: GeneratedHeroRowProps): JSX.Element {
   const [isDeleting, setIsDeleting] = useState(false);
+  const t = useTranslations('generatedHeroes.table');
 
-  // Create print URL with all required parameters
-  const handlePrint = (): void => {
+  const handlePrint = async (): Promise<void> => {
     // Convert colorScores to the format "red:8,blue:5,green:3,yellow:4"
     const scores = Object.entries(hero.colorScores).map(([color, percentage]) => ({
       color,
@@ -41,9 +44,30 @@ export function GeneratedHeroRow({ hero, onDelete }: GeneratedHeroRowProps): JSX
     });
 
     window.open(`/print?${params.toString()}`, '_blank');
-  };
 
-  const t = useTranslations('generatedHeroes.table');
+    // Mark hero as printed
+    try {
+      const response = await fetch('/api/hero-printed', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: hero.id }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to mark as printed');
+      }
+      
+      // Call onPrinted callback to update the parent's state
+      if (onPrinted) {
+        onPrinted(hero.id);
+      }
+    } catch (error) {
+      console.error('Error marking hero as printed:', error);
+    }
+  };
 
   const handleDelete = async (): Promise<void> => {
     if (isDeleting) return;
@@ -90,6 +114,15 @@ export function GeneratedHeroRow({ hero, onDelete }: GeneratedHeroRowProps): JSX
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
         {hero.name}
       </td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm">
+        {hero.printed && (
+          <div className="flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+          </div>
+        )}
+      </td>
       <td className="px-6 py-4 whitespace-nowrap">
         <div className={`inline-flex items-center px-3 py-1 rounded-full ${heroColors[hero.color]?.bg || 'bg-blue'}`}>
           <div className="w-4 h-4 mr-2">
@@ -103,9 +136,9 @@ export function GeneratedHeroRow({ hero, onDelete }: GeneratedHeroRowProps): JSX
       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
           <button
             onClick={handlePrint}
-            className={`p-2 ${heroColors['blue'].text} hover:opacity-80 mr-2 rounded-full hover:bg-gray-50 transition-all duration-200`}
-            title={t('printHero')}
-            aria-label={t('printHero')}
+            className={`p-2 ${hero.printed ? heroColors['green'].text : heroColors['blue'].text} hover:opacity-80 mr-2 rounded-full hover:bg-gray-50 transition-all duration-200 relative`}
+            title={hero.printed ? t('printAgain') : t('printHero')}
+            aria-label={hero.printed ? t('printAgain') : t('printHero')}
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clipRule="evenodd" />
