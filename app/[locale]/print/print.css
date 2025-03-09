@@ -83,17 +83,17 @@ body.print-page .min-h-screen {
 /* Print-specific styles */
 @media print {
   @viewport {
-    width: 100mm;
-    height: 148mm;
+    width: 101.6mm;
+    height: 152.4mm;
   }
 
   @-ms-viewport {
-    width: 100mm;
-    height: 148mm;
+    width: 101.6mm;
+    height: 152.4mm;
   }
 
   @page {
-    size: 100mm 148mm;
+    size: 101.6mm 152.4mm;
     margin: 0mm !important;
     padding: 0mm !important;
     marks: none;
@@ -105,10 +105,10 @@ body.print-page .min-h-screen {
     background: white !important;
     margin: 0 !important;
     padding: 0 !important;
-    width: 100mm !important;
-    height: 148mm !important;
-    min-height: 148mm !important;
-    max-height: 148mm !important;
+    width: 101.6mm !important;
+    height: 152.4mm !important;
+    min-height: 152.4mm !important;
+    max-height: 152.4mm !important;
     overflow: hidden !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
@@ -119,31 +119,36 @@ body.print-page .min-h-screen {
 
   /* Ensure content fits exactly */
   .min-h-screen {
-    width: 100mm !important;
-    height: 148mm !important;
-    min-height: 148mm !important;
-    max-height: 148mm !important;
+    width: 101.6mm !important;
+    height: 152.4mm !important;
+    min-height: 152.4mm !important;
+    max-height: 152.4mm !important;
     margin: 0mm !important;
     padding: 0mm !important;
     overflow: hidden !important;
     display: flex !important;
-    align-items: flex-start !important;
+    align-items: center !important;
     justify-content: center !important;
+    transform: translateY(0) !important;
+    -webkit-transform: translateY(0) !important;
   }
 
   /* Card container */
   [data-card-clone] {
-    margin: 2mm !important;
+    margin: 0mm !important;
     padding: 0mm !important;
-    height: 144mm !important;
-    min-height: 144mm !important;
-    max-height: 144mm !important;
-    width: 96mm !important;
-    min-width: 96mm !important;
-    max-width: 96mm !important;
+    height: 152.4mm !important;
+    min-height: 152.4mm !important;
+    max-height: 152.4mm !important;
+    width: 101.6mm !important;
+    min-width: 101.6mm !important;
+    max-width: 101.6mm !important;
     display: flex !important;
     flex-direction: column !important;
     box-sizing: border-box !important;
+    position: relative !important;
+    top: 0 !important;
+    left: 0 !important;
     /* Ensure border styles from inline styles are not overridden */
     border-style: solid !important;
     border-width: 10px !important;
@@ -163,15 +168,15 @@ body.print-page .min-h-screen {
   /* Header area (personality) */
   [data-card-clone] > div:first-child {
     flex-shrink: 0 !important;
-    height: 15mm !important;
-    padding: 2mm 3mm !important;
+    height: 20mm !important;
+    padding: 3mm !important;
   }
 
   /* Image container */
   .aspect-\[3\/4\] {
     flex: 1 !important;
     position: relative !important;
-    height: 110mm !important; /* 148mm - 15mm (header) - 13mm (footer) - 10mm (borders) */
+    height: 122.4mm !important; /* 152.4mm - 20mm (header) - 10mm (footer) */
     overflow: hidden !important;
   }
 
@@ -180,26 +185,30 @@ body.print-page .min-h-screen {
     object-position: top !important;
     height: auto !important;
     min-height: 100% !important;
+    margin: 0 !important;
   }
 
   /* Footer with name and scores */
   [data-card-clone] > div:last-child {
     flex-shrink: 0 !important;
-    height: 13mm !important;
+    height: 10mm !important;
     border-top: none !important;
     padding: 1mm 3mm !important;
     display: flex !important;
     align-items: center !important;
+    justify-content: space-between !important;
   }
 
   /* Adjust score circles in footer */
   .score-circle {
     height: 7mm !important;
     width: 11mm !important;
-    padding-left: 2mm !important;
-    gap: 1mm !important;
+    padding: 0 !important;
+    margin-left: 2mm !important;
+    gap: 0.75mm !important;
     display: flex !important;
     align-items: center !important;
+    justify-content: center !important;
   }
 
   /* Adjust icon and score text size */
