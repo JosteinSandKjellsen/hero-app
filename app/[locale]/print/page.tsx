@@ -6,13 +6,14 @@ import { useSearchParams } from 'next/navigation';
 import { SuperheroCard } from '../../_components/results/SuperheroCard';
 import { HeroColor } from '../../_lib/types/api';
 import { heroColors } from '@/app/_lib/constants/colors';
-import { initializePrint, ResourceTracker } from '../../_lib/utils/print';
+import { initializePrint, ResourceTracker, preloadImage } from '../../_lib/utils/print';
 import { useEffect, useRef, useState } from 'react';
 
 function PrintContent(): JSX.Element {
   const searchParams = useSearchParams();
   const resourceTracker = useRef(new ResourceTracker());
   const [photoUrl, setPhotoUrl] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
   
   // Get parameters from URL
   const imageId = searchParams.get('imageId') || '';
@@ -27,15 +28,33 @@ function PrintContent(): JSX.Element {
     const tracker = resourceTracker.current;
     
     async function fetchImageUrl(): Promise<void> {
+      setIsLoading(true);
+      
+      async function loadImage(url: string): Promise<void> {
+        try {
+          await preloadImage(url);
+          setPhotoUrl(url);
+          tracker.markLoaded('heroImage');
+          tracker.markLoaded('bouvetLogo');
+        } catch (error) {
+          console.error('Error loading image:', error);
+          throw error;
+        }
+      }
+
       if (!imageId || imageId === 'undefined') {
         console.log('No valid imageId provided, using fallback image');
-        setPhotoUrl(gender === 'female' ? '/images/superheroes/blue-woman.webp' : '/images/superheroes/blue-man.webp');
-        
-        // Mark resources as loaded
-        tracker.markLoaded('heroImage');
-        tracker.markLoaded('bouvetLogo');
+        const fallbackUrl = gender === 'female' ? '/images/superheroes/blue-woman.webp' : '/images/superheroes/blue-man.webp';
+        try {
+          await loadImage(fallbackUrl);
+        } catch (error) {
+          console.error('Error loading fallback image:', error);
+        } finally {
+          setIsLoading(false);
+        }
         return;
       }
+
       try {
         console.log('Fetching image with ID:', imageId);
         
@@ -47,7 +66,6 @@ function PrintContent(): JSX.Element {
         const response = await fetch(apiUrl);
         
         if (!response.ok) {
-          // If the response isn't successful, log details and use fallback
           const errorText = await response.text().catch(() => 'No error details');
           console.error('Error fetching hero image:', {
             status: response.status,
@@ -55,11 +73,8 @@ function PrintContent(): JSX.Element {
             error: errorText,
             imageId
           });
-          setPhotoUrl(gender === 'female' ? '/images/superheroes/blue-woman.webp' : '/images/superheroes/blue-man.webp');
-          
-          // Mark resources as loaded
-          tracker.markLoaded('heroImage');
-          tracker.markLoaded('bouvetLogo');
+          const fallbackUrl = gender === 'female' ? '/images/superheroes/blue-woman.webp' : '/images/superheroes/blue-man.webp';
+          await loadImage(fallbackUrl);
           return;
         }
         
@@ -73,26 +88,24 @@ function PrintContent(): JSX.Element {
           }
           url = data.url;
         } else {
-          // If not JSON, use the proxied endpoint (development)
           url = `/api/hero-image/${imageId}`;
         }
         
-        setPhotoUrl(url);
-        
-        // Mark resources as loaded since Next.js Image component handles loading
-        tracker.markLoaded('heroImage');
-        tracker.markLoaded('bouvetLogo');
+        await loadImage(url);
         
       } catch (error) {
-        console.error('Error fetching image URL:', error);
-        // Use fallback image on error
-        setPhotoUrl(gender === 'female' ? '/images/superheroes/blue-woman.webp' : '/images/superheroes/blue-man.webp');
-        
-        // Mark resources as loaded
-        tracker.markLoaded('heroImage');
-        tracker.markLoaded('bouvetLogo');
+        console.error('Error fetching/loading image:', error);
+        const fallbackUrl = gender === 'female' ? '/images/superheroes/blue-woman.webp' : '/images/superheroes/blue-man.webp';
+        try {
+          await loadImage(fallbackUrl);
+        } catch (fallbackError) {
+          console.error('Error loading fallback image:', fallbackError);
+        }
+      } finally {
+        setIsLoading(false);
       }
     }
+    
     fetchImageUrl();
 
     // Mark icons as loaded since they're SVG components
@@ -143,10 +156,10 @@ function PrintContent(): JSX.Element {
   const shouldPrint = searchParams.get('print') === 'true';
 
   useEffect(() => {
-    if (shouldPrint && photoUrl) {
+    if (shouldPrint && photoUrl && !isLoading) {
       initializePrint(resourceTracker.current);
     }
-  }, [shouldPrint, photoUrl]);
+  }, [shouldPrint, photoUrl, isLoading]);
 
   return (
     <div className="min-h-screen print-page flex items-center justify-center bg-white">
@@ -160,7 +173,12 @@ function PrintContent(): JSX.Element {
         justifyContent: 'center',
         overflow: 'visible'
       }}>
-        {photoUrl && (
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center">
+            <div className="text-lg mb-2">Loading image...</div>
+            <div className="animate-pulse bg-gray-200 w-16 h-16 rounded-full"></div>
+          </div>
+        ) : photoUrl && (
           <SuperheroCard
             photoUrl={photoUrl}
             personality={personality}

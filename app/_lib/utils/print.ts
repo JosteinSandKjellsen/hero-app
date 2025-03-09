@@ -124,6 +124,15 @@ export function addPrintStyles(): void {
 }
 
 // Initialize print process with timeout
+export function preloadImage(url: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve();
+    img.onerror = () => reject(new Error(`Failed to load image: ${url}`));
+    img.src = url;
+  });
+}
+
 export function initializePrint(resourceTracker: ResourceTracker): void {
   let printed = false;
 
@@ -135,7 +144,7 @@ export function initializePrint(resourceTracker: ResourceTracker): void {
       // Give extra time for styles to be applied and final render
       setTimeout(() => {
         window.print();
-      }, 500);
+      }, 1500); // Increased from 500ms to 1500ms for better reliability
     }
   });
 
@@ -147,5 +156,5 @@ export function initializePrint(resourceTracker: ResourceTracker): void {
       addPrintStyles();
       window.print();
     }
-  }, 5000); // 5 second timeout
+  }, 8000); // Increased from 5s to 8s to give more time for image loading
 }

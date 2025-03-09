@@ -182,10 +182,12 @@ body.print-page .min-h-screen {
 
   /* Keep image top-aligned and allow bottom crop */
   .aspect-\[3\/4\] > img {
-    object-position: top !important;
+    object-position: top center !important;
     height: auto !important;
     min-height: 100% !important;
     margin: 0 !important;
+    position: relative !important;
+    top: -5mm !important; /* Offset up to ensure we see the top of the image */
   }
 
   /* Footer with name and scores */
