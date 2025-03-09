@@ -96,19 +96,19 @@ export function addPrintStyles(): void {
   const style = document.createElement('style');
   style.textContent = `
     @page {
-      size: 100mm 148mm;
+      size: 101.6mm 152.4mm;
       margin: 0;
       transform-origin: top left;
       -webkit-transform-origin: top left;
     }
     @media print {
       @viewport {
-        width: 100mm;
-        height: 148mm;
+        width: 101.6mm;
+        height: 152.4mm;
       }
       body {
-        width: 100mm !important;
-        height: 148mm !important;
+        width: 101.6mm !important;
+        height: 152.4mm !important;
         margin: 0 !important;
         padding: 0 !important;
         transform-origin: top left !important;
