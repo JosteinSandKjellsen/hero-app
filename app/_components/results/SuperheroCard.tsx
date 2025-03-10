@@ -18,6 +18,34 @@ interface SuperheroCardProps {
 export function SuperheroCard({ photoUrl, personality, userData, results = [], optimizePrint = false }: SuperheroCardProps): JSX.Element {
   const t = useTranslations('results');
 
+  const calculateProportionalScores = (results: { color: string; percentage: number }[]): number[] => {
+    const sum = results.reduce((acc, r) => acc + r.percentage, 0);
+    if (sum === 0) return Array(4).fill(0);
+    
+    // Calculate initial proportional scores
+    const rawScores = results.map(r => (r.percentage / sum) * 10);
+    
+    // Handle rounding to ensure sum is exactly 10
+    const flooredScores = rawScores.map(Math.floor);
+    const remainder = 10 - flooredScores.reduce((a, b) => a + b, 0);
+    
+    // Distribute remaining points based on decimal parts
+    const decimalParts = rawScores.map((score, i) => ({ 
+      index: i, 
+      decimal: score - flooredScores[i]
+    }));
+    decimalParts.sort((a, b) => b.decimal - a.decimal);
+    
+    const finalScores = [...flooredScores];
+    for (let i = 0; i < remainder; i++) {
+      finalScores[decimalParts[i].index]++;
+    }
+    
+    return finalScores;
+  };
+
+  const allScores = calculateProportionalScores(results);
+
   const getColorValue = (color: string): string => {
     switch (color) {
       case 'red': return '#A82039';
@@ -105,7 +133,7 @@ export function SuperheroCard({ photoUrl, personality, userData, results = [], o
         <div className="flex gap-2">
           {(['red', 'yellow', 'green', 'blue'] as const).map(color => {
             const result = results.find(r => r.color === color);
-            const score = result ? Math.round(result.percentage / 10) : 0;
+            const score = result ? allScores[['red', 'yellow', 'green', 'blue'].indexOf(color)] : 0;
             return (
               <div 
                 key={color}
