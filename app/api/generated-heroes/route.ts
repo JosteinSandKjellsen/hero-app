@@ -19,81 +19,18 @@ export type GeneratedHeroWithId = {
 };
 
 // GET /api/generated-heroes
-export async function GET(): Promise<NextResponse> {
+export async function GET(request: Request): Promise<NextResponse> {
   try {
-    // Get total count of heroes
+    // Parse pagination parameters
+    const { searchParams } = new URL(request.url);
+    const page = Math.max(1, parseInt(searchParams.get('page') ?? '1'));
+    const pageSize = 50;
+    const skip = (page - 1) * pageSize;
+
+    // Get total count for pagination
     const totalCount = await prisma.latestHero.count();
 
-    // If we have more than 50 heroes, delete the oldest ones
-    if (totalCount > 50) {
-      const heroesToKeep = await prisma.latestHero.findMany({
-        select: { id: true },
-        orderBy: { createdAt: 'desc' },
-        take: 50
-      });
-
-      // Get heroes to delete - ordered by date to ensure we get the oldest ones
-      const heroesToDelete = await prisma.latestHero.findMany({
-        where: {
-          id: {
-            notIn: heroesToKeep.map(h => h.id)
-          }
-        },
-        orderBy: {
-          createdAt: 'asc' // Get oldest first
-        },
-        select: {
-          id: true,
-          imageId: true,
-          createdAt: true
-        }
-      });
-
-      console.log(`Found ${heroesToDelete.length} heroes to delete`);
-
-      // Delete images from Leonardo.ai - generated first since they're guaranteed to exist
-      const leonardoService = new LeonardoAiService();
-      
-      for (const hero of heroesToDelete) {
-        console.log(`Attempting to delete images for hero ${hero.id} with imageId ${hero.imageId}`);
-        
-        try {
-          // Delete generated image
-          console.log(`Deleting generated image ${hero.imageId}`);
-          const generatedDeleted = await leonardoService.deleteImage(hero.imageId, 'generated');
-          console.log(`Generated image deletion ${generatedDeleted ? 'succeeded' : 'failed'} for ID ${hero.imageId}`);
-
-          // Try to delete initial image
-          console.log(`Attempting to delete initial image ${hero.imageId}`);
-          const initialDeleted = await leonardoService.deleteImage(hero.imageId, 'initial');
-          console.log(`Initial image deletion ${initialDeleted ? 'succeeded' : 'failed'} for ID ${hero.imageId}`);
-        } catch (error) {
-          console.error(`Error deleting Leonardo images for hero ${hero.id}:`, error);
-        }
-      }
-
-      // Delete heroes from both tables in a transaction
-      await prisma.$transaction([
-        // Delete from LatestHero table first (due to foreign key constraints)
-        prisma.latestHero.deleteMany({
-          where: {
-            id: {
-              notIn: heroesToKeep.map(h => h.id)
-            }
-          }
-        }),
-        // Then delete from HeroStats for the same time period
-        prisma.heroStats.deleteMany({
-          where: {
-            createdAt: {
-              lte: heroesToDelete[heroesToDelete.length - 1]?.createdAt // Using the oldest hero's date
-            }
-          }
-        })
-      ]);
-    }
-
-    // Get latest 50 heroes
+    // Get heroes for current page
     const generatedHeroes = await prisma.latestHero.findMany({
       select: {
         id: true,
@@ -110,8 +47,12 @@ export async function GET(): Promise<NextResponse> {
       orderBy: {
         createdAt: 'desc'
       },
-      take: 50
+      skip,
+      take: pageSize
     });
+
+    // Calculate pagination values
+    const totalPages = Math.ceil(totalCount / pageSize);
 
     // Ensure dates are serializable
     const serializedHeroes = generatedHeroes.map((hero) => ({
@@ -119,7 +60,14 @@ export async function GET(): Promise<NextResponse> {
       createdAt: hero.createdAt.toISOString()
     }));
 
-    return NextResponse.json(serializedHeroes);
+    return NextResponse.json({
+      heroes: serializedHeroes,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalItems: totalCount
+      }
+    });
   } catch (error) {
     console.error('Failed to fetch generated heroes:', error);
     return NextResponse.json(

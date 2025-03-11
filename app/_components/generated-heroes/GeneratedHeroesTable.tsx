@@ -22,17 +22,24 @@ interface GeneratedHero {
 
 export function GeneratedHeroesTable(): JSX.Element {
   const [heroes, setHeroes] = useState<GeneratedHero[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const t = useTranslations('generatedHeroes.table');
 
+  const handlePageChange = (newPage: number): void => {
+    setCurrentPage(newPage);
+  };
+
   const fetchHeroes = useCallback(async () => {
     try {
-      const response = await fetch('/api/generated-heroes');
+      const response = await fetch(`/api/generated-heroes?page=${currentPage}`);
       if (!response.ok) throw new Error('Failed to fetch heroes');
       
       const data = await response.json();
-      setHeroes(data);
+      setHeroes(data.heroes);
+      setTotalPages(data.pagination.totalPages);
       setError(null);
     } catch (error) {
       console.error('Error fetching heroes:', error);
@@ -40,7 +47,7 @@ export function GeneratedHeroesTable(): JSX.Element {
     } finally {
       setIsLoading(false);
     }
-  }, [t]);
+  }, [t, currentPage]);
 
   // Initial fetch
   useEffect(() => {
@@ -72,6 +79,44 @@ export function GeneratedHeroesTable(): JSX.Element {
       </div>
     );
   }
+
+  const renderPagination = (): JSX.Element => (
+    <div className="flex justify-center items-center mt-4 mb-8 space-x-4">
+      <button
+        onClick={() => handlePageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+        className={`p-2 rounded-full ${
+          currentPage === 1 
+            ? 'text-gray-400 cursor-not-allowed' 
+            : 'text-white hover:text-white/80 hover:bg-white/10'
+        }`}
+        aria-label={t('previousPage')}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      
+      <span className="text-sm text-white">
+        {t('pageInfo', { current: currentPage, total: totalPages })}
+      </span>
+
+      <button
+        onClick={() => handlePageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        className={`p-2 rounded-full ${
+          currentPage === totalPages 
+            ? 'text-gray-400 cursor-not-allowed' 
+            : 'text-white hover:text-white/80 hover:bg-white/10'
+        }`}
+        aria-label={t('nextPage')}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+    </div>
+  );
 
   return (
     <div className="flex flex-col">
@@ -156,7 +201,6 @@ export function GeneratedHeroesTable(): JSX.Element {
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clipRule="evenodd" />
                     </svg>
-                    {/* Adding a space for consistency with desktop view */}
                   </button>
                   <button
                     onClick={() => handleDelete(hero.id)}
@@ -233,6 +277,7 @@ export function GeneratedHeroesTable(): JSX.Element {
           </div>
         </div>
       </div>
+      {renderPagination()}
     </div>
   );
 }

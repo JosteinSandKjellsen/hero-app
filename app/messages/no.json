@@ -431,7 +431,10 @@
       "fetchError": "Kunne ikke laste inn helter",
       "deleteConfirm": "Er du sikker på at du vil slette denne helten?",
       "confirmDelete": "Ja, slett",
-      "cancelDelete": "Avbryt"
+      "cancelDelete": "Avbryt",
+      "previousPage": "Forrige side",
+      "nextPage": "Neste side",
+      "pageInfo": "Side {current} av {total}"
     }
   },
   "matchingTips": {
