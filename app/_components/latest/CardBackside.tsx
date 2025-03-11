@@ -15,10 +15,9 @@ export function CardBackside({ color }: CardBacksideProps): JSX.Element {
 
   return (
     <div 
-      className={`absolute inset-0 w-full h-full backface-hidden ${getBorderColorClass()} bg-gradient-to-br from-white via-gray-50 to-gray-100 rounded-xl border-[10px] flex items-center justify-center transition-all duration-500`}
+      className={`absolute inset-0 w-full h-full ${getBorderColorClass()} bg-gradient-to-br from-white via-gray-50 to-gray-100 rounded-xl border-[10px] flex items-center justify-center transition-all duration-500`}
       style={{ 
-        transform: 'rotateY(180deg)',
-        backfaceVisibility: 'hidden',
+        zIndex: 1,
         boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
         transition: 'all 0.5s ease-in-out',
         backgroundImage: `radial-gradient(circle at 50% 50%, rgba(${color === 'red' ? '168, 32, 57' : 

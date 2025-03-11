@@ -41,8 +41,9 @@ const CAROUSEL_STYLES = `
     position: absolute;
     width: 100%;
     height: 100%;
-    perspective: 1000px;
+    perspective: 1500px;
     transform-style: preserve-3d;
+    transform: scale(0.9);
   }
 
   .carousel-rotator {
@@ -79,10 +80,12 @@ const CAROUSEL_STYLES = `
     background: white;
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transform-origin: center center;
   }
 
   .card-back {
     transform: rotateY(180deg);
+    z-index: 1;
   }
 
   /* Fix for Safari */
@@ -235,7 +238,8 @@ export function HeroCarousel({ initialHeroes }: HeroCarouselProps): JSX.Element 
               <div 
                 className="carousel-rotator"
                 style={{
-                  transform: `translateZ(-${RADIUS}px) rotateY(-${currentRotation}deg)`
+                  transform: `translateZ(-${RADIUS}px) rotateY(-${currentRotation}deg)`,
+                  transition: 'transform 0.5s ease-out'
                 }}
               >
                 {cardPositions.map(({ hero, angle }, index) => hero && (
