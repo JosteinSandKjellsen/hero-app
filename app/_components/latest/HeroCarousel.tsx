@@ -24,8 +24,9 @@ interface HeroCarouselProps {
 }
 
 const RADIUS = 900;
-const CARD_COUNT = 12; // Increased number of cards
+const CARD_COUNT = 12; // Number of cards in the carousel
 const ANGLE_STEP = 360 / CARD_COUNT;
+const ROTATION_TIME = 5000; // 5 seconds per card (4s rotation + 1s pause)
 
 const CAROUSEL_STYLES = `
   .carousel-container {
@@ -92,120 +93,127 @@ const CAROUSEL_STYLES = `
 `;
 
 export function HeroCarousel({ initialHeroes }: HeroCarouselProps): JSX.Element {
-  const [allHeroes, setAllHeroes] = useState<Hero[]>([]);
-  const [visibleHeroIndices, setVisibleHeroIndices] = useState<number[]>([]);
-  const [nextHeroIndex, setNextHeroIndex] = useState(0);
+  const [heroes, setHeroes] = useState<Hero[]>([]);
   const [currentRotation, setCurrentRotation] = useState(0);
+  const [cycleStartTime, setCycleStartTime] = useState(0);
+  
+  // Store card positions as a circular array
+  const [cardHeroes, setCardHeroes] = useState<Array<Hero | null>>(Array(CARD_COUNT).fill(null));
 
-  // Initialize with initial heroes
+  // Initialize with heroes
   useEffect(() => {
-    if (initialHeroes.length > 0 && allHeroes.length === 0) {
-      setAllHeroes(initialHeroes);
-      setVisibleHeroIndices(
-        Array.from({ length: CARD_COUNT }, (_, i) => i % initialHeroes.length)
-      );
-      setNextHeroIndex(CARD_COUNT);
+    if (initialHeroes.length > 0 && heroes.length === 0) {
+      setHeroes(initialHeroes);
+      
+      // Initialize the carousel with sequential heroes
+      const initialCards = Array(CARD_COUNT).fill(null).map((_, index) => {
+        const heroIndex = index % initialHeroes.length;
+        return initialHeroes[heroIndex];
+      });
+      
+      setCardHeroes(initialCards);
+      setCycleStartTime(performance.now());
     }
-  }, [initialHeroes, allHeroes]);
-
-  // Handle updates to heroes without disrupting rotation
+  }, [initialHeroes, heroes.length]);
+  
+  // Handle updates to heroes
   useEffect(() => {
     if (initialHeroes.length === 0) return;
 
     // Find any new heroes
     const newHeroes = initialHeroes.filter(
-      newHero => !allHeroes.some(currentHero => currentHero.id === newHero.id)
+      newHero => !heroes.some(currentHero => currentHero.id === newHero.id)
     );
 
     if (newHeroes.length > 0) {
-      setAllHeroes(current => [...current, ...newHeroes]);
+      setHeroes(current => [...current, ...newHeroes]);
     }
-  }, [initialHeroes, allHeroes]);
+  }, [initialHeroes, heroes]);
 
-  // Track rotation and update heroes
+  // Handle rotation and card updates
   useEffect(() => {
+    if (heroes.length === 0) return;
+    
     let animationFrameId: number;
-
+    let lastCardIndex = -1;
+    
     const updateRotation = (currentTime: number): void => {
-      // Time-based rotation with built-in pauses
-      const timePerCard = 5000; // 4s rotation + 1s pause
-      const baseRotation = (currentTime / timePerCard) * (360 / CARD_COUNT);
-      const cardIndex = Math.floor(baseRotation / (360 / CARD_COUNT));
-      const cycleTime = currentTime % timePerCard;
+      if (cycleStartTime === 0) {
+        setCycleStartTime(currentTime);
+        animationFrameId = requestAnimationFrame(updateRotation);
+        return;
+      }
       
-      // Calculate smooth rotation with pause
-      const cardStartAngle = cardIndex * (360 / CARD_COUNT);
-      const cardRotation = cycleTime < 4000
-        ? (cycleTime / 4000) * (360 / CARD_COUNT) // Smooth rotation during first 4s
-        : (360 / CARD_COUNT);                     // Hold position for last 1s
+      const elapsedTime = currentTime - cycleStartTime;
       
-      const currentAngle = cardStartAngle + cardRotation;
-      setCurrentRotation(currentAngle);
-
-      // Calculate which cards are behind the viewer (not visible)
-      const hiddenStartAngle = (currentAngle + 90) % 360;
-      const hiddenEndAngle = (currentAngle + 270) % 360;
-
-      visibleHeroIndices.forEach((heroIndex, cardIndex) => {
-        const cardAngle = (cardIndex * ANGLE_STEP) % 360;
-        if (isAngleBetween(cardAngle, hiddenStartAngle, hiddenEndAngle)) {
-          // Card is hidden, update its hero
-          setVisibleHeroIndices(prev => {
-            const updated = [...prev];
-            updated[cardIndex] = nextHeroIndex % allHeroes.length;
-            return updated;
-          });
-          setNextHeroIndex(current => current + 1);
-        }
-      });
-
+      // Calculate current card index based on elapsed time
+      const currentCardIndex = Math.floor(elapsedTime / ROTATION_TIME) % CARD_COUNT;
+      
+      // Calculate smooth rotation angle
+      const baseRotation = Math.floor(elapsedTime / ROTATION_TIME) * ANGLE_STEP;
+      const cycleTime = elapsedTime % ROTATION_TIME;
+      const additionalRotation = cycleTime < 4000
+        ? (cycleTime / 4000) * ANGLE_STEP // Smooth rotation during first 4s
+        : ANGLE_STEP;                     // Hold position for last 1s
+      
+      const rotationAngle = baseRotation + additionalRotation;
+      setCurrentRotation(rotationAngle);
+      
+      // Update the hero in the hidden position when we move to a new card
+      if (currentCardIndex !== lastCardIndex) {
+        lastCardIndex = currentCardIndex;
+        
+        // This is the back position that's currently hidden from view
+        const hiddenPosition = (currentCardIndex + 6) % CARD_COUNT; // 180 degrees opposite
+        
+        setCardHeroes(prevCards => {
+          const newCards = [...prevCards];
+          
+          // Get next hero in sequence
+          const lastHeroIndex = heroes.findIndex(hero => 
+            hero.id === prevCards[(hiddenPosition + CARD_COUNT - 1) % CARD_COUNT]?.id
+          );
+          
+          const nextHeroIndex = (lastHeroIndex + 1) % heroes.length;
+          newCards[hiddenPosition] = heroes[nextHeroIndex];
+          
+          return newCards;
+        });
+      }
+      
       animationFrameId = requestAnimationFrame(updateRotation);
     };
-
+    
     animationFrameId = requestAnimationFrame(updateRotation);
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [visibleHeroIndices, nextHeroIndex, allHeroes.length]);
-
-  // Preload next few images
-  const imageUrls = useMemo(() => {
-    if (allHeroes.length === 0) return [];
     
-    const visibleHeroes = visibleHeroIndices.map(index => allHeroes[index % allHeroes.length]);
-    const nextFewIndices = Array.from({ length: 3 }, (_, i) => 
-      (nextHeroIndex + i) % allHeroes.length
-    );
-    const nextFewHeroes = nextFewIndices.map(index => allHeroes[index]);
-    const heroesToPreload = [...visibleHeroes, ...nextFewHeroes].filter(Boolean);
-    
-    return heroesToPreload.map(hero => `/api/hero-image/${hero.imageId}`);
-  }, [allHeroes, visibleHeroIndices, nextHeroIndex]);
-
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [heroes, cycleStartTime]);
+  
   // Preload images
+  const imageUrls = useMemo(() => {
+    return cardHeroes
+      .filter(Boolean)
+      .map(hero => `/api/hero-image/${hero!.imageId}`);
+  }, [cardHeroes]);
+  
   const imagesLoaded = useImagePreloader(imageUrls);
 
   // Create card positions with current heroes
   const cardPositions = useMemo(() => {
-    return visibleHeroIndices.map((heroIndex, i) => ({
-      hero: allHeroes[heroIndex % allHeroes.length],
-      angle: i * ANGLE_STEP
+    return cardHeroes.map((hero, index) => ({
+      hero,
+      angle: index * ANGLE_STEP
     }));
-  }, [allHeroes, visibleHeroIndices]);
-
-  // Helper function to check if an angle is between two other angles
-  const isAngleBetween = (angle: number, start: number, end: number): boolean => {
-    if (start <= end) {
-      return angle >= start && angle <= end;
-    } else {
-      return angle >= start || angle <= end;
-    }
-  };
+  }, [cardHeroes]);
 
   const LoadingState = (): JSX.Element => (
     <div className="relative w-full overflow-hidden">
       <div className="relative min-h-[720px] flex flex-col items-center justify-center p-8 gap-4">
         <div className="w-[400px] h-[720px] rounded-xl border-[10px] border-gray-200 bg-white overflow-hidden animate-pulse" />
         <div className="text-center text-gray-500">
-          {allHeroes.length === 0 
+          {heroes.length === 0 
             ? "Loading heroes..."
             : "Loading hero images..."}
         </div>
@@ -213,7 +221,7 @@ export function HeroCarousel({ initialHeroes }: HeroCarouselProps): JSX.Element 
     </div>
   );
 
-  if (allHeroes.length === 0 || !imagesLoaded) {
+  if (heroes.length === 0 || !imagesLoaded) {
     return <LoadingState />;
   }
 
@@ -230,7 +238,7 @@ export function HeroCarousel({ initialHeroes }: HeroCarouselProps): JSX.Element 
                   transform: `translateZ(-${RADIUS}px) rotateY(-${currentRotation}deg)`
                 }}
               >
-                {cardPositions.map(({ hero, angle }, index) => (
+                {cardPositions.map(({ hero, angle }, index) => hero && (
                   <div
                     key={`${hero.id}-${index}`}
                     className="carousel-item"
@@ -239,7 +247,7 @@ export function HeroCarousel({ initialHeroes }: HeroCarouselProps): JSX.Element 
                     }}
                   >
                     <div className="card-wrapper">
-                      <div className="card-back">
+                      <div className="card-face card-back">
                         <CardBackside color={hero.color} />
                       </div>
                       <div className="card-face">
