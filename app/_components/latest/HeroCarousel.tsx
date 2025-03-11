@@ -52,11 +52,22 @@ const CAROUSEL_STYLES = `
   }
 
   .carousel-rotator--auto {
-    animation: carousel-rotate 40s infinite linear;
+    animation: carousel-rotate 48s infinite;
   }
 
   @keyframes carousel-rotate {
-    0% { transform: translateZ(-${RADIUS}px) rotateY(0); }
+    0%, 2.083% { transform: translateZ(-${RADIUS}px) rotateY(0); }
+    8.333%, 10.416% { transform: translateZ(-${RADIUS}px) rotateY(-30deg); }
+    16.666%, 18.749% { transform: translateZ(-${RADIUS}px) rotateY(-60deg); }
+    24.999%, 27.082% { transform: translateZ(-${RADIUS}px) rotateY(-90deg); }
+    33.332%, 35.415% { transform: translateZ(-${RADIUS}px) rotateY(-120deg); }
+    41.665%, 43.748% { transform: translateZ(-${RADIUS}px) rotateY(-150deg); }
+    49.998%, 52.081% { transform: translateZ(-${RADIUS}px) rotateY(-180deg); }
+    58.331%, 60.414% { transform: translateZ(-${RADIUS}px) rotateY(-210deg); }
+    66.664%, 68.747% { transform: translateZ(-${RADIUS}px) rotateY(-240deg); }
+    74.997%, 77.080% { transform: translateZ(-${RADIUS}px) rotateY(-270deg); }
+    83.330%, 85.413% { transform: translateZ(-${RADIUS}px) rotateY(-300deg); }
+    91.663%, 93.746% { transform: translateZ(-${RADIUS}px) rotateY(-330deg); }
     100% { transform: translateZ(-${RADIUS}px) rotateY(-360deg); }
   }
 
