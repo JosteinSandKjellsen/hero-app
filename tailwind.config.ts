@@ -6,6 +6,16 @@ const config: Config = {
   ],
   theme: {
     extend: {
+    perspective: {
+      '1000': '1000px',
+      '2000': '2000px',
+    },
+    transformStyle: {
+      'preserve-3d': 'preserve-3d',
+    },
+    backfaceVisibility: {
+      'hidden': 'hidden',
+    },
       colors: {
         purple: {
           DEFAULT: '#11133C',
@@ -37,6 +47,9 @@ const config: Config = {
       backgroundImage: {
         'hero-gradient': 'linear-gradient(to right, #11133C, #d17785)',
         'hero-gradient-hover': 'linear-gradient(to right, #d17785, #11133C)',
+      },
+      scale: {
+        '85': '0.85'
       },
       animation: {
         fadeIn: 'fadeIn 0.3s ease-out forwards',
@@ -123,6 +136,7 @@ const config: Config = {
     'to-green-light',
     'to-blue-light',
     'to-purple-light',
+    'scale-85',
   ],
   plugins: [],
 };

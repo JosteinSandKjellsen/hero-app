@@ -1,7 +1,6 @@
 'use client';
 
-import { forwardRef } from 'react';
-import { motion } from 'framer-motion';
+import { forwardRef, CSSProperties } from 'react';
 import Image from 'next/image';
 import { HeroImage } from '../ui/HeroImage';
 import { getPersonalityIcon } from '@/app/_lib/utils/personalityIcons';
@@ -19,32 +18,45 @@ interface LatestHeroCardProps {
     gender: string;
     colorScores: Record<string, number>;
   };
-  isNew: boolean;
+  style?: CSSProperties;
 }
 
+const calculateProportionalScores = (colorScores: Record<string, number>): Record<string, number> => {
+  const sum = Object.values(colorScores).reduce((acc, val) => acc + val, 0);
+  if (sum === 0) return { red: 0, yellow: 0, green: 0, blue: 0 };
+  
+  // Calculate initial proportional scores
+  const rawScores: Record<string, number> = {};
+  Object.entries(colorScores).forEach(([color, percentage]) => {
+    rawScores[color] = (percentage / sum) * 10;
+  });
+  
+  // Handle rounding to ensure sum is exactly 10
+  const flooredScores: Record<string, number> = {};
+  Object.entries(rawScores).forEach(([color, score]) => {
+    flooredScores[color] = Math.floor(score);
+  });
+  
+  const remainder = 10 - Object.values(flooredScores).reduce((a, b) => a + b, 0);
+  
+  // Distribute remaining points based on decimal parts
+  const decimalParts = Object.entries(rawScores).map(([color, score]) => ({
+    color,
+    decimal: score - flooredScores[color]
+  }));
+  decimalParts.sort((a, b) => b.decimal - a.decimal);
+  
+  const finalScores = { ...flooredScores };
+  for (let i = 0; i < remainder; i++) {
+    finalScores[decimalParts[i].color]++;
+  }
+  
+  return finalScores;
+};
+
 export const LatestHeroCard = forwardRef<HTMLDivElement, LatestHeroCardProps>(
-  function LatestHeroCard({ hero, isNew }, ref): JSX.Element {
-  // Animation variants
-  const variants = {
-    enter: {
-      x: 100,
-      opacity: 0,
-    },
-    center: {
-      x: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-      },
-    },
-    exit: {
-      x: -100,
-      opacity: 0,
-      transition: {
-        duration: 0.3,
-      },
-    },
-  };
+  function LatestHeroCard({ hero, style }, ref): JSX.Element {
+  const scores = calculateProportionalScores(hero.colorScores);
 
   const getColorValue = (color: string): string => {
     switch (color) {
@@ -61,29 +73,26 @@ export const LatestHeroCard = forwardRef<HTMLDivElement, LatestHeroCardProps>(
   };
 
   return (
-    <motion.div
-      ref={ref}
-      initial={isNew ? 'enter' : 'center'}
-      animate="center"
-      exit="exit"
-      variants={variants}
-      className="w-[90%] md:w-[450px]"
-    >
-      <div 
-        className={`rounded-xl overflow-hidden border-[10px] ${getBorderColorClass()} bg-white h-full flex flex-col`}
+      <div
+        ref={ref}
+        className="w-full transition-transform duration-500"
+        style={style}
       >
-        <div className="h-24 flex items-center px-6 border-b-2 border-opacity-20">
+        <div 
+        className={`rounded-xl overflow-hidden border-[10px] ${getBorderColorClass()} bg-white flex flex-col h-[720px]`}
+      >
+        <div className="h-20 flex items-center px-6 border-b-2 border-opacity-20">
           <div className="flex items-center gap-4 flex-1">
             <div 
-              className="w-16 h-16 rounded-full flex-shrink-0 flex items-center justify-center personality-icon"
+              className="w-14 h-14 rounded-full flex-shrink-0 flex items-center justify-center personality-icon"
               style={{ backgroundColor: getColorValue(hero.color) }}
             >
-              <div className="scale-[2]">
+              <div className="scale-150">
                 {getPersonalityIcon(hero.color)}
               </div>
             </div>
-            <div className="flex-1 flex flex-col justify-center -mt-0.5 py-2">
-              <h3 className={`text-3xl font-bangers tracking-wide ${heroColors[hero.color]?.text} leading-none mb-1`}>
+            <div className="flex-1 flex flex-col justify-center">
+              <h3 className={`text-2xl font-bangers tracking-wide ${heroColors[hero.color]?.text} leading-none mb-1`}>
                 {hero.name}
               </h3>
               <p className="text-xs text-gray-600 uppercase tracking-wider font-medium leading-none">
@@ -93,19 +102,19 @@ export const LatestHeroCard = forwardRef<HTMLDivElement, LatestHeroCardProps>(
           </div>
         </div>
 
-        <div className="relative aspect-[3/5] overflow-hidden">
+        <div className="relative flex-1 overflow-hidden">
           <HeroImage
             imageId={hero.imageId}
             alt={hero.name}
             className="rounded-none"
           />
-          <div className="absolute bottom-3 right-3 bg-white/30 backdrop-blur-sm py-1.5 rounded-full flex items-center justify-center w-[6.25rem]">
+          <div className="absolute bottom-3 right-3 bg-white/30 backdrop-blur-sm py-1.5 rounded-full flex items-center justify-center w-20">
             <Image
               src="/images/logos/bouvet.svg"
               alt="Bouvet Logo"
-              width={64}
-              height={32}
-              className="w-16 h-8"
+              width={48}
+              height={24}
+              className="w-12 h-6"
               style={{ filter: 'brightness(0)' }}
               priority
             />
@@ -114,7 +123,7 @@ export const LatestHeroCard = forwardRef<HTMLDivElement, LatestHeroCardProps>(
 
         <div className="p-4 border-t-2 border-opacity-20 flex justify-between items-center mt-auto">
           <div className="flex items-center gap-4">
-            <div className="text-base font-bangers tracking-wide text-gray-700">
+            <div className="text-sm font-bangers tracking-wide text-gray-700">
               {(hero.userName ?? hero.name).toUpperCase()}
             </div>
           </div>
@@ -125,21 +134,21 @@ export const LatestHeroCard = forwardRef<HTMLDivElement, LatestHeroCardProps>(
                 className="score-circle rounded-full flex items-center"
                 style={{ 
                   backgroundColor: getColorValue(color),
-                  width: '2.75rem',
-                  height: '1.75rem',
+                  width: '2.5rem',
+                  height: '1.5rem',
                   paddingLeft: '0.5rem',
-                  gap: '0.375rem'
+                  gap: '0.25rem'
                 }}
               >
-                <div className="w-4 h-4 flex items-center justify-center">
+                <div className="w-3.5 h-3.5 flex items-center justify-center">
                   {getHeroCardIcon(color)}
                 </div>
-                <span className="text-xs font-bold text-white">{hero.colorScores[color] || 0}</span>
+                <span className="text-xs font-bold text-white">{scores[color]}</span>
               </div>
             ))}
           </div>
         </div>
       </div>
-    </motion.div>
+      </div>
   );
 });

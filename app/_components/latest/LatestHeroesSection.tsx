@@ -1,10 +1,9 @@
 'use client';
 
-import { useCallback, useEffect, useState, useRef } from 'react';
-import { AnimatePresence } from 'framer-motion';
-import { LatestHeroCard } from './LatestHeroCard';
+import { useEffect, useState } from 'react';
+import { HeroCarousel } from './HeroCarousel';
 import { HeroColor } from '@/app/_lib/types/api';
-import type { LatestHeroWithId } from '@/app/api/latest-heroes/route';
+import type { DailyHero } from '@/app/api/heroes/daily-latest/route';
 
 interface LatestHero {
   id: number;
@@ -18,13 +17,20 @@ interface LatestHero {
   createdAt: string;
 }
 
+interface StoredHeroes {
+  data: LatestHero[];
+  timestamp: number;
+}
+
+const STORAGE_KEY = 'dailyHeroes';
+const CACHE_DURATION = 2 * 60 * 1000; // 2 minutes in milliseconds
+
 export function LatestHeroesSection(): JSX.Element {
   const [heroes, setHeroes] = useState<LatestHero[]>([]);
-  const lastFetchedIdRef = useRef<number | null>(null);
 
-  const fetchLatestHeroes = useCallback(async (): Promise<void> => {
+  const fetchDailyHeroes = async (): Promise<void> => {
     try {
-      const response = await fetch('/api/latest-heroes');
+      const response = await fetch('/api/heroes/daily-latest');
       if (!response.ok) throw new Error('Failed to fetch heroes');
       
       const data = await response.json();
@@ -32,7 +38,7 @@ export function LatestHeroesSection(): JSX.Element {
       if (!data.length) return;
 
       // Map the data to match our expected format
-      const mappedData = data.map((hero: LatestHeroWithId) => ({
+      const mappedData = data.map((hero: DailyHero) => ({
         id: hero.id,
         name: hero.name,
         userName: hero.userName || hero.name,
@@ -44,51 +50,42 @@ export function LatestHeroesSection(): JSX.Element {
         createdAt: hero.createdAt
       }));
 
-      // Only update if we have new data
-      setHeroes(currentHeroes => {
-        if (currentHeroes.length === 0 || mappedData[0].id !== lastFetchedIdRef.current) {
-          console.log('Updating heroes with new data:', mappedData);
-          lastFetchedIdRef.current = mappedData[0].id;
-          return mappedData;
-        }
-        return currentHeroes;
-      });
+      // Update state and store in localStorage
+      setHeroes(mappedData);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        data: mappedData,
+        timestamp: Date.now()
+      }));
+
     } catch (error) {
-      console.error('Error fetching latest heroes:', error);
+      console.error('Error fetching daily heroes:', error);
     }
+  };
+
+  // Load initial data from localStorage or fetch if not available/stale
+  useEffect(() => {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      const { data, timestamp } = JSON.parse(stored) as StoredHeroes;
+      const isFresh = Date.now() - timestamp < CACHE_DURATION;
+      if (isFresh) {
+        setHeroes(data);
+        return;
+      }
+    }
+    fetchDailyHeroes();
   }, []);
 
-  // Initial fetch
+  // Set up polling every 2 minutes
   useEffect(() => {
-    fetchLatestHeroes();
-  }, [fetchLatestHeroes]); // Include fetchLatestHeroes in deps
-
-  // Set up polling
-  useEffect(() => {
-    const interval = setInterval(fetchLatestHeroes, 20000);
+    const interval = setInterval(fetchDailyHeroes, CACHE_DURATION);
     return () => clearInterval(interval);
-  }, [fetchLatestHeroes]);
-
-
-  console.log('Rendering heroes:', heroes.length, heroes);
-
-  const reversedHeroes = [...heroes].reverse();
-  console.log('Reversed heroes:', reversedHeroes.length, reversedHeroes);
+  }, []);
 
   return (
     <div className="relative w-full min-h-screen flex items-center justify-center py-8 md:py-16">
-      <div className="w-full max-w-screen-xl mx-auto px-4">
-        <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center justify-center">
-          <AnimatePresence mode="sync">
-            {reversedHeroes.map((hero) => (
-              <LatestHeroCard
-                key={hero.id}
-                hero={hero}
-                isNew={hero.id === lastFetchedIdRef.current && lastFetchedIdRef.current !== null}
-              />
-            ))}
-          </AnimatePresence>
-        </div>
+      <div className="w-full max-w-screen-2xl mx-auto px-4">
+        <HeroCarousel heroes={heroes} />
       </div>
     </div>
   );

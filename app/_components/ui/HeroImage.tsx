@@ -228,9 +228,9 @@ export function HeroImage({
         src={getFallbackImage()}
         alt={`${alt} (fallback)`}
         fill
-        className={`object-cover ${className}`}
+        className={`object-cover object-center ${className}`}
         priority={priority}
-        sizes="300px"
+        sizes="(max-width: 768px) 90vw, 450px"
       />
     );
   }
@@ -240,9 +240,9 @@ export function HeroImage({
       src={imageUrl}
       alt={alt}
       fill
-      className={`object-cover ${className}`}
+      className={`object-cover object-center ${className}`}
       priority={priority}
-      sizes="300px"
+        sizes="(max-width: 768px) 90vw, 450px"
       onError={handleImageError}
     />
   );
