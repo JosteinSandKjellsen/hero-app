@@ -16,6 +16,7 @@ export type GeneratedHeroWithId = {
   color: string;
   createdAt: Date;
   printed: boolean;
+  carousel: boolean;
 };
 
 // GET /api/generated-heroes
@@ -42,7 +43,8 @@ export async function GET(request: Request): Promise<NextResponse> {
         personalityType: true,
         colorScores: true,
         createdAt: true,
-        printed: true
+        printed: true,
+        carousel: true
       },
       orderBy: {
         createdAt: 'desc'

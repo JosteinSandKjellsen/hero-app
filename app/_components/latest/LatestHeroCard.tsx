@@ -107,6 +107,7 @@ export const LatestHeroCard = forwardRef<HTMLDivElement, LatestHeroCardProps>(
             imageId={hero.imageId}
             alt={hero.name}
             className="rounded-none"
+            priority
           />
           <div className="absolute bottom-3 right-3 bg-white/30 backdrop-blur-sm py-1.5 rounded-full flex items-center justify-center w-20">
             <Image

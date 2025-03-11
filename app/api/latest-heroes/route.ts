@@ -12,12 +12,13 @@ export interface LatestHeroWithId {
   gender: string;
   colorScores: Record<string, number>;
   createdAt: string;
+  carousel: boolean;
 }
 
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
 
-export async function GET(request: Request): Promise<Response> {
+export async function GET(): Promise<Response> {
   try {
     // Cleanup old entries as backup to scheduled job
     const thirtyDaysAgo = new Date();
@@ -57,12 +58,11 @@ export async function GET(request: Request): Promise<Response> {
       });
     }
 
-    const count = new URL(request.url).searchParams.get('count');
-    const limit = Math.min(Math.max(parseInt(count || '3', 10), 1), 50); // Between 1 and 50
-
     const latestHeroes = await prisma.latestHero.findMany({
+      where: {
+        carousel: true
+      },
       orderBy: { createdAt: 'desc' },
-      take: limit,
       select: {
         id: true,
         name: true,
@@ -73,6 +73,7 @@ export async function GET(request: Request): Promise<Response> {
         gender: true,
         colorScores: true,
         createdAt: true,
+        carousel: true,
       },
     });
 
@@ -98,6 +99,7 @@ export async function POST(request: Request): Promise<Response> {
         color,
         gender,
         colorScores,
+        carousel: true, // New heroes are displayed in carousel by default
       },
     });
 

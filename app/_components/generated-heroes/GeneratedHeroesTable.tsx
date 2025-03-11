@@ -18,6 +18,7 @@ interface GeneratedHero {
   colorScores: Record<string, number>;
   createdAt: string;
   printed: boolean;
+  carousel: boolean;
 }
 
 export function GeneratedHeroesTable(): JSX.Element {
@@ -242,6 +243,9 @@ export function GeneratedHeroesTable(): JSX.Element {
                       {t('printed')}
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      {t('carousel')}
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       {t('color')}
                     </th>
                     <th scope="col" className="relative px-6 py-3">
@@ -262,11 +266,18 @@ export function GeneratedHeroesTable(): JSX.Element {
                           )
                         );
                       }}
+                      onCarouselChange={(id, carousel) => {
+                        setHeroes(currentHeroes =>
+                          currentHeroes.map(h =>
+                            h.id === id ? { ...h, carousel } : h
+                          )
+                        );
+                      }}
                     />
                   ))}
                   {heroes.length === 0 && (
                     <tr>
-                      <td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500">
+                      <td colSpan={6} className="px-6 py-4 text-center text-sm text-gray-500">
                         {t('noHeroes')}
                       </td>
                     </tr>

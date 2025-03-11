@@ -4,6 +4,8 @@ export function useImagePreloader(imageUrls: string[]): boolean {
   const [imagesLoaded, setImagesLoaded] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
+
     if (!imageUrls.length) {
       setImagesLoaded(true);
       return;
@@ -11,14 +13,16 @@ export function useImagePreloader(imageUrls: string[]): boolean {
 
     let loadedCount = 0;
     const totalImages = imageUrls.length;
+    const images: HTMLImageElement[] = [];
 
     const preloadImage = (url: string): Promise<void> => {
       return new Promise((resolve, reject) => {
         const img = new Image();
+        images.push(img);
         img.src = url;
         img.onload = () => {
           loadedCount++;
-          if (loadedCount === totalImages) {
+          if (loadedCount === totalImages && isMounted) {
             setImagesLoaded(true);
           }
           resolve();
@@ -32,12 +36,19 @@ export function useImagePreloader(imageUrls: string[]): boolean {
       .catch(error => {
         console.error('Error preloading images:', error);
         // Set loaded to true even on error to prevent hanging
-        setImagesLoaded(true);
+        if (isMounted) {
+          setImagesLoaded(true);
+        }
       });
 
     return () => {
-      // Reset state when urls change
-      setImagesLoaded(false);
+      isMounted = false;
+      // Clean up image objects
+      images.forEach(img => {
+        img.onload = null;
+        img.onerror = null;
+        img.src = '';
+      });
     };
   }, [imageUrls]);
 

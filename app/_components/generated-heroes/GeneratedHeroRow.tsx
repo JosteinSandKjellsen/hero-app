@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { getHeroCardIcon } from '@/app/_lib/utils/heroCardIcons';
 import { heroColors } from '@/app/_lib/constants/colors';
@@ -16,14 +16,53 @@ interface GeneratedHeroRowProps {
     colorScores: Record<string, number>;
     createdAt: string;
     printed: boolean;
+    carousel: boolean;
   };
   onDelete: (id: number) => void;
   onPrinted?: (id: number) => void;
+  onCarouselChange?: (id: number, carousel: boolean) => void;
 }
 
-export function GeneratedHeroRow({ hero, onDelete, onPrinted }: GeneratedHeroRowProps): JSX.Element {
+export function GeneratedHeroRow({ hero, onDelete, onPrinted, onCarouselChange }: GeneratedHeroRowProps): JSX.Element {
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [isInCarousel, setIsInCarousel] = useState(hero.carousel ?? false);
   const t = useTranslations('generatedHeroes.table');
+
+  // Keep local state in sync with prop
+  useEffect(() => {
+    setIsInCarousel(hero.carousel ?? false);
+  }, [hero.carousel]);
+
+  const handleCarouselChange = async (checked: boolean): Promise<void> => {
+    if (onCarouselChange) {
+      setIsUpdating(true);
+      try {
+        const response = await fetch('/api/hero-carousel', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: hero.id,
+            carousel: checked
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to update carousel status');
+        }
+
+        setIsInCarousel(checked);
+        onCarouselChange(hero.id, checked);
+      } catch (error) {
+        console.error('Error updating carousel status:', error);
+        setIsInCarousel(!checked); // Revert local state on error
+      } finally {
+        setIsUpdating(false);
+      }
+    }
+  };
 
   const handlePrint = async (): Promise<void> => {
     // Convert colorScores to the format "red:8,blue:5,green:3,yellow:4"
@@ -114,7 +153,7 @@ export function GeneratedHeroRow({ hero, onDelete, onPrinted }: GeneratedHeroRow
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
         {hero.name}
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm">
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
         {hero.printed && (
           <div className="flex items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-500" viewBox="0 0 20 20" fill="currentColor">
@@ -122,6 +161,16 @@ export function GeneratedHeroRow({ hero, onDelete, onPrinted }: GeneratedHeroRow
             </svg>
           </div>
         )}
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
+        <input
+          type="checkbox"
+          id={`carousel-${hero.id}`}
+          checked={isInCarousel}
+          disabled={isUpdating}
+          onChange={(e) => handleCarouselChange(e.target.checked)}
+          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 disabled:opacity-50"
+        />
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
         <div className={`inline-flex items-center px-3 py-1 rounded-full ${heroColors[hero.color]?.bg || 'bg-blue'}`}>

@@ -421,6 +421,8 @@
       "heroName": "Hero Name",
       "color": "Color",
       "printed": "Printed",
+      "carousel": "Show in carousel",
+      "printedAndCarousel": "Status",
       "actions": "Actions",
       "noHeroes": "No heroes found",
       "emptyUserName": "-",
