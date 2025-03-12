@@ -82,14 +82,14 @@ export function GeneratedHeroesTable(): JSX.Element {
   }
 
   const renderPagination = (): JSX.Element => (
-    <div className="flex justify-center items-center mt-4 mb-8 space-x-4">
+    <div className="flex justify-center items-center py-4 space-x-4 bg-white">
       <button
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
         className={`p-2 rounded-full ${
           currentPage === 1 
             ? 'text-gray-400 cursor-not-allowed' 
-            : 'text-white hover:text-white/80 hover:bg-white/10'
+            : 'text-gray-700 hover:bg-gray-100'
         }`}
         aria-label={t('previousPage')}
       >
@@ -98,7 +98,7 @@ export function GeneratedHeroesTable(): JSX.Element {
         </svg>
       </button>
       
-      <span className="text-sm text-white">
+      <span className="text-sm text-gray-700">
         {t('pageInfo', { current: currentPage, total: totalPages })}
       </span>
 
@@ -108,7 +108,7 @@ export function GeneratedHeroesTable(): JSX.Element {
         className={`p-2 rounded-full ${
           currentPage === totalPages 
             ? 'text-gray-400 cursor-not-allowed' 
-            : 'text-white hover:text-white/80 hover:bg-white/10'
+            : 'text-gray-700 hover:bg-gray-100'
         }`}
         aria-label={t('nextPage')}
       >
@@ -284,11 +284,11 @@ export function GeneratedHeroesTable(): JSX.Element {
                   )}
                 </tbody>
               </table>
+              {renderPagination()}
             </div>
           </div>
         </div>
       </div>
-      {renderPagination()}
     </div>
   );
 }
