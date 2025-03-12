@@ -1,13 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { HeroColor } from '@/app/_lib/types/api';
 
-interface CardBacksideProps {
-  color: HeroColor;
-}
-
-export function CardBackside({ color }: CardBacksideProps): JSX.Element {
+export function CardBackside(): JSX.Element {
   const BOUVET_BLUE = '45, 58, 130'; // Bouvet's blue color
   const BORDER_COLOR = 'border-[#2d3a82]'; // Bouvet blue as a hex color
 

@@ -252,7 +252,7 @@ export function HeroCarousel({ initialHeroes }: HeroCarouselProps): JSX.Element 
                   >
                     <div className="card-wrapper">
                       <div className="card-face card-back">
-                        <CardBackside color={hero.color} />
+                        <CardBackside />
                       </div>
                       <div className="card-face">
                         <LatestHeroCard
