@@ -16,7 +16,7 @@ export function useImagePreloader(imageUrls: string[]): boolean {
     const images: HTMLImageElement[] = [];
 
     const preloadImage = (url: string): Promise<void> => {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         const img = new Image();
         images.push(img);
         img.src = url;
@@ -27,19 +27,35 @@ export function useImagePreloader(imageUrls: string[]): boolean {
           }
           resolve();
         };
-        img.onerror = reject;
+        img.onerror = () => {
+          console.error(`Failed to load image: ${url}`);
+          // Still increment counter and resolve to allow other images to continue loading
+          loadedCount++;
+          if (loadedCount === totalImages && isMounted) {
+            setImagesLoaded(true);
+          }
+          resolve();
+        };
       });
     };
 
+    // Track which images have started loading
+    const loadingImages = new Set<string>();
+
     // Start preloading all images
-    Promise.all(imageUrls.map(url => preloadImage(url)))
-      .catch(error => {
-        console.error('Error preloading images:', error);
-        // Set loaded to true even on error to prevent hanging
-        if (isMounted) {
-          setImagesLoaded(true);
-        }
-      });
+    Promise.all(
+      imageUrls.filter(url => {
+        // Skip duplicate URLs
+        if (loadingImages.has(url)) return false;
+        loadingImages.add(url);
+        return true;
+      }).map(url => preloadImage(url))
+    ).finally(() => {
+      // Ensure we mark as loaded even if some images failed
+      if (isMounted) {
+        setImagesLoaded(true);
+      }
+    });
 
     return () => {
       isMounted = false;
