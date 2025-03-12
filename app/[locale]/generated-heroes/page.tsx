@@ -9,13 +9,11 @@ export default function GeneratedHeroesPage(): JSX.Element {
 
   return (
     <QuizLayout variant="stats">
-      <div className="sm:flex sm:items-center">
-        <div className="sm:flex-auto">
-          <h1 className="text-2xl font-semibold text-white">{t('title')}</h1>
-          <p className="mt-2 text-sm text-gray-300">{t('description')}</p>
-        </div>
+      <div className="mt-4">
+        <h1 className="text-2xl font-semibold text-white">{t('title')}</h1>
+        <p className="mt-2 text-sm text-gray-300">{t('description')}</p>
       </div>
-      <div className="mt-8">
+      <div className="mt-6">
         <GeneratedHeroesTable />
       </div>
     </QuizLayout>

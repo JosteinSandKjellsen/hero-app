@@ -49,12 +49,14 @@ export function QuizLayout({ children, showBackground = false, variant = 'quiz' 
       </div>
       {/* Apply opacity transition to prevent content blinking */}
       <main 
-        className={`relative z-10 flex-1 pb-8 px-4 sm:px-6 lg:px-8 overflow-x-hidden flex flex-col ${
-          variant === 'registration' ? 'md:items-center' : 'md:justify-center'
+        className={`relative z-10 flex-1 pb-8 px-4 sm:px-6 lg:px-8 overflow-x-hidden ${
+          variant === 'registration' ? 'flex flex-col md:items-center mt-12 md:mt-24' 
+          : variant === 'stats' ? '' 
+          : 'flex flex-col md:justify-center'
         } transition-opacity duration-200`}
         style={{ opacity: visible ? 1 : 0 }}
       >
-        <div className="max-w-3xl mx-auto w-full">
+        <div className={`mx-auto w-full ${variant === 'stats' ? 'max-w-6xl' : 'max-w-3xl'}`}>
           {children}
         </div>
       </main>

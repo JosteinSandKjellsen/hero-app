@@ -17,7 +17,7 @@ export function HeroBackground(): JSX.Element {
       
       <div className="grid grid-cols-2 md:grid-cols-4 h-full gap-1 opacity-50">
         {images.map((image, index) => (
-          <div key={index} className="relative overflow-hidden group">
+          <div key={index} className="relative overflow-hidden">
             <Image
               src={image}
               alt="Superhero"
@@ -25,7 +25,7 @@ export function HeroBackground(): JSX.Element {
               priority={index === 0} // Only prioritize first image (LCP)
               loading={index === 0 ? "eager" : "lazy"} // Eager load first image
               sizes="(max-width: 768px) 50vw, 25vw"
-              className="object-cover scale-105 transition-transform duration-5000 group-hover:scale-110"
+              className="object-cover scale-105"
             />
           </div>
         ))}
