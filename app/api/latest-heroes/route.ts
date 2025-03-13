@@ -18,7 +18,7 @@ export interface LatestHeroWithId {
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
 
-export async function GET(): Promise<Response> {
+export async function GET(request: Request): Promise<Response> {
   try {
     // Cleanup old entries as backup to scheduled job
     const thirtyDaysAgo = new Date();
@@ -58,11 +58,16 @@ export async function GET(): Promise<Response> {
       });
     }
 
+    // Parse query parameters
+    const url = new URL(request.url);
+    const includeAll = url.searchParams.get('includeAll') === 'true';
+    const count = url.searchParams.get('count');
+    const take = count ? parseInt(count, 10) : undefined;
+
     const latestHeroes = await prisma.latestHero.findMany({
-      where: {
-        carousel: true
-      },
+      where: includeAll ? undefined : { carousel: true },
       orderBy: { createdAt: 'desc' },
+      take,
       select: {
         id: true,
         name: true,

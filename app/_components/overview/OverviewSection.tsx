@@ -44,7 +44,7 @@ export function OverviewSection(): JSX.Element {
 
   const fetchLatestHeroes = useCallback(async (): Promise<void> => {
     try {
-      const response = await fetch('/api/latest-heroes?count=8');
+      const response = await fetch('/api/latest-heroes?includeAll=true&count=8');
       if (!response.ok) throw new Error('Failed to fetch heroes');
       
       const data = await response.json();
