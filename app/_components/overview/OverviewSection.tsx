@@ -155,21 +155,12 @@ export function OverviewSection(): JSX.Element {
             className="grid grid-cols-4 grid-rows-2 gap-4 h-full w-full absolute inset-0 scale-[0.95]"
           >
             <AnimatePresence mode="popLayout">
-              {orderedHeroes.slice(0, 4).map((hero, index) => (
+              {orderedHeroes.slice(0, 8).map((hero, index) => (
                 <div key={hero.id} className="w-full h-full">
                   <OverviewHeroCard
                     hero={hero}
                     isNew={hero.id === lastFetchedIdRef.current && lastFetchedIdRef.current !== null}
                     priority={index < 2} // Only prioritize first two cards
-                  />
-                </div>
-              ))}
-              {orderedHeroes.slice(4).map((hero) => (
-                <div key={hero.id} className="w-full h-full">
-                  <OverviewHeroCard
-                    hero={hero}
-                    isNew={hero.id === lastFetchedIdRef.current && lastFetchedIdRef.current !== null}
-                    priority={false}
                   />
                 </div>
               ))}
