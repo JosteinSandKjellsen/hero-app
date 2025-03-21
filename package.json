@@ -17,7 +17,8 @@
   "dependencies": {
     "@google/generative-ai": "^0.2.1",
     "@netlify/edge-functions": "^2.11.1",
-    "@netlify/plugin-nextjs": "^4.41.3",
+    "@netlify/functions": "^3.0.4",
+    "@netlify/plugin-nextjs": "^5.10.1",
     "@prisma/client": "^6.4.1",
     "@types/dotenv": "^6.1.1",
     "chart.js": "^4.4.7",
