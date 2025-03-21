@@ -20,69 +20,75 @@ export const fetchCache = 'force-no-store';
 
 export async function GET(request: Request): Promise<Response> {
   try {
-    // Cleanup old entries as backup to scheduled job
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    // Use a transaction for atomicity
+    const response = await prisma.$transaction(async (tx) => {
+      // Cleanup old entries as backup to scheduled job
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    const oldHeroes = await prisma.latestHero.findMany({
-      where: {
-        createdAt: {
-          lt: thirtyDaysAgo
-        }
-      },
-      select: {
-        id: true,
-        imageId: true
-      }
-    });
-
-    if (oldHeroes.length > 0) {
-      const leonardoService = new LeonardoAiService();
-      
-      // Delete images from Leonardo
-      for (const hero of oldHeroes) {
-        try {
-          await leonardoService.deleteImage(hero.imageId, 'generated');
-        } catch (error) {
-          console.error(`Failed to delete Leonardo image for hero ${hero.id}:`, error);
-        }
-      }
-
-      // Delete heroes from database
-      await prisma.latestHero.deleteMany({
+      // Get old heroes that need cleanup
+      const oldHeroes = await tx.latestHero.findMany({
         where: {
           createdAt: {
             lt: thirtyDaysAgo
           }
+        },
+        select: {
+          id: true,
+          imageId: true
         }
       });
-    }
 
-    // Parse query parameters
-    const url = new URL(request.url);
-    const includeAll = url.searchParams.get('includeAll') === 'true';
-    const count = url.searchParams.get('count');
-    const take = count ? parseInt(count, 10) : undefined;
+      if (oldHeroes.length > 0) {
+        const leonardoService = new LeonardoAiService();
+        
+        // Delete images from Leonardo in parallel
+        await Promise.all(
+          oldHeroes.map(hero => 
+            leonardoService.deleteImage(hero.imageId, 'generated')
+              .catch(error => console.error(`Failed to delete Leonardo image for hero ${hero.id}:`, error))
+          )
+        );
 
-    const latestHeroes = await prisma.latestHero.findMany({
-      where: includeAll ? undefined : { carousel: true },
-      orderBy: { createdAt: 'desc' },
-      take,
-      select: {
-        id: true,
-        name: true,
-        userName: true,
-        personalityType: true,
-        imageId: true,
-        color: true,
-        gender: true,
-        colorScores: true,
-        createdAt: true,
-        carousel: true,
-      },
+        // Delete old heroes from database
+        await tx.latestHero.deleteMany({
+          where: {
+            createdAt: {
+              lt: thirtyDaysAgo
+            }
+          }
+        });
+      }
+
+      // Parse query parameters
+      const url = new URL(request.url);
+      const includeAll = url.searchParams.get('includeAll') === 'true';
+      const count = url.searchParams.get('count');
+      const take = count ? parseInt(count, 10) : undefined;
+
+      // Use the optimized carousel index for filtered queries
+      const latestHeroes = await tx.latestHero.findMany({
+        where: includeAll ? undefined : { carousel: true },
+        orderBy: { createdAt: 'desc' },
+        take,
+        select: {
+          id: true,
+          name: true,
+          userName: true,
+          personalityType: true,
+          imageId: true,
+          color: true,
+          gender: true,
+          colorScores: true,
+          createdAt: true,
+          carousel: true,
+        },
+      });
+
+      return latestHeroes;
     });
 
-    return Response.json(latestHeroes);
+    return Response.json(response);
   } catch (error) {
     console.error('Failed to fetch latest heroes:', error);
     return new Response('Failed to fetch latest heroes', { status: 500 });
@@ -94,18 +100,30 @@ export async function POST(request: Request): Promise<Response> {
     const data = await request.json();
     const { name, userName, personalityType, imageId, color, gender, colorScores } = data;
 
-    // Create the new hero
-    const newHero = await prisma.latestHero.create({
-      data: {
-        name,
-        userName,
-        personalityType,
-        imageId,
-        color,
-        gender,
-        colorScores,
-        carousel: true, // New heroes are displayed in carousel by default
-      },
+    // Create the new hero with optimized data access
+    const newHero = await prisma.$transaction(async (tx) => {
+      // Check for existing imageId to avoid unique constraint violation
+      const existing = await tx.latestHero.findUnique({
+        where: { imageId },
+        select: { id: true }
+      });
+
+      if (existing) {
+        throw new Error('This hero image has already been saved');
+      }
+
+      return tx.latestHero.create({
+        data: {
+          name,
+          userName,
+          personalityType,
+          imageId,
+          color,
+          gender,
+          colorScores,
+          carousel: true, // New heroes are displayed in carousel by default
+        },
+      });
     });
 
     return Response.json(newHero);

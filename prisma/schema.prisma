@@ -12,7 +12,8 @@ model HeroStats {
   color     String
   createdAt DateTime @default(now())
 
-  @@index([color])
+  // Composite index for frequently used filters
+  @@index([color, createdAt])
 }
 
 model LatestHero {
@@ -28,5 +29,10 @@ model LatestHero {
   carousel       Boolean  @default(false)
   createdAt      DateTime @default(now())
 
+  // Composite index for pagination with carousel filter
+  @@index([carousel, createdAt])
+  // Index for efficient color filtering
+  @@index([color])
+  // Keep the original createdAt index for general queries
   @@index([createdAt])
 }

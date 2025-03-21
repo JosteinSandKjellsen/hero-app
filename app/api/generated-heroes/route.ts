@@ -28,30 +28,30 @@ export async function GET(request: Request): Promise<NextResponse> {
     const pageSize = 50;
     const skip = (page - 1) * pageSize;
 
-    // Get total count for pagination
-    const totalCount = await prisma.latestHero.count();
-
-    // Get heroes for current page
-    const generatedHeroes = await prisma.latestHero.findMany({
-      select: {
-        id: true,
-        name: true,
-        userName: true,
-        imageId: true,
-        color: true,
-        gender: true,
-        personalityType: true,
-        colorScores: true,
-        createdAt: true,
-        printed: true,
-        carousel: true
-      },
-      orderBy: {
-        createdAt: 'desc'
-      },
-      skip,
-      take: pageSize
-    });
+    // Use a single transaction for count and data fetch to ensure consistency
+    const [totalCount, generatedHeroes] = await prisma.$transaction([
+      prisma.latestHero.count(),
+      prisma.latestHero.findMany({
+        select: {
+          id: true,
+          name: true,
+          userName: true,
+          imageId: true,
+          color: true,
+          gender: true,
+          personalityType: true,
+          colorScores: true,
+          createdAt: true,
+          printed: true,
+          carousel: true
+        },
+        orderBy: {
+          createdAt: 'desc'
+        },
+        skip,
+        take: pageSize
+      })
+    ]);
 
     // Calculate pagination values
     const totalPages = Math.ceil(totalCount / pageSize);
@@ -87,63 +87,48 @@ export async function DELETE(request: Request): Promise<NextResponse> {
     // Validate input
     const validatedData = DeleteHeroSchema.parse(data);
     
-    // Get hero details before deletion
-    const hero = await prisma.latestHero.findUnique({
-      where: { id: validatedData.id },
-      select: { imageId: true }
-    });
+    // Get hero details and perform deletion in a single transaction
+    await prisma.$transaction(async (prisma) => {
+      const hero = await prisma.latestHero.findUnique({
+        where: { id: validatedData.id },
+        select: { 
+          imageId: true,
+          color: true,
+          createdAt: true
+        }
+      });
 
-    if (!hero) {
-      return NextResponse.json(
-        { error: 'Hero not found' },
-        { status: 404 }
-      );
-    }
-
-    // Initialize Leonardo service and delete images - generated first since it's guaranteed to exist
-    const leonardoService = new LeonardoAiService();
-    try {
-      // Delete images and log results
-      const generatedDeleted = await leonardoService.deleteImage(hero.imageId, 'generated');
-      console.log(`Generated image deletion ${generatedDeleted ? 'succeeded' : 'failed'} for ID ${hero.imageId}`);
-
-      const initialDeleted = await leonardoService.deleteImage(hero.imageId, 'initial');
-      console.log(`Initial image deletion ${initialDeleted ? 'succeeded' : 'failed'} for ID ${hero.imageId}`);
-
-      if (!generatedDeleted) {
-        console.error(`Failed to delete generated image for hero ${hero.imageId}`);
+      if (!hero) {
+        throw new Error('Hero not found');
       }
-    } catch (error) {
-      console.error('Error deleting Leonardo images:', error);
-      // Continue with database deletion even if image deletion fails
-    }
 
-    // Get hero details before deleting from HeroStats
-    const heroToDelete = await prisma.latestHero.findUnique({
-      where: { id: validatedData.id },
-      select: { color: true, createdAt: true }
-    });
+      // Initialize Leonardo service and delete images
+      const leonardoService = new LeonardoAiService();
+      try {
+        await Promise.all([
+          leonardoService.deleteImage(hero.imageId, 'generated'),
+          leonardoService.deleteImage(hero.imageId, 'initial')
+        ]);
+      } catch (error) {
+        console.error('Error deleting Leonardo images:', error);
+        // Continue with database deletion even if image deletion fails
+      }
 
-    if (heroToDelete) {
-      // Delete from both tables in a transaction
-      await prisma.$transaction([
-        // Delete from LatestHero first (due to foreign key constraints)
+      // Delete from both tables
+      await Promise.all([
         prisma.latestHero.delete({
-          where: {
-            id: validatedData.id
-          }
+          where: { id: validatedData.id }
         }),
-        // Then delete from HeroStats
         prisma.heroStats.deleteMany({
           where: {
             AND: [
-              { color: heroToDelete.color },
-              { createdAt: heroToDelete.createdAt }
+              { color: hero.color },
+              { createdAt: hero.createdAt }
             ]
           }
         })
       ]);
-    }
+    });
 
     return NextResponse.json({ success: true });
   } catch (error) {
