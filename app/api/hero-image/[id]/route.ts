@@ -76,33 +76,7 @@ export async function GET(
     const imageUrl = generation.generated_images[0].url;
     console.log(`Retrieved image URL: ${imageUrl}`);
     
-    // In production (Netlify), return the CDN URL directly with cache headers
-    if (process.env.NODE_ENV === 'production') {
-      // Check if the image URL is valid and accessible before returning it
-      try {
-        const checkResponse = await fetch(imageUrl, { method: 'HEAD' });
-        if (!checkResponse.ok) {
-          throw new Error(`Image URL is not accessible: ${checkResponse.statusText}`);
-        }
-      } catch (headError) {
-        console.error(`Error validating image URL: ${headError}`);
-        // Continue anyway - we'll let the client try to fetch directly
-      }
-      
-      // For Netlify's CDN to properly cache the response
-      return NextResponse.json(
-        { url: imageUrl },
-        {
-          headers: {
-            'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400',
-            'CDN-Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400',
-            'Netlify-CDN-Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400'
-          }
-        }
-      );
-    }
-    
-    // In development, proxy the image through our API
+    // Always proxy the image through our API to avoid CORS issues
     console.log(`Fetching image data from: ${imageUrl}`);
     
     try {
