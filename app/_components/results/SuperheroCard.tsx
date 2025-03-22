@@ -1,11 +1,12 @@
 'use client';
 
-import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { PersonalityType } from '../../_lib/types/personality';
 import { UserData } from '../../_lib/types';
 import { getPersonalityIcon } from '@/app/_lib/utils/personalityIcons';
 import { getHeroCardIcon } from '@/app/_lib/utils/heroCardIcons';
+import { HeroImage } from '../ui/HeroImage';
+import Image from 'next/image';
 
 interface SuperheroCardProps {
   photoUrl: string;
@@ -111,16 +112,25 @@ export function SuperheroCard({ photoUrl, personality, userData, results = [], o
       </div>
 
       <div className="relative aspect-[3/4]">
-        <Image
-          src={photoUrl}
-          alt={t('selfieAlt')}
-          className="object-cover"
-          fill
-          sizes={optimizePrint ? "500px" : "(max-width: 600px) 100vw, 600px"}
-          crossOrigin="anonymous"
-          priority={optimizePrint}
-          loading={optimizePrint ? "eager" : "lazy"}
-        />
+        {photoUrl.includes('cdn.leonardo.ai') ? (
+          <HeroImage
+            imageId={photoUrl.match(/generations\/([^/]+)/)?.[1] || ''}
+            alt={t('selfieAlt')}
+            className="rounded-none"
+            priority={optimizePrint}
+          />
+        ) : (
+          <Image
+            src={photoUrl}
+            alt={t('selfieAlt')}
+            className="object-cover"
+            fill
+            sizes={optimizePrint ? "500px" : "(max-width: 600px) 100vw, 600px"}
+            crossOrigin="anonymous"
+            priority={optimizePrint}
+            loading={optimizePrint ? "eager" : "lazy"}
+          />
+        )}
         <div className="absolute bottom-3 right-3 bg-white/30 backdrop-blur-sm py-1.5 rounded-full flex items-center justify-center w-[6.25rem]" style={{ backdropFilter: 'blur(4px)' }}>
           <Image
             src="/images/logos/bouvet.svg"

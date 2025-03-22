@@ -1,90 +1,76 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export function useImagePreloader(imageUrls: string[]): boolean {
-  const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [loadedUrls] = useState(() => new Set<string>());
+  const [isLoading, setIsLoading] = useState(true);
+  const urlsRef = useRef<string[]>([]);
 
   useEffect(() => {
     let isMounted = true;
+    const abortController = new AbortController();
 
-    if (!imageUrls.length) {
-      setImagesLoaded(true);
+    // Compare arrays to see if we need to reload
+    const hasNewUrls = imageUrls.some(url => !loadedUrls.has(url));
+    if (!hasNewUrls && urlsRef.current.length === imageUrls.length) {
+      setIsLoading(false);
       return;
     }
 
-    let loadedCount = 0;
-    const totalImages = imageUrls.length;
-    const abortControllers: AbortController[] = [];
+    urlsRef.current = imageUrls;
+    
+    if (!imageUrls.length) {
+      setIsLoading(false);
+      return;
+    }
+
+    setIsLoading(true);
 
     const preloadImage = async (url: string): Promise<void> => {
-      const controller = new AbortController();
-      abortControllers.push(controller);
+      if (loadedUrls.has(url)) return;
 
       try {
-        // Create a temporary Image object to preload and ensure rendering
-        return new Promise((resolve) => {
+        // Use requestAnimationFrame to spread out image loading
+        await new Promise(resolve => requestAnimationFrame(resolve));
+        
+        await new Promise<void>((resolve) => {
           const img = new Image();
           img.onload = () => {
-            loadedCount++;
-            if (loadedCount === totalImages && isMounted) {
-              setImagesLoaded(true);
-            }
+            loadedUrls.add(url);
             resolve();
           };
           img.onerror = () => {
             console.error(`Failed to load image: ${url}`);
-            // Still increment counter to allow other images to continue loading
-            loadedCount++;
-            if (loadedCount === totalImages && isMounted) {
-              setImagesLoaded(true);
-            }
-            resolve(); // Resolve anyway to allow other images to load
+            resolve(); // Still resolve to continue loading others
           };
-          // Set crossOrigin to anonymous since we're using our proxy
           img.crossOrigin = 'anonymous';
           img.src = url;
         });
       } catch (error) {
-        if (!controller.signal.aborted) {
+        if (!abortController.signal.aborted) {
           console.error(`Failed to load image: ${url}`, error);
-          // Still increment counter to allow other images to continue loading
-          loadedCount++;
-          if (loadedCount === totalImages && isMounted) {
-            setImagesLoaded(true);
-          }
         }
       }
     };
 
-    // Track which images have started loading
-    const loadingImages = new Set<string>();
-
-    // Start preloading all images
-    Promise.all(
-      imageUrls.filter(url => {
-        // Skip duplicate URLs
-        if (loadingImages.has(url)) return false;
-        loadingImages.add(url);
-        return true;
-      }).map(url => preloadImage(url))
-    ).finally(() => {
-      // Ensure we mark as loaded even if some images failed
-      if (isMounted) {
-        setImagesLoaded(true);
+    // Load images in sequence to prevent overwhelming the browser
+    async function loadImagesSequentially(): Promise<void> {
+      for (const url of imageUrls) {
+        if (abortController.signal.aborted) break;
+        await preloadImage(url);
       }
-    });
+      
+      if (isMounted) {
+        setIsLoading(false);
+      }
+    }
+
+    loadImagesSequentially();
 
     return () => {
       isMounted = false;
-      // Abort any in-flight requests
-      abortControllers.forEach(controller => {
-        try {
-          controller.abort();
-        } catch (e) {
-          // Ignore abort errors
-        }
-      });
+      abortController.abort();
     };
-  }, [imageUrls]);
+  }, [imageUrls, loadedUrls]);
 
-  return imagesLoaded;
+  return !isLoading;
 }

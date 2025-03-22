@@ -11,7 +11,6 @@ interface HeroImageProps {
   priority?: boolean;
 }
 
-
 // Default fallback images by gender
 const DEFAULT_FALLBACKS = {
   male: '/images/superheroes/blue-man.webp',
@@ -27,8 +26,8 @@ export function HeroImage({
   priority = false
 }: HeroImageProps): JSX.Element {
   const [imageUrl, setImageUrl] = useState<string>('');
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<boolean>(false);
+  const [loaded, setLoaded] = useState(false);
 
   // Determine which fallback to use based on alt text or use provided fallback
   const getFallbackImage = (): string => {
@@ -44,78 +43,59 @@ export function HeroImage({
   };
 
   useEffect(() => {
-    async function fetchImageUrl(): Promise<void> {
-      if (!imageId) {
-        setError(true);
-        setLoading(false);
-        return;
-      }
-
-      setLoading(true);
-      setError(false);
-      
-      try {
-        // Always use our proxy endpoint - no caching of CDN URLs
-        const proxyUrl = `/api/hero-image/${imageId}`;
-        setImageUrl(proxyUrl);
-        
-        // Test if proxy is accessible
-        const response = await fetch(proxyUrl, { method: 'HEAD' });
-        if (!response.ok) {
-          throw new Error('Failed to fetch image data');
-        }
-      } catch (error) {
-        console.error('Error fetching image URL:', error);
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
+    if (!imageId) {
+      setError(true);
+      return;
     }
-    
-    fetchImageUrl();
+
+    // Always use our proxy endpoint - no need for HEAD request validation
+    const proxyUrl = `/api/hero-image/${imageId}`;
+    setImageUrl(proxyUrl);
+    setLoaded(false); // Reset loaded state when imageId changes
   }, [imageId]);
 
   // Handle image load error
   const handleImageError = (): void => {
     console.error(`Image failed to load: ${imageUrl}`);
     setError(true);
-    
-    // Remove from cache if it failed
-    try {
-      localStorage.removeItem(`hero-image-${imageId}`);
-    } catch (e) {
-      console.error('Failed to remove bad image from cache:', e);
-    }
   };
 
-  if (loading) {
-    return (
-      <div className="w-full h-full bg-gray-200 animate-pulse rounded-lg" />
-    );
-  }
-
-  if (error || !imageUrl) {
-    return (
-      <Image
-        src={getFallbackImage()}
-        alt={`${alt} (fallback)`}
-        fill
-        className={`object-cover object-center ${className}`}
-        priority={priority}
-        sizes="(max-width: 768px) 90vw, 450px"
-      />
-    );
-  }
+  const handleImageLoad = (): void => {
+    setLoaded(true);
+  };
 
   return (
-    <Image
-      src={imageUrl}
-      alt={alt}
-      fill
-      className={`object-cover object-center ${className}`}
-      priority={priority}
-        sizes="(max-width: 768px) 90vw, 450px"
-      onError={handleImageError}
-    />
+    <div className="relative w-full h-full">
+      <div 
+        className={`absolute inset-0 bg-gray-200 rounded-lg transition-opacity duration-300 ${
+          loaded ? 'opacity-0' : 'opacity-100'
+        }`}
+      />
+      {error || !imageUrl ? (
+        <Image
+          src={getFallbackImage()}
+          alt={`${alt} (fallback)`}
+          fill
+          className={`object-cover object-center ${className}`}
+          priority={priority}
+          sizes="(max-width: 768px) 90vw, 450px"
+          unoptimized
+        />
+      ) : (
+        <Image
+          src={imageUrl}
+          alt={alt}
+          fill
+          className={`object-cover object-center transition-opacity duration-300 ${className} ${
+            loaded ? 'opacity-100' : 'opacity-0'
+          }`}
+          priority={priority}
+          sizes="(max-width: 768px) 90vw, 450px"
+          onError={handleImageError}
+          onLoad={handleImageLoad}
+          unoptimized
+        />
+      )}
+    </div>
   );
 }

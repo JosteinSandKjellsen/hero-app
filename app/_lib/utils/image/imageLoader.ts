@@ -1,9 +1,16 @@
 import { ImageLoaderProps } from "next/image";
 
 export default function imageLoader({ src, width, quality }: ImageLoaderProps): string {
-  // If the src is already a proxied URL, return it as-is
+  // If the src is already a proxied URL, add width param
   if (src.startsWith('/api/')) {
-    return src;
+    const params = new URLSearchParams();
+    if (width) {
+      params.append('w', width.toString());
+    }
+    if (quality) {
+      params.append('q', quality.toString());
+    }
+    return `${src}${params.toString() ? `?${params.toString()}` : ''}`;
   }
 
   // If this is a Leonardo.ai image URL, extract the ID and use our proxy

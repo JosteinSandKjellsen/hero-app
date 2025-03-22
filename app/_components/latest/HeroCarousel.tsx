@@ -26,7 +26,8 @@ interface HeroCarouselProps {
 const RADIUS = 900;
 const CARD_COUNT = 12; // Number of cards in the carousel
 const ANGLE_STEP = 360 / CARD_COUNT;
-const ROTATION_TIME = 5000; // 5 seconds per card (4s rotation + 1s pause)
+const ROTATION_TIME = 5000; // 5 seconds per card (3s pause + 2s rotation)
+const TRANSITION_TIME = 2000; // 2 second rotation for smoother timing
 
 const CAROUSEL_STYLES = `
   .carousel-container {
@@ -35,6 +36,7 @@ const CAROUSEL_STYLES = `
     height: 720px;
     margin: 0 auto;
     transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
   }
 
   .carousel-scene {
@@ -43,7 +45,9 @@ const CAROUSEL_STYLES = `
     height: 100%;
     perspective: 1500px;
     transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
     transform: scale(0.9);
+    will-change: transform;
   }
 
   .carousel-rotator {
@@ -51,7 +55,10 @@ const CAROUSEL_STYLES = `
     width: 100%;
     height: 100%;
     transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
     transform: translateZ(-${RADIUS}px);
+    transition: transform 2s cubic-bezier(0.4, 0.0, 0.3, 1);
+    will-change: transform;
   }
 
   .carousel-item {
@@ -61,6 +68,10 @@ const CAROUSEL_STYLES = `
     left: 0;
     top: 0;
     transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    will-change: transform;
   }
 
   .card-wrapper {
@@ -68,6 +79,9 @@ const CAROUSEL_STYLES = `
     width: 100%;
     height: 100%;
     transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    transition: transform 2s cubic-bezier(0.4, 0.0, 0.3, 1);
+    will-change: transform;
   }
 
   .card-face {
@@ -77,21 +91,17 @@ const CAROUSEL_STYLES = `
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
     background: white;
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     transform-origin: center center;
+    will-change: transform;
   }
 
   .card-back {
     transform: rotateY(180deg);
     z-index: 1;
-  }
-
-  /* Fix for Safari */
-  .carousel-container, .carousel-scene, .carousel-rotator, .carousel-item, .card-wrapper {
-    -webkit-transform-style: preserve-3d;
-    transform-style: preserve-3d;
   }
 `;
 
@@ -155,32 +165,46 @@ export function HeroCarousel({ initialHeroes }: HeroCarouselProps): JSX.Element 
       // Calculate smooth rotation angle
       const baseRotation = Math.floor(elapsedTime / ROTATION_TIME) * ANGLE_STEP;
       const cycleTime = elapsedTime % ROTATION_TIME;
-      const additionalRotation = cycleTime < 4000
-        ? (cycleTime / 4000) * ANGLE_STEP // Smooth rotation during first 4s
-        : ANGLE_STEP;                     // Hold position for last 1s
+
+      // Stay still for ROTATION_TIME - TRANSITION_TIME, then rotate
+      const pauseTime = ROTATION_TIME - TRANSITION_TIME;
+      const inTransition = cycleTime > pauseTime;
       
-      const rotationAngle = baseRotation + additionalRotation;
+      let rotationAngle = baseRotation;
+      
+      if (inTransition) {
+        const transitionTime = cycleTime - pauseTime;
+        const progress = transitionTime / TRANSITION_TIME;
+        
+        // Use custom easing for smoother, slower transition
+        const easeProgress = progress < 0.5
+          ? 4 * Math.pow(progress, 3)
+          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+        
+        const additionalRotation = easeProgress * ANGLE_STEP;
+        rotationAngle += additionalRotation;
+      }
       setCurrentRotation(rotationAngle);
       
-      // Update the hero in the hidden position when we move to a new card
-      if (currentCardIndex !== lastCardIndex) {
+      // Update cards near the end of transition
+      const shouldUpdateCards = inTransition && cycleTime > (ROTATION_TIME - TRANSITION_TIME * 0.05);
+      
+      if (shouldUpdateCards && currentCardIndex !== lastCardIndex) {
         lastCardIndex = currentCardIndex;
         
-        // This is the back position that's currently hidden from view
-        const hiddenPosition = (currentCardIndex + 6) % CARD_COUNT; // 180 degrees opposite
-        
-        setCardHeroes(prevCards => {
-          const newCards = [...prevCards];
+        // Use separate frame for card updates
+        requestAnimationFrame(() => {
+          const hiddenPosition = (currentCardIndex + 6) % CARD_COUNT;
           
-          // Get next hero in sequence
-          const lastHeroIndex = heroes.findIndex(hero => 
-            hero.id === prevCards[(hiddenPosition + CARD_COUNT - 1) % CARD_COUNT]?.id
-          );
-          
-          const nextHeroIndex = (lastHeroIndex + 1) % heroes.length;
-          newCards[hiddenPosition] = heroes[nextHeroIndex];
-          
-          return newCards;
+          setCardHeroes(prevCards => {
+            const newCards = [...prevCards];
+            const lastHeroIndex = heroes.findIndex(hero => 
+              hero.id === prevCards[(hiddenPosition + CARD_COUNT - 1) % CARD_COUNT]?.id
+            );
+            const nextHeroIndex = (lastHeroIndex + 1) % heroes.length;
+            newCards[hiddenPosition] = heroes[nextHeroIndex];
+            return newCards;
+          });
         });
       }
       
@@ -203,12 +227,16 @@ export function HeroCarousel({ initialHeroes }: HeroCarouselProps): JSX.Element 
   
   const imagesLoaded = useImagePreloader(imageUrls);
 
-  // Create card positions with current heroes
+  // Create card positions with current heroes, and ensure stable keys
   const cardPositions = useMemo(() => {
-    return cardHeroes.map((hero, index) => ({
-      hero,
-      angle: index * ANGLE_STEP
-    }));
+    return cardHeroes.map((hero, index) => {
+      const positionId = hero ? `${hero.id}-pos-${index}` : `empty-pos-${index}`;
+      return {
+        hero,
+        angle: index * ANGLE_STEP,
+        key: positionId
+      };
+    });
   }, [cardHeroes]);
 
   const LoadingState = (): JSX.Element => (
@@ -239,15 +267,14 @@ export function HeroCarousel({ initialHeroes }: HeroCarouselProps): JSX.Element 
                 className="carousel-rotator"
                 style={{
                   transform: `translateZ(-${RADIUS}px) rotateY(-${currentRotation}deg)`,
-                  transition: 'transform 0.5s ease-out'
                 }}
               >
-                {cardPositions.map(({ hero, angle }, index) => hero && (
+                {cardPositions.map(({ hero, angle, key }) => hero && (
                   <div
-                    key={`${hero.id}-${index}`}
+                    key={key}
                     className="carousel-item"
                     style={{
-                      transform: `rotateY(${angle}deg) translateZ(${RADIUS}px)`
+                      transform: `rotateY(${angle}deg) translateZ(${RADIUS}px)`,
                     }}
                   >
                     <div className="card-wrapper">

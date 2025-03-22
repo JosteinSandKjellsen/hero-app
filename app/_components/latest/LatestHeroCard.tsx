@@ -109,16 +109,18 @@ export const LatestHeroCard = forwardRef<HTMLDivElement, LatestHeroCardProps>(
             className="rounded-none"
             priority
           />
-          <div className="absolute bottom-3 right-3 bg-white/30 backdrop-blur-sm py-1.5 rounded-full flex items-center justify-center w-20">
-            <Image
-              src="/images/logos/bouvet.svg"
-              alt="Bouvet Logo"
-              width={48}
-              height={24}
-              className="w-12 h-6"
-              style={{ filter: 'brightness(0)' }}
-              priority
-            />
+          <div className="absolute bottom-3 right-3 bg-white/30 backdrop-blur-sm py-1.5 rounded-full w-20 h-[1.75rem]">
+            <div className="relative w-12 h-6 mx-auto">
+              <Image
+                src="/images/logos/bouvet.svg"
+                alt="Bouvet Logo"
+                fill
+                sizes="48px"
+                className="object-contain"
+                style={{ filter: 'brightness(0)' }}
+                priority
+              />
+            </div>
           </div>
         </div>
 

@@ -95,8 +95,7 @@ const nextConfig = {
     },
   ],
   images: {
-    unoptimized: false,
-    formats: ['image/webp', 'image/avif'], // Prefer modern image formats
+    unoptimized: true, // Disable optimization for hero images to prevent blinking
     minimumCacheTTL: 31536000, // Cache images for 1 year
     remotePatterns: [
       {
@@ -104,9 +103,6 @@ const nextConfig = {
         hostname: 'bouvet.fotoware.cloud',
       }
     ],
-    // Use loader to handle Leonardo.ai images through our proxy
-    loader: 'custom',
-    loaderFile: './app/_lib/utils/image/imageLoader.ts',
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
