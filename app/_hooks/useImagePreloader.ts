@@ -13,30 +13,39 @@ export function useImagePreloader(imageUrls: string[]): boolean {
 
     let loadedCount = 0;
     const totalImages = imageUrls.length;
-    const images: HTMLImageElement[] = [];
+    const abortControllers: AbortController[] = [];
 
-    const preloadImage = (url: string): Promise<void> => {
-      return new Promise((resolve) => {
-        const img = new Image();
-        images.push(img);
-        img.src = url;
-        img.onload = () => {
+    const preloadImage = async (url: string): Promise<void> => {
+      const controller = new AbortController();
+      abortControllers.push(controller);
+
+      try {
+        // Use fetch instead of Image object to ensure we always use the API proxy
+        const response = await fetch(url, {
+          signal: controller.signal
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Failed to load image: ${url}`);
+        }
+        
+        // We don't need to do anything with the response data
+        // Just getting a successful response means the image is in the browser's cache
+        
+        loadedCount++;
+        if (loadedCount === totalImages && isMounted) {
+          setImagesLoaded(true);
+        }
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          console.error(`Failed to load image: ${url}`, error);
+          // Still increment counter to allow other images to continue loading
           loadedCount++;
           if (loadedCount === totalImages && isMounted) {
             setImagesLoaded(true);
           }
-          resolve();
-        };
-        img.onerror = () => {
-          console.error(`Failed to load image: ${url}`);
-          // Still increment counter and resolve to allow other images to continue loading
-          loadedCount++;
-          if (loadedCount === totalImages && isMounted) {
-            setImagesLoaded(true);
-          }
-          resolve();
-        };
-      });
+        }
+      }
     };
 
     // Track which images have started loading
@@ -59,11 +68,13 @@ export function useImagePreloader(imageUrls: string[]): boolean {
 
     return () => {
       isMounted = false;
-      // Clean up image objects
-      images.forEach(img => {
-        img.onload = null;
-        img.onerror = null;
-        img.src = '';
+      // Abort any in-flight requests
+      abortControllers.forEach(controller => {
+        try {
+          controller.abort();
+        } catch (e) {
+          // Ignore abort errors
+        }
       });
     };
   }, [imageUrls]);
