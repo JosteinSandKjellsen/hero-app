@@ -93,9 +93,10 @@ export async function GET(
       
       return new NextResponse(imageData, {
         headers: {
-          'Content-Type': 'image/png',
+          'Content-Type': imageResponse.headers.get('Content-Type') || 'image/png',
           'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400',
-          'Access-Control-Allow-Origin': '*'
+          'CDN-Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400',
+          'Netlify-CDN-Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400'
         }
       });
     } catch (firstAttemptError) {
@@ -113,9 +114,10 @@ export async function GET(
         
         return new NextResponse(imageData, {
           headers: {
-            'Content-Type': 'image/png',
+            'Content-Type': fallbackResponse.headers.get('Content-Type') || 'image/png',
             'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400',
-            'Access-Control-Allow-Origin': '*'
+            'CDN-Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400',
+            'Netlify-CDN-Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400'
           }
         });
       } catch (secondAttemptError) {

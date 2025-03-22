@@ -79,19 +79,22 @@ export function HeroImage({
           if (now - lastValidated > VALIDATION_INTERVAL) {
             lastValidationTime.set(memoryCached.url, now);
             
-            // Validate URL in background
-            fetch(memoryCached.url, { method: 'HEAD' })
-              .then(response => {
-                if (!response.ok) {
-                  console.warn('Cached image URL is no longer valid:', memoryCached.url);
-                  urlMemoryCache.delete(`hero-image-${imageId}`);
-                  localStorage.removeItem(`hero-image-${imageId}`);
-                  fetchImageUrl(); // Retry fetch
-                }
-              })
-              .catch(() => {
-                // Don't take any action here - the image might still load
-              });
+            // For proxied images, no need to validate with HEAD request
+            if (!memoryCached.url.startsWith('/api/')) {
+              // Validate URL in background
+              fetch(memoryCached.url, { method: 'HEAD' })
+                .then(response => {
+                  if (!response.ok) {
+                    console.warn('Cached image URL is no longer valid:', memoryCached.url);
+                    urlMemoryCache.delete(`hero-image-${imageId}`);
+                    localStorage.removeItem(`hero-image-${imageId}`);
+                    fetchImageUrl(); // Retry fetch
+                  }
+                })
+                .catch(() => {
+                  // Don't take any action here - the image might still load
+                });
+            }
           }
           
           return;
