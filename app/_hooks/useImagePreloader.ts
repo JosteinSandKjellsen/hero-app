@@ -20,22 +20,29 @@ export function useImagePreloader(imageUrls: string[]): boolean {
       abortControllers.push(controller);
 
       try {
-        // Use fetch instead of Image object to ensure we always use the API proxy
-        const response = await fetch(url, {
-          signal: controller.signal
+        // Create a temporary Image object to preload and ensure rendering
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => {
+            loadedCount++;
+            if (loadedCount === totalImages && isMounted) {
+              setImagesLoaded(true);
+            }
+            resolve();
+          };
+          img.onerror = () => {
+            console.error(`Failed to load image: ${url}`);
+            // Still increment counter to allow other images to continue loading
+            loadedCount++;
+            if (loadedCount === totalImages && isMounted) {
+              setImagesLoaded(true);
+            }
+            resolve(); // Resolve anyway to allow other images to load
+          };
+          // Set crossOrigin to anonymous since we're using our proxy
+          img.crossOrigin = 'anonymous';
+          img.src = url;
         });
-        
-        if (!response.ok) {
-          throw new Error(`Failed to load image: ${url}`);
-        }
-        
-        // We don't need to do anything with the response data
-        // Just getting a successful response means the image is in the browser's cache
-        
-        loadedCount++;
-        if (loadedCount === totalImages && isMounted) {
-          setImagesLoaded(true);
-        }
       } catch (error) {
         if (!controller.signal.aborted) {
           console.error(`Failed to load image: ${url}`, error);

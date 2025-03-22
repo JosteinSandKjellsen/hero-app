@@ -102,12 +102,11 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'bouvet.fotoware.cloud',
-      },
-      {
-        protocol: 'https',
-        hostname: 'cdn.leonardo.ai',
       }
     ],
+    // Use loader to handle Leonardo.ai images through our proxy
+    loader: 'custom',
+    loaderFile: './app/_lib/utils/image/imageLoader.ts',
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
