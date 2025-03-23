@@ -112,25 +112,30 @@ export function SuperheroCard({ photoUrl, personality, userData, results = [], o
       </div>
 
       <div className="relative aspect-[3/4]">
-        {photoUrl.includes('cdn.leonardo.ai') ? (
-          <HeroImage
-            imageId={photoUrl.match(/generations\/([^/]+)/)?.[1] || ''}
-            alt={t('selfieAlt')}
-            className="rounded-none"
-            priority={optimizePrint}
-          />
-        ) : (
-          <Image
-            src={photoUrl}
-            alt={t('selfieAlt')}
-            className="object-cover"
-            fill
-            sizes={optimizePrint ? "500px" : "(max-width: 600px) 100vw, 600px"}
-            crossOrigin="anonymous"
-            priority={optimizePrint}
-            loading={optimizePrint ? "eager" : "lazy"}
-          />
-        )}
+        <div className="relative w-full h-full bg-gray-100/50">
+          {photoUrl.includes('cdn.leonardo.ai') ? (
+            <HeroImage
+              imageId={photoUrl.match(/generations\/([^/]+)/)?.[1] || ''}
+              alt={t('selfieAlt')}
+              className="rounded-none"
+              priority={optimizePrint}
+              quality={95}
+            />
+          ) : (
+            <Image
+              src={photoUrl}
+              alt={t('selfieAlt')}
+              className="object-cover"
+              fill
+              sizes={optimizePrint ? "500px" : "(max-width: 600px) 100vw, 600px"}
+              crossOrigin="anonymous"
+              priority={optimizePrint}
+              loading={optimizePrint ? "eager" : "lazy"}
+              placeholder="blur"
+              blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+            />
+          )}
+        </div>
         <div className="absolute bottom-3 right-3 bg-white/30 backdrop-blur-sm py-1.5 rounded-full flex items-center justify-center w-[6.25rem]" style={{ backdropFilter: 'blur(4px)' }}>
           <Image
             src="/images/logos/bouvet-optimized.webp"

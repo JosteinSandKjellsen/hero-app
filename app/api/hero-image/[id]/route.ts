@@ -81,22 +81,40 @@ export async function GET(
     
     try {
       // Try with authorization headers first
-      const imageResponse = await fetch(imageUrl, {
-        headers: headers
-      });
+    // Parse query parameters
+    const { searchParams } = new URL(request.url);
+    const isBlurPlaceholder = searchParams.get('blur') === 'true';
+    const quality = parseInt(searchParams.get('q') || '100', 10);
+    const width = parseInt(searchParams.get('w') || '0', 10);
+
+    const imageResponse = await fetch(imageUrl, {
+      headers: headers
+    });
       
       if (!imageResponse.ok) {
         throw new Error(`Failed with Leonardo headers: ${imageResponse.statusText}`);
       }
 
+      // If this is a blur placeholder request, return a tiny base64 image
+      if (isBlurPlaceholder) {
+        const tinyBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+        return new NextResponse(tinyBase64, {
+          headers: {
+            'Content-Type': 'text/plain',
+            'Cache-Control': 'public, max-age=31536000, immutable'
+          }
+        });
+      }
+
       const imageData = await imageResponse.arrayBuffer();
       
+      // Return the image with appropriate caching headers
       return new NextResponse(imageData, {
         headers: {
           'Content-Type': imageResponse.headers.get('Content-Type') || 'image/png',
-          'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400',
-          'CDN-Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400',
-          'Netlify-CDN-Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400'
+          'Cache-Control': 'public, max-age=31536000, immutable',
+          'CDN-Cache-Control': 'public, max-age=31536000, immutable',
+          'Netlify-CDN-Cache-Control': 'public, max-age=31536000, immutable'
         }
       });
     } catch (firstAttemptError) {
