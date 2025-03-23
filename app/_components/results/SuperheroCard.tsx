@@ -138,12 +138,11 @@ export function SuperheroCard({ photoUrl, personality, userData, results = [], o
         </div>
         <div className="absolute bottom-3 right-3 bg-white/30 backdrop-blur-sm py-1.5 rounded-full flex items-center justify-center w-[6.25rem]" style={{ backdropFilter: 'blur(4px)' }}>
           <Image
-            src="/images/logos/bouvet-optimized.webp"
+            src="/images/logos/bouvet.svg"
             alt="Bouvet Logo"
-            width={48}
-            height={24}
+            width={100}
+            height={50}
             className="w-12 h-6"
-            style={{ filter: 'brightness(0)' }}
             loading={optimizePrint ? "eager" : "lazy"}
           />
         </div>
