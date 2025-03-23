@@ -42,15 +42,15 @@ export function QuizLayout({ children, showBackground = false, variant = 'quiz' 
       {/* Use Tailwind responsive classes for consistent spacing and responsive top margin */}
       <div className={`relative z-10 w-full ${
         variant === 'registration'
-          ? 'pt-8 md:pt-16 lg:pt-32' /* Responsive padding for registration: small on mobile, large on desktop */
-          : 'pt-4 md:pt-8' /* Reduced padding for other variants */
+          ? 'pt-20 md:pt-48' /* Further increased top padding for registration */
+          : 'pt-4 md:pt-8' /* Original padding for other variants */
       }`}>
         <Header variant={variant} key={`header-${variant}-${pathname}-key`} />
       </div>
       {/* Apply opacity transition to prevent content blinking */}
       <main 
-        className={`relative z-10 flex-1 pb-8 px-4 sm:px-6 lg:px-8 overflow-x-hidden ${
-          variant === 'registration' ? 'flex flex-col md:items-center mt-12 md:mt-24' 
+        className={`relative z-10 flex-1 pb-4 px-4 sm:px-6 lg:px-8 overflow-x-hidden ${
+          variant === 'registration' ? 'flex flex-col items-center'
           : variant === 'stats' ? '' 
           : 'flex flex-col md:justify-center'
         } transition-opacity duration-200`}

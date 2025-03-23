@@ -40,8 +40,8 @@ export function Header({ variant = 'quiz' }: HeaderProps): JSX.Element {
   }
 
   return (
-    <div ref={headerRef} className="relative text-center" style={{ marginBottom: variant === 'quiz' ? '1.5rem' : '2rem' }}>
-      <div className="flex justify-center lg:mt-8" style={{ marginBottom: '0.75rem' }}>
+    <div ref={headerRef} className="relative text-center" style={{ marginBottom: variant === 'quiz' ? '1.5rem' : '30px' }}>
+      <div className="flex justify-center" style={{ marginBottom: '0.25rem' }}>
           <Link href="/" locale={false} className="bg-white/10 p-1 rounded-full shadow-2xl backdrop-blur-lg border border-white/20 hover:bg-white/20 transition-colors" onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -50,7 +50,7 @@ export function Header({ variant = 'quiz' }: HeaderProps): JSX.Element {
             <CombinedLogo alt={t('logoAlt')} />
           </Link>
       </div>
-      <h1 className={`text-5xl font-bangers tracking-wider ${textColor} drop-shadow-lg`} style={{ marginBottom: '1rem' }}>
+      <h1 className={`text-5xl font-bangers tracking-wider ${textColor} drop-shadow-lg`} style={{ marginBottom: '0.25rem' }}>
         {t('title')}
       </h1>
     </div>
