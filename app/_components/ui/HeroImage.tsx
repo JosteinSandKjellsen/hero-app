@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 
 interface HeroImageProps {
@@ -20,7 +20,7 @@ const DEFAULT_FALLBACKS = {
 };
 
 // Generate the tiny placeholder URL
-const getPlaceholderUrl = (imageId: string) => {
+const getPlaceholderUrl = (imageId: string): string => {
   return `/api/hero-image/${imageId}?w=20&q=10&blur=true`;
 };
 

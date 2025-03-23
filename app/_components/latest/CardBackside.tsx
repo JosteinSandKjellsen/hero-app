@@ -3,7 +3,6 @@
 import Image from 'next/image';
 
 export function CardBackside(): JSX.Element {
-  const BOUVET_BLUE = '45, 58, 130'; // Bouvet's blue color
   const BORDER_COLOR = 'border-[#2d3a82]'; // Bouvet blue as a hex color
 
   return (

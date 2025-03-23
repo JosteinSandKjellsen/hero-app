@@ -81,12 +81,8 @@ export async function GET(
     
     try {
       // Try with authorization headers first
-    // Parse query parameters
-    const { searchParams } = new URL(request.url);
-    const isBlurPlaceholder = searchParams.get('blur') === 'true';
-    const quality = parseInt(searchParams.get('q') || '100', 10);
-    const width = parseInt(searchParams.get('w') || '0', 10);
-
+    const isBlurPlaceholder = new URL(request.url).searchParams.get('blur') === 'true';
+    
     const imageResponse = await fetch(imageUrl, {
       headers: headers
     });
