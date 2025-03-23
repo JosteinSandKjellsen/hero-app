@@ -112,11 +112,11 @@ export const LatestHeroCard = forwardRef<HTMLDivElement, LatestHeroCardProps>(
           <div className="absolute bottom-3 right-3 bg-white/30 backdrop-blur-sm py-1.5 rounded-full w-20 h-[1.75rem]">
             <div className="relative w-12 h-6 mx-auto">
               <Image
-                src="/images/logos/bouvet.svg"
+                src="/images/logos/bouvet-optimized.webp"
                 alt="Bouvet Logo"
-                fill
-                sizes="48px"
-                className="object-contain"
+                width={48}
+                height={24}
+                className="w-12 h-6 object-contain"
                 style={{ filter: 'brightness(0)' }}
                 priority
               />

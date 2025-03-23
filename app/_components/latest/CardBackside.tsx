@@ -38,10 +38,11 @@ export function CardBackside(): JSX.Element {
         }}
       >
         <Image
-          src="/images/logos/bouvet.svg"
+          src="/images/logos/bouvet-optimized.webp"
           alt="Bouvet Logo"
-          fill
-          className="object-contain transition-all duration-700"
+          width={200}
+          height={100}
+          className="w-full h-full object-contain transition-all duration-700"
           style={{ 
             filter: `brightness(0) contrast(0.9)`,
             transform: 'scale(0.9)',
