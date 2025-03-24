@@ -458,13 +458,13 @@
         "source": "gule optimisme",
         "target": "blåes struktur"
       },
-      "blue": {
-        "source": "blåes struktur",
-        "target": "gules optimisme"
-      },
+    "blue": {
+      "source": "blåes struktur",
+      "target": "rødes energi"
+    },
       "green": {
         "source": "grønne harmoni",
-        "target": "rødes energi"
+        "target": "gules optimisme"
       }
     }
   }
