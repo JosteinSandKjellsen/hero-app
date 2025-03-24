@@ -436,7 +436,8 @@
       "cancelDelete": "Avbryt",
       "previousPage": "Forrige side",
       "nextPage": "Neste side",
-      "pageInfo": "Side {current} av {total}"
+      "pageInfo": "Side {current} av {total}",
+      "inProgress": "pågår"
     }
   },
   "matchingTips": {

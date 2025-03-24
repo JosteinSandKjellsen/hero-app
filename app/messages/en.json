@@ -436,7 +436,8 @@
       "cancelDelete": "Cancel",
       "previousPage": "Previous page",
       "nextPage": "Next page",
-      "pageInfo": "Page {current} of {total}"
+      "pageInfo": "Page {current} of {total}",
+      "inProgress": "in progress"
     }
   },
   "matchingTips": {
@@ -460,11 +461,11 @@
       },
       "blue": {
         "source": "blue structure",
-        "target": "yellow's optimism"
+        "target": "red's energy"
       },
       "green": {
         "source": "green harmony",
-        "target": "red's energy"
+        "target": "yellow's optimism"
       }
     }
   }
