@@ -125,7 +125,7 @@ export function SuperheroCard({ photoUrl, personality, userData, results = [], o
             <Image
               src={photoUrl}
               alt={t('selfieAlt')}
-              className="object-cover"
+              className="object-cover object-top"
               fill
               sizes={optimizePrint ? "500px" : "(max-width: 600px) 100vw, 600px"}
               crossOrigin="anonymous"

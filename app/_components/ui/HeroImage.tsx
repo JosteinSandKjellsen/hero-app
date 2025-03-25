@@ -62,7 +62,7 @@ export function HeroImage({
           src={getFallbackImage()}
           alt={`${alt} (fallback)`}
           fill
-          className={`object-cover object-center rounded-lg ${className}`}
+          className={`object-cover object-top rounded-lg ${className}`}
           priority={priority}
           sizes="(max-width: 768px) 90vw, 450px"
           unoptimized
@@ -74,7 +74,7 @@ export function HeroImage({
           fill
           placeholder="blur"
           blurDataURL={getPlaceholderUrl(imageId)}
-          className={`object-cover object-center rounded-lg ${className}`}
+          className={`object-cover object-top rounded-lg ${className}`}
           priority={priority}
           sizes="(max-width: 768px) 90vw, 450px"
           onError={handleImageError}
