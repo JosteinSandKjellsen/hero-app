@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useImagePreloader } from '@/app/_hooks/useImagePreloader';
 import { LatestHeroCard } from './LatestHeroCard';
 import { CardBackside } from './CardBackside';
@@ -57,7 +57,6 @@ const CAROUSEL_STYLES = `
     transform-style: preserve-3d;
     -webkit-transform-style: preserve-3d;
     transform: translateZ(-${RADIUS}px);
-    transition: transform 2s cubic-bezier(0.4, 0.0, 0.3, 1);
     will-change: transform;
   }
 
@@ -112,10 +111,19 @@ export function HeroCarousel({ initialHeroes }: HeroCarouselProps): JSX.Element 
   
   // Store card positions as a circular array
   const [cardHeroes, setCardHeroes] = useState<Array<Hero | null>>(Array(CARD_COUNT).fill(null));
-
-  // Initialize with heroes
+  
+  // Track initialization to prevent resets
+  const initializedRef = useRef(false);
+  const heroesRef = useRef<Hero[]>([]);
+  
+  // Update heroes ref when heroes change
   useEffect(() => {
-    if (initialHeroes.length > 0 && heroes.length === 0) {
+    heroesRef.current = heroes;
+  }, [heroes]);
+
+  // Initialize with heroes - only on first load
+  useEffect(() => {
+    if (initialHeroes.length > 0 && heroes.length === 0 && !initializedRef.current) {
       setHeroes(initialHeroes);
       
       // Initialize the carousel with sequential heroes
@@ -125,32 +133,57 @@ export function HeroCarousel({ initialHeroes }: HeroCarouselProps): JSX.Element 
       });
       
       setCardHeroes(initialCards);
-      setCycleStartTime(performance.now());
+      setCycleStartTime(0); // Reset cycle start time for proper initialization
+      initializedRef.current = true;
     }
   }, [initialHeroes, heroes.length]);
   
-  // Handle updates to heroes
+  // Handle updates to heroes without resetting animation
   useEffect(() => {
-    if (initialHeroes.length === 0) return;
+    if (initialHeroes.length === 0 || heroes.length === 0) return;
 
-    // Find any new heroes
+    // Update existing heroes with fresh data (preserving IDs)
+    const updatedHeroes = heroes.map(existingHero => {
+      const freshHero = initialHeroes.find(h => h.id === existingHero.id);
+      return freshHero || existingHero; // Use fresh data if available, otherwise keep existing
+    });
+
+    // Find any genuinely new heroes (not just data refreshes)
     const newHeroes = initialHeroes.filter(
       newHero => !heroes.some(currentHero => currentHero.id === newHero.id)
     );
 
-    if (newHeroes.length > 0) {
-      setHeroes(current => [...current, ...newHeroes]);
-    }
-  }, [initialHeroes, heroes]);
+    // Only update state if there are actual changes (new heroes or data updates)
+    const hasNewHeroes = newHeroes.length > 0;
+    const hasUpdatedData = updatedHeroes.some((hero, index) => 
+      JSON.stringify(hero) !== JSON.stringify(heroes[index])
+    );
 
-  // Handle rotation and card updates
+    if (hasNewHeroes) {
+      setHeroes(current => {
+        const updated = [...updatedHeroes, ...newHeroes];
+        return updated;
+      });
+    } else if (hasUpdatedData) {
+      // Silent update of existing hero data without affecting animation
+      setHeroes(updatedHeroes);
+    }
+  }, [initialHeroes]); // Remove heroes dependency to prevent loops
+
+  // Handle rotation and card updates - start when heroes are available
   useEffect(() => {
     if (heroes.length === 0) return;
     
     let animationFrameId: number;
     let lastCardIndex = -1;
+    let isMounted = true;
     
     const updateRotation = (currentTime: number): void => {
+      if (!isMounted) return;
+      
+      const currentHeroes = heroesRef.current;
+      if (currentHeroes.length === 0) return;
+      
       if (cycleStartTime === 0) {
         setCycleStartTime(currentTime);
         animationFrameId = requestAnimationFrame(updateRotation);
@@ -158,6 +191,12 @@ export function HeroCarousel({ initialHeroes }: HeroCarouselProps): JSX.Element 
       }
       
       const elapsedTime = currentTime - cycleStartTime;
+      
+      // Safety check for invalid values
+      if (ROTATION_TIME <= 0 || CARD_COUNT <= 0 || currentHeroes.length === 0) {
+        console.warn('Invalid carousel configuration, stopping animation');
+        return;
+      }
       
       // Calculate current card index based on elapsed time
       const currentCardIndex = Math.floor(elapsedTime / ROTATION_TIME) % CARD_COUNT;
@@ -174,7 +213,7 @@ export function HeroCarousel({ initialHeroes }: HeroCarouselProps): JSX.Element 
       
       if (inTransition) {
         const transitionTime = cycleTime - pauseTime;
-        const progress = transitionTime / TRANSITION_TIME;
+        const progress = Math.min(1, Math.max(0, transitionTime / TRANSITION_TIME));
         
         // Use custom easing for smoother, slower transition
         const easeProgress = progress < 0.5
@@ -184,57 +223,90 @@ export function HeroCarousel({ initialHeroes }: HeroCarouselProps): JSX.Element 
         const additionalRotation = easeProgress * ANGLE_STEP;
         rotationAngle += additionalRotation;
       }
-      setCurrentRotation(rotationAngle);
       
-      // Update cards near the end of transition
-      const shouldUpdateCards = inTransition && cycleTime > (ROTATION_TIME - TRANSITION_TIME * 0.05);
+      // Debug logging when animation might be jumping (commented out for production)
+      // const rotationDiff = Math.abs(rotationAngle - currentRotation);
+      // if (rotationDiff > ANGLE_STEP) {
+      //   console.log('Large rotation jump detected:', {
+      //     currentRotation,
+      //     newRotationAngle: rotationAngle,
+      //     diff: rotationDiff,
+      //     currentCardIndex,
+      //     inTransition,
+      //     elapsedTime,
+      //     cycleTime
+      //   });
+      // }
       
-      if (shouldUpdateCards && currentCardIndex !== lastCardIndex) {
+      if (isMounted) {
+        setCurrentRotation(rotationAngle);
+      }
+      
+      // Update cards when they're completely hidden (not during transition)
+      const shouldUpdateCards = !inTransition && currentCardIndex !== lastCardIndex;
+      
+      if (shouldUpdateCards && isMounted) {
+        // console.log('Updating card at position:', currentCardIndex);
         lastCardIndex = currentCardIndex;
         
-        // Use separate frame for card updates
-        requestAnimationFrame(() => {
-          const hiddenPosition = (currentCardIndex + 6) % CARD_COUNT;
+        // Update the card that's on the opposite side (hidden from view)
+        const hiddenPosition = (currentCardIndex + 6) % CARD_COUNT;
+        
+        setCardHeroes(prevCards => {
+          if (!prevCards || prevCards.length !== CARD_COUNT) {
+            console.warn('Invalid card array state, skipping update');
+            return prevCards;
+          }
           
-          setCardHeroes(prevCards => {
-            const newCards = [...prevCards];
-            const lastHeroIndex = heroes.findIndex(hero => 
-              hero.id === prevCards[(hiddenPosition + CARD_COUNT - 1) % CARD_COUNT]?.id
-            );
-            const nextHeroIndex = (lastHeroIndex + 1) % heroes.length;
-            newCards[hiddenPosition] = heroes[nextHeroIndex];
-            return newCards;
-          });
+          const newCards = [...prevCards];
+          const lastCard = prevCards[(hiddenPosition + CARD_COUNT - 1) % CARD_COUNT];
+          
+          if (lastCard && currentHeroes.length > 0) {
+            const lastHeroIndex = currentHeroes.findIndex(hero => hero.id === lastCard.id);
+            const nextHeroIndex = lastHeroIndex >= 0 ? (lastHeroIndex + 1) % currentHeroes.length : 0;
+            newCards[hiddenPosition] = currentHeroes[nextHeroIndex];
+          }
+          
+          return newCards;
         });
       }
       
-      animationFrameId = requestAnimationFrame(updateRotation);
+      if (isMounted) {
+        animationFrameId = requestAnimationFrame(updateRotation);
+      }
     };
     
     animationFrameId = requestAnimationFrame(updateRotation);
     
     return () => {
-      cancelAnimationFrame(animationFrameId);
+      isMounted = false;
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
     };
-  }, [heroes, cycleStartTime]);
+  }, [heroes.length > 0]); // Start animation when heroes become available
   
-  // Preload images
+  // Preload images - use stable URLs to prevent unnecessary reloading
   const imageUrls = useMemo(() => {
-    return cardHeroes
+    const urls = cardHeroes
       .filter(Boolean)
       .map(hero => `/api/hero-image/${hero!.imageId}`);
-  }, [cardHeroes]);
+    
+    // Only return new array if URLs actually changed
+    return urls;
+  }, [cardHeroes.map(hero => hero?.imageId).join(',')]);
   
   const imagesLoaded = useImagePreloader(imageUrls);
 
-  // Create card positions with current heroes, and ensure stable keys
+  // Create card positions with stable keys for smooth transitions
   const cardPositions = useMemo(() => {
     return cardHeroes.map((hero, index) => {
-      const positionId = hero ? `${hero.id}-pos-${index}` : `empty-pos-${index}`;
+      // Use position-based keys to prevent DOM recreation
+      const stableKey = `carousel-position-${index}`;
       return {
         hero,
         angle: index * ANGLE_STEP,
-        key: positionId
+        key: stableKey
       };
     });
   }, [cardHeroes]);
@@ -252,7 +324,20 @@ export function HeroCarousel({ initialHeroes }: HeroCarouselProps): JSX.Element 
     </div>
   );
 
-  if (heroes.length === 0 || !imagesLoaded) {
+  // Enhanced loading conditions with error handling
+  if (heroes.length === 0) {
+    return <LoadingState />;
+  }
+
+  // Check if we have valid cards before checking images
+  const hasValidCards = cardHeroes.some(hero => hero !== null);
+  if (!hasValidCards) {
+    console.warn('No valid cards in carousel, showing loading state');
+    return <LoadingState />;
+  }
+
+  // Don't show loading for image updates if carousel is already running
+  if (!imagesLoaded && cycleStartTime === 0) {
     return <LoadingState />;
   }
 
