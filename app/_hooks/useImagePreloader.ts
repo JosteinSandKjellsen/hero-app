@@ -6,6 +6,9 @@ export function useImagePreloader(imageUrls: string[]): boolean {
   const urlsRef = useRef<string[]>([]);
   const loadingRef = useRef(false);
 
+  // Extract complex expression for dependency array
+  const urlsKey = imageUrls.join(',');
+
   useEffect(() => {
     let isMounted = true;
     const abortController = new AbortController();
@@ -117,7 +120,7 @@ export function useImagePreloader(imageUrls: string[]): boolean {
       loadingRef.current = false;
       abortController.abort();
     };
-  }, [imageUrls.join(','), loadedUrls]); // Use string comparison for stable dependency
+  }, [urlsKey, loadedUrls, imageUrls]); // Include all dependencies
 
   return !isLoading;
 }

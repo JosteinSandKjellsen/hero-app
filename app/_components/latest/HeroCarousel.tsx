@@ -160,7 +160,7 @@ export function HeroCarousel({ initialHeroes }: HeroCarouselProps): JSX.Element 
     );
 
     if (hasNewHeroes) {
-      setHeroes(current => {
+      setHeroes(() => {
         const updated = [...updatedHeroes, ...newHeroes];
         return updated;
       });
@@ -168,11 +168,12 @@ export function HeroCarousel({ initialHeroes }: HeroCarouselProps): JSX.Element 
       // Silent update of existing hero data without affecting animation
       setHeroes(updatedHeroes);
     }
-  }, [initialHeroes]); // Remove heroes dependency to prevent loops
+  }, [initialHeroes, heroes]); // Include heroes dependency
 
   // Handle rotation and card updates - start when heroes are available
+  const hasHeroes = heroes.length > 0;
   useEffect(() => {
-    if (heroes.length === 0) return;
+    if (!hasHeroes) return;
     
     let animationFrameId: number;
     let lastCardIndex = -1;
@@ -284,9 +285,10 @@ export function HeroCarousel({ initialHeroes }: HeroCarouselProps): JSX.Element 
         cancelAnimationFrame(animationFrameId);
       }
     };
-  }, [heroes.length > 0]); // Start animation when heroes become available
+  }, [hasHeroes, cycleStartTime]); // Include all dependencies
   
   // Preload images - use stable URLs to prevent unnecessary reloading
+  const cardImageIds = cardHeroes.map(hero => hero?.imageId).join(',');
   const imageUrls = useMemo(() => {
     const urls = cardHeroes
       .filter(Boolean)
@@ -294,7 +296,7 @@ export function HeroCarousel({ initialHeroes }: HeroCarouselProps): JSX.Element 
     
     // Only return new array if URLs actually changed
     return urls;
-  }, [cardHeroes.map(hero => hero?.imageId).join(',')]);
+  }, [cardImageIds, cardHeroes]);
   
   const imagesLoaded = useImagePreloader(imageUrls);
 
