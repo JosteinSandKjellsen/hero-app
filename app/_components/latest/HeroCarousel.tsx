@@ -288,7 +288,6 @@ export function HeroCarousel({ initialHeroes }: HeroCarouselProps): JSX.Element 
   }, [hasHeroes, cycleStartTime]); // Include all dependencies
   
   // Preload images - use stable URLs to prevent unnecessary reloading
-  const cardImageIds = cardHeroes.map(hero => hero?.imageId).join(',');
   const imageUrls = useMemo(() => {
     const urls = cardHeroes
       .filter(Boolean)
@@ -296,7 +295,7 @@ export function HeroCarousel({ initialHeroes }: HeroCarouselProps): JSX.Element 
     
     // Only return new array if URLs actually changed
     return urls;
-  }, [cardImageIds, cardHeroes]);
+  }, [cardHeroes]);
   
   const imagesLoaded = useImagePreloader(imageUrls);
 

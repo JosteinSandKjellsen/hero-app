@@ -4,10 +4,10 @@ import type { HeroColor } from '../constants/colors';
 export const heroNameRequestSchema = z.object({
   personality: z.string().min(1, 'Personality is required'),
   gender: z.enum(['male', 'female'], {
-    required_error: 'Gender must be either male or female'
+    message: 'Gender must be either male or female'
   }),
   color: z.enum(['red', 'yellow', 'green', 'blue'] as const, {
-    required_error: 'Invalid hero color'
+    message: 'Invalid hero color'
   })
 });
 

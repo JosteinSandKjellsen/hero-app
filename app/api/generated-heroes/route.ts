@@ -134,7 +134,7 @@ export async function DELETE(request: Request): Promise<NextResponse> {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid input data', details: error.errors },
+        { error: 'Invalid input data', details: error.issues },
         { status: 400 }
       );
     }
