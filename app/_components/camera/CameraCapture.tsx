@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import { Camera, FlipHorizontal } from 'lucide-react';
 import { CameraError } from './CameraError';
+import { PhotoPreview } from './PhotoPreview';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
 import { CameraPermissionState } from './CameraPermissionState';
 import { useTranslations } from 'next-intl';
@@ -22,6 +23,7 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
   const [isInitializing, setIsInitializing] = useState(false);
   const [isFrontCamera, setIsFrontCamera] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
 
   const startCamera = async (fromPermissionGrant = false): Promise<void> => {
     if (!fromPermissionGrant && !hasPermission) return;
@@ -110,7 +112,7 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
       const photoUrl = canvas.toDataURL('image/jpeg', 0.7);
       
       stopCamera();
-      onPhotoTaken(photoUrl);
+      setCapturedPhoto(photoUrl);
     } catch (err) {
       console.error('Error taking photo:', err);
       setError(t('camera.errors.capture'));
@@ -124,6 +126,17 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
     startCamera(true);
   };
 
+  const handleRetakePhoto = (): void => {
+    setCapturedPhoto(null);
+    startCamera(true);
+  };
+
+  const handleUsePhoto = (): void => {
+    if (capturedPhoto) {
+      onPhotoTaken(capturedPhoto);
+    }
+  };
+
   if (!hasPermission) {
     return (
       <CameraPermissionState 
@@ -135,6 +148,16 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
 
   if (error) {
     return <CameraError error={error} onRetry={() => startCamera(true)} />;
+  }
+
+  if (capturedPhoto) {
+    return (
+      <PhotoPreview
+        photoUrl={capturedPhoto}
+        onRetake={handleRetakePhoto}
+        onUsePhoto={handleUsePhoto}
+      />
+    );
   }
 
   return (

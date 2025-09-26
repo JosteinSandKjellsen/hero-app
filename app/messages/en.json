@@ -376,6 +376,11 @@
       "streamStart": "Could not start camera stream. Please try again.",
       "access": "Could not access the camera. Please check that your browser has access to your camera.",
       "capture": "An error occurred while taking the photo. Please try again."
+    },
+    "preview": {
+      "title": "How do you like your photo?",
+      "retake": "Retake",
+      "usePhoto": "Use Photo"
     }
   },
   "errors": {
