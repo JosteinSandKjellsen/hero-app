@@ -7,29 +7,14 @@ import type { HeroColor } from '../../_lib/types/api';
 interface QuizQuestionProps {
   question: QuestionType;
   onAnswer: (type: HeroColor) => void;
-  canGoBack?: boolean;
-  onGoBack?: () => void;
 }
 
-export function QuizQuestion({ question, onAnswer, canGoBack, onGoBack }: QuizQuestionProps): JSX.Element {
+export function QuizQuestion({ question, onAnswer }: QuizQuestionProps): JSX.Element {
   const t = useTranslations('quiz.questions');
   const shuffledOptions = [...question.options].sort(() => Math.random() - 0.5);
 
   return (
     <div className="animate-fadeIn">
-      {canGoBack && onGoBack && (
-        <button 
-          onClick={onGoBack}
-          className="mb-6 flex items-center gap-2 text-white/70 hover:text-white transition-colors duration-200 
-                     text-sm font-medium px-3 py-2 rounded-md hover:bg-white/10"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Forrige spørsmål
-        </button>
-      )}
-      
       <div className="text-2xl font-bold text-white mb-6">
         {t(`${question.id}.text`)}
       </div>

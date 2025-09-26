@@ -8,11 +8,9 @@ import type { HeroColor } from '../../_lib/types/api';
 interface QuizSectionProps {
   currentQuestion: number;
   onAnswer: (type: HeroColor) => void;
-  canGoBack?: boolean;
-  onGoBack?: () => void;
 }
 
-export function QuizSection({ currentQuestion, onAnswer, canGoBack, onGoBack }: QuizSectionProps): JSX.Element {
+export function QuizSection({ currentQuestion, onAnswer }: QuizSectionProps): JSX.Element {
   return (
     <div className="bg-white/10 backdrop-blur-md rounded-xl shadow-lg p-6 md:p-8 border border-white/20">
       <QuizProgress
@@ -23,8 +21,6 @@ export function QuizSection({ currentQuestion, onAnswer, canGoBack, onGoBack }: 
       <QuizQuestion
         question={questions[currentQuestion]}
         onAnswer={onAnswer}
-        canGoBack={canGoBack}
-        onGoBack={onGoBack}
       />
     </div>
   );

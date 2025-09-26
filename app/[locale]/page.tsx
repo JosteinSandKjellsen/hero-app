@@ -28,8 +28,6 @@ export default function Home(): JSX.Element {
     handlePhotoTaken,
     calculateResults,
     resetQuiz,
-    canGoBack,
-    handleGoBack,
   } = useQuiz();
 
   const { toast, hideToast } = useToast();
@@ -104,8 +102,6 @@ export default function Home(): JSX.Element {
       <QuizSection
         currentQuestion={currentQuestion}
         onAnswer={handleAnswer}
-        canGoBack={canGoBack}
-        onGoBack={handleGoBack}
       />
       {toastElement}
     </QuizLayout>

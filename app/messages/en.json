@@ -195,6 +195,9 @@
     "progress": {
       "status": "Question {current} of {total}"
     },
+    "navigation": {
+      "exitQuizConfirmation": "This will exit the quiz and you will lose your progress. Continue?"
+    },
     "questions": {
       "1": {
         "text": "How do you prefer to start a new week?",

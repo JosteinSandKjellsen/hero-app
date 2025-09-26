@@ -195,6 +195,9 @@
     "progress": {
       "status": "Spørsmål {current} av {total}"
     },
+    "navigation": {
+      "exitQuizConfirmation": "Dette vil avslutte quizen og du mister fremgangen. Fortsette?"
+    },
     "questions": {
       "1": {
         "text": "Hvordan pleier du å starte en ny uke?",

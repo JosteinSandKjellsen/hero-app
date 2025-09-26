@@ -38,8 +38,6 @@ interface UseQuizReturn {
   handlePhotoTaken: (photo: string | null) => Promise<void>;
   calculateResults: () => PersonalityResult[];
   resetQuiz: () => void;
-  canGoBack: boolean;
-  handleGoBack: () => void;
 }
 
 const delay = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
@@ -48,6 +46,7 @@ export function useQuiz(): UseQuizReturn {
   const t = useTranslations();
   const locale = useLocale();
   const tErrors = useTranslations('errors');
+  const tQuizNav = useTranslations('quiz.navigation');
   const [userData, setUserData] = useState<UserData | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<QuizResult>(initialResult);
@@ -58,7 +57,6 @@ export function useQuiz(): UseQuizReturn {
   const [isGeneratingName, setIsGeneratingName] = useState(false);
   const [heroName, setHeroName] = useState<string | null>(null);
   const [generationStep, setGenerationStep] = useState<GenerationStep>('upload');
-  const [answeredQuestions, setAnsweredQuestions] = useState<Array<{ questionIndex: number; answerType: HeroColor }>>([]);
   const { showToast } = useToast();
 
   // Set up browser back navigation handling
@@ -67,22 +65,42 @@ export function useQuiz(): UseQuizReturn {
       e.preventDefault();
       
       // Check if we're in the middle of the quiz (have user data and some progress)
-      const hasQuizProgress = userData !== null && (currentQuestion > 0 || answeredQuestions.length > 0 || showCamera || showResults);
+      const hasQuizProgress = userData !== null && (currentQuestion > 0 || showCamera || showResults);
       
       if (hasQuizProgress) {
-        const shouldExit = window.confirm('Dette vil avslutte quizen og du mister fremgangen. Fortsette?');
+        // Get the confirmation message - fallback to English if translation not available
+        let confirmMessage: string;
+        try {
+          confirmMessage = tQuizNav('exitQuizConfirmation');
+        } catch (error) {
+          // Fallback based on current locale or default to English
+          confirmMessage = locale === 'no' 
+            ? 'Dette vil avslutte quizen og du mister fremgangen. Fortsette?'
+            : 'This will exit the quiz and you will lose your progress. Continue?';
+        }
+        
+        const shouldExit = window.confirm(confirmMessage);
         if (!shouldExit) {
           // Push state back to prevent navigation
           window.history.pushState(null, '', window.location.pathname);
           return;
         }
         // If user confirms, reset the quiz
-        resetQuiz();
+        setUserData(null);
+        setCurrentQuestion(0);
+        setAnswers(initialResult);
+        setShowCamera(false);
+        setShowResults(false);
+        setPhotoUrl(null);
+        setHeroName(null);
+        setIsGeneratingImage(false);
+        setIsGeneratingName(false);
+        setGenerationStep('upload');
       }
     };
 
     // Add a history state when quiz has progress to catch back navigation
-    if (userData !== null && (currentQuestion > 0 || answeredQuestions.length > 0)) {
+    if (userData !== null && currentQuestion > 0) {
       window.history.pushState(null, '', window.location.pathname);
     }
 
@@ -91,7 +109,7 @@ export function useQuiz(): UseQuizReturn {
     return (): void => {
       window.removeEventListener('popstate', handlePopState);
     };
-  }, [userData, currentQuestion, answeredQuestions.length, showCamera, showResults]);
+  }, [userData, currentQuestion, showCamera, showResults, tQuizNav, locale]);
 
   const handleRegistration = (data: UserData): void => {
     setUserData(data);
@@ -99,9 +117,6 @@ export function useQuiz(): UseQuizReturn {
 
   const handleAnswer = (type: HeroColor): void => {
     setAnswers((prev: QuizResult) => ({ ...prev, [type]: prev[type] + 1 }));
-    
-    // Track answered questions for back navigation
-    setAnsweredQuestions(prev => [...prev, { questionIndex: currentQuestion, answerType: type }]);
 
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(prev => prev + 1);
@@ -112,27 +127,6 @@ export function useQuiz(): UseQuizReturn {
       } else {
         setShowCamera(true);
       }
-    }
-  };
-
-  // Check if user can go back to previous question
-  const canGoBack = currentQuestion > 0 && answeredQuestions.length > 0;
-
-  const handleGoBack = (): void => {
-    if (canGoBack && answeredQuestions.length > 0) {
-      const lastAnswer = answeredQuestions[answeredQuestions.length - 1];
-      
-      // Remove the last answer from results
-      setAnswers((prev: QuizResult) => ({
-        ...prev,
-        [lastAnswer.answerType]: Math.max(0, prev[lastAnswer.answerType] - 1)
-      }));
-      
-      // Go back to previous question
-      setCurrentQuestion(prev => prev - 1);
-      
-      // Remove the last answered question from tracking
-      setAnsweredQuestions(prev => prev.slice(0, -1));
     }
   };
 
@@ -374,7 +368,6 @@ export function useQuiz(): UseQuizReturn {
     setIsGeneratingImage(false);
     setIsGeneratingName(false);
     setGenerationStep('upload');
-    setAnsweredQuestions([]);
   };
 
   return {
@@ -392,7 +385,5 @@ export function useQuiz(): UseQuizReturn {
     handlePhotoTaken,
     calculateResults,
     resetQuiz,
-    canGoBack,
-    handleGoBack,
   };
 }
