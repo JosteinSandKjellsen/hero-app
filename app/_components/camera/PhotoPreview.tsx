@@ -23,7 +23,7 @@ export function PhotoPreview({ photoUrl, onRetake, onUsePhoto }: PhotoPreviewPro
           className="w-full h-full object-cover rounded-lg border border-white/20 bg-white/5 shadow-xl"
         />
         
-        <div className="absolute inset-x-0 bottom-4 flex justify-center space-x-4">
+        <div className="absolute inset-x-4 bottom-4 flex justify-center space-x-4">
           <button
             onClick={onRetake}
             className="bg-white/20 backdrop-blur-lg text-white py-3 px-6 rounded-lg 

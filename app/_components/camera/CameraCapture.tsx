@@ -164,7 +164,7 @@ export function CameraCapture({ onPhotoTaken, isGenerating = false }: CameraCapt
     <div className="relative max-w-md mx-auto h-[70vh]">
       {isInitializing && !isStreaming && (
         <div className="absolute inset-0 flex items-center justify-center bg-white/5 rounded-lg border border-white/20">
-          <div className="text-center">
+          <div className="flex flex-col items-center">
             <LoadingSpinner size="lg" />
             <p className="text-white mt-4">{t('camera.start')}</p>
           </div>
