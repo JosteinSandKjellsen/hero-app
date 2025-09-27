@@ -1,4 +1,4 @@
-export type LayoutVariant = 'registration' | 'quiz' | 'camera' | 'results' | 'stats';
+export type LayoutVariant = 'registration' | 'quiz' | 'camera' | 'preview' | 'results' | 'stats';
 
 export interface LayoutProps {
   children: React.ReactNode;

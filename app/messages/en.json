@@ -383,6 +383,15 @@
       "usePhoto": "Use Photo"
     }
   },
+  "imagePreview": {
+    "title": "Your Hero Image",
+    "subtitle": "How does this look? You can retry if you'd like something different.",
+    "accept": "✨ Perfect! Continue to Results",
+    "retry": "🎲 Retry",
+    "retriesLeft": "left",
+    "generating": "🔄 Generating...",
+    "noRetriesLeft": "No more retries available. Don't worry, you can always take the quiz again later!"
+  },
   "errors": {
     "generic": "Something went wrong",
     "validation": "Please check your input",

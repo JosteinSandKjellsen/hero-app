@@ -14,6 +14,7 @@ export function QuizSection({ currentQuestion, onAnswer }: QuizSectionProps): JS
   return (
     <div className="bg-white/10 backdrop-blur-md rounded-xl shadow-lg p-6 md:p-8 border border-white/20">
       <QuizProgress
+        key={`quiz-progress-${currentQuestion}`}
         currentQuestion={currentQuestion + 1}
         totalQuestions={questions.length}
         className="mb-8"

@@ -3,6 +3,7 @@
 import { QuizLayout } from '../_components/layout/QuizLayout';
 import { RegistrationForm } from '../_components/registration/RegistrationForm';
 import { QuizSection } from '../_components/quiz/QuizSection';
+import { ImagePreview } from '../_components/quiz/ImagePreview';
 import { CameraSection } from '../_components/camera/CameraSection';
 import { ResultsSection } from '../_components/results/ResultsSection';
 import { Toast } from '../_components/ui/Toast';
@@ -18,16 +19,22 @@ export default function Home(): JSX.Element {
     currentQuestion,
     showCamera,
     showResults,
+    showImagePreview,
     photoUrl,
     heroName,
     isGeneratingImage,
     isGeneratingName,
+    isAcceptingImage,
     generationStep,
+    retryCount,
+    maxRetries,
     handleRegistration,
     handleAnswer,
     handlePhotoTaken,
     calculateResults,
     resetQuiz,
+    handleAcceptImage,
+    handleRetryImage,
   } = useQuiz();
 
   const { toast, hideToast } = useToast();
@@ -64,10 +71,26 @@ export default function Home(): JSX.Element {
     );
   }
 
-  if (isGeneratingImage || isGeneratingName) {
+  if (isGeneratingImage || isGeneratingName || isAcceptingImage) {
     return (
       <QuizLayout variant="camera" key={`loading-${routeKey}`}>
-        <LoadingState currentStep={generationStep} />
+        <LoadingState currentStep={isAcceptingImage ? 'complete' : generationStep} />
+      </QuizLayout>
+    );
+  }
+
+  if (showImagePreview && photoUrl) {
+    return (
+      <QuizLayout variant="preview" key={`preview-${routeKey}`}>
+        <ImagePreview
+          imageUrl={photoUrl}
+          onAccept={handleAcceptImage}
+          onRetry={handleRetryImage}
+          retriesLeft={maxRetries - retryCount}
+          isRetrying={isGeneratingImage || isGeneratingName}
+          isAccepting={isAcceptingImage}
+        />
+        {toastElement}
       </QuizLayout>
     );
   }

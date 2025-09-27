@@ -383,6 +383,15 @@
       "usePhoto": "Bruk bilde"
     }
   },
+  "imagePreview": {
+    "title": "Ditt Helt-Bilde",
+    "subtitle": "Hvordan ser dette ut? Du kan prøve på nytt hvis du vil ha noe annerledes.",
+    "accept": "✨ Perfekt! Fortsett til Resultater",
+    "retry": "🎲 Prøv igjen",
+    "retriesLeft": "igjen",
+    "generating": "🔄 Genererer...",
+    "noRetriesLeft": "Ingen flere forsøk tilgjengelig. Ikke bekymret, du kan alltid ta quizen igjen senere!"
+  },
   "errors": {
     "generic": "Noe gikk galt",
     "validation": "Vennligst sjekk inndataene dine",

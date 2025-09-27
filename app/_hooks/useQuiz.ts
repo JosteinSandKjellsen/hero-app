@@ -21,6 +21,7 @@ const initialResult: QuizResult = {
 };
 
 const MAX_RETRIES = 3;
+const MAX_IMAGE_RETRIES = 2; // Allow 2 additional retries after initial generation
 const RETRY_DELAY = 2000; // 2 seconds
 
 interface UseQuizReturn {
@@ -28,16 +29,22 @@ interface UseQuizReturn {
   currentQuestion: number;
   showCamera: boolean;
   showResults: boolean;
+  showImagePreview: boolean;
   photoUrl: string | null;
   heroName: string | null;
   isGeneratingImage: boolean;
   isGeneratingName: boolean;
+  isAcceptingImage: boolean;
   generationStep: GenerationStep;
+  retryCount: number;
+  maxRetries: number;
   handleRegistration: (data: UserData) => void;
   handleAnswer: (type: HeroColor) => void;
   handlePhotoTaken: (photo: string | null) => Promise<void>;
   calculateResults: () => PersonalityResult[];
   resetQuiz: () => void;
+  handleAcceptImage: () => Promise<void>;
+  handleRetryImage: () => Promise<void>;
 }
 
 const delay = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
@@ -52,11 +59,15 @@ export function useQuiz(): UseQuizReturn {
   const [answers, setAnswers] = useState<QuizResult>(initialResult);
   const [showCamera, setShowCamera] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const [showImagePreview, setShowImagePreview] = useState(false);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [isGeneratingName, setIsGeneratingName] = useState(false);
   const [heroName, setHeroName] = useState<string | null>(null);
   const [generationStep, setGenerationStep] = useState<GenerationStep>('upload');
+  const [retryCount, setRetryCount] = useState(0);
+  const [currentPhoto, setCurrentPhoto] = useState<string | null>(null);
+  const [isAcceptingImage, setIsAcceptingImage] = useState(false);
   const { showToast } = useToast();
 
   // Set up browser back navigation handling
@@ -65,7 +76,7 @@ export function useQuiz(): UseQuizReturn {
       e.preventDefault();
       
       // Check if we're in the middle of the quiz (have user data and some progress)
-      const hasQuizProgress = userData !== null && (currentQuestion > 0 || showCamera || showResults);
+      const hasQuizProgress = userData !== null && (currentQuestion > 0 || showCamera || showResults || showImagePreview);
       
       if (hasQuizProgress) {
         // Get the confirmation message - fallback to English if translation not available
@@ -109,7 +120,7 @@ export function useQuiz(): UseQuizReturn {
     return (): void => {
       window.removeEventListener('popstate', handlePopState);
     };
-  }, [userData, currentQuestion, showCamera, showResults, tQuizNav, locale]);
+  }, [userData, currentQuestion, showCamera, showResults, showImagePreview, tQuizNav, locale]);
 
   const handleRegistration = (data: UserData): void => {
     setUserData(data);
@@ -174,6 +185,12 @@ export function useQuiz(): UseQuizReturn {
   };
 
   const handlePhotoTaken = async (photo: string | null): Promise<void> => {
+    // Store the current photo for potential retries
+    setCurrentPhoto(photo);
+    await processImageGeneration(photo);
+  };
+
+  const processImageGeneration = async (photo: string | null): Promise<void> => {
     if (!userData) {
       showToast(tErrors('missingUserData'));
       return;
@@ -276,56 +293,8 @@ export function useQuiz(): UseQuizReturn {
       setHeroName(nameData.name);
       setGenerationStep('complete');
         
-      // Track hero generation statistics and save to latest heroes
-      try {
-        // Extract generation ID from image URL
-        const match = imageUrl.match(/generations\/([^/]+)\//) || [];
-        const imageId = match[1];
-        
-        if (!imageId) {
-          console.error('Could not extract generation ID from URL:', imageUrl);
-        } else {
-          await Promise.all([
-            // Track stats
-            fetch(`${window.location.origin}/api/hero-stats`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                color: selectedColor
-              }),
-            }),
-            // Save to latest heroes
-            fetch(`${window.location.origin}/api/latest-heroes`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                name: nameData.name,
-                userName: userData.name,
-                personalityType: t(`personalities.${selectedColor}.name`),
-                imageId,
-                color: selectedColor,
-                gender: userData.gender,
-                promptStyle: 'default',
-                basePrompt: `Generate a ${userData.gender === 'male' ? 'male' : 'female'} superhero with ${selectedColor} color scheme`,
-                negativePrompt: null,
-                colorScores: scores,
-              }),
-            })
-          ]).catch(error => {
-            // Log but don't fail if stats tracking or saving fails
-            console.error('Failed to track hero statistics or save to latest heroes:', error);
-          });
-        }
-      } catch (error) {
-        // Log but don't fail if stats tracking or saving fails
-        console.error('Failed to track hero statistics or save to latest heroes:', error);
-      }
-      
-      setShowResults(true);
+      // Show image preview instead of going directly to results
+      setShowImagePreview(true);
     } catch (error) {
       console.error('Error in photo processing flow:', error);
       let message = tErrors('generic');
@@ -363,11 +332,114 @@ export function useQuiz(): UseQuizReturn {
     setAnswers(initialResult);
     setShowCamera(false);
     setShowResults(false);
+    setShowImagePreview(false);
     setPhotoUrl(null);
     setHeroName(null);
     setIsGeneratingImage(false);
     setIsGeneratingName(false);
+    setIsAcceptingImage(false);
     setGenerationStep('upload');
+    setRetryCount(0);
+    setCurrentPhoto(null);
+  };
+
+  const handleAcceptImage = async (): Promise<void> => {
+    if (!photoUrl || !heroName || !userData) return;
+    
+    setIsAcceptingImage(true);
+    
+    // Track hero generation statistics and save to latest heroes when user accepts
+    try {
+      const results = calculateResults();
+      const dominantPersonality = results[0];
+      const selectedColor = dominantPersonality.color;
+      
+      // Calculate percentage scores
+      const total = Object.values(answers).reduce((a: number, b: number) => a + b, 0);
+      const scores = {
+        red: Math.round((answers.red / total) * 100),
+        yellow: Math.round((answers.yellow / total) * 100),
+        green: Math.round((answers.green / total) * 100),
+        blue: Math.round((answers.blue / total) * 100)
+      };
+      
+      // Extract generation ID from image URL
+      const match = photoUrl.match(/generations\/([^/]+)\//) || [];
+      const imageId = match[1];
+      
+      if (!imageId) {
+        console.error('Could not extract generation ID from URL:', photoUrl);
+      } else {
+        await Promise.all([
+          // Track stats
+          fetch(`${window.location.origin}/api/hero-stats`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              color: selectedColor
+            }),
+          }),
+          // Save to latest heroes
+          fetch(`${window.location.origin}/api/latest-heroes`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              name: heroName,
+              userName: userData.name,
+              personalityType: t(`personalities.${selectedColor}.name`),
+              imageId,
+              color: selectedColor,
+              gender: userData.gender,
+              promptStyle: 'default',
+              basePrompt: `Generate a ${userData.gender === 'male' ? 'male' : 'female'} superhero with ${selectedColor} color scheme`,
+              negativePrompt: null,
+              colorScores: scores,
+            }),
+          })
+        ]).catch(error => {
+          // Log but don't fail if stats tracking or saving fails
+          console.error('Failed to track hero statistics or save to latest heroes:', error);
+        });
+      }
+    } catch (error) {
+      // Log but don't fail if stats tracking or saving fails
+      console.error('Failed to track hero statistics or save to latest heroes:', error);
+    }
+    
+    setShowImagePreview(false);
+    setShowResults(true);
+    setIsAcceptingImage(false);
+  };
+
+  const handleRetryImage = async (): Promise<void> => {
+    if (retryCount >= MAX_IMAGE_RETRIES) return;
+    
+    setRetryCount(prev => prev + 1);
+    setShowImagePreview(false);
+    
+    // Delete the previous generated image before creating a new one
+    if (photoUrl && photoUrl.includes('cdn.leonardo.ai')) {
+      try {
+        const imageId = photoUrl.match(/generations\/([^/]+)/)?.[1];
+        if (imageId) {
+          // Fire and forget deletion - don't block on it
+          fetch('/api/hero-image/delete', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ imageId, type: 'generated' })
+          }).catch(error => console.error('Failed to delete previous image:', error));
+        }
+      } catch (error) {
+        console.error('Error extracting image ID for deletion:', error);
+      }
+    }
+    
+    // Retry image generation with the same photo
+    await processImageGeneration(currentPhoto);
   };
 
   return {
@@ -375,15 +447,21 @@ export function useQuiz(): UseQuizReturn {
     currentQuestion,
     showCamera,
     showResults,
+    showImagePreview,
     photoUrl,
     heroName,
     isGeneratingImage,
     isGeneratingName,
+    isAcceptingImage,
     generationStep,
+    retryCount,
+    maxRetries: MAX_IMAGE_RETRIES,
     handleRegistration,
     handleAnswer,
     handlePhotoTaken,
     calculateResults,
     resetQuiz,
+    handleAcceptImage,
+    handleRetryImage,
   };
 }
