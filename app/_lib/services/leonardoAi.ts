@@ -128,7 +128,8 @@ export class LeonardoAiService {
             transparency: "disabled",
             ultra: false,
             userElements: [],
-            weighting: 0.75
+            weighting: 0.75,
+            alchemy: true,
           }),
         });
 
