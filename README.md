@@ -6,6 +6,7 @@ A Next.js application that generates personalized superhero identities based on 
 
 ### Core Features
 
+- **Multi-Session Support**: Run the app simultaneously at multiple locations with proper data isolation
 - Personality quiz to determine superhero traits and matching hero colors
 - AI-powered superhero image generation using Leonardo AI
 - Superhero name generation using Google's Gemini AI
@@ -16,6 +17,16 @@ A Next.js application that generates personalized superhero identities based on 
 - Interactive personality type exploration
 - Daily statistics and hero generation tracking
 - Gallery view of all generated heroes
+
+### Session Management
+
+The application supports multi-location deployments with session-based data organization:
+
+- **Session-Based Data Isolation**: Create separate sessions for different events, locations, or time periods
+- **Dynamic Session Selection**: Users are prompted to choose their session when multiple are active
+- **Admin Session Management**: Create, edit, activate/deactivate, and delete sessions
+- **Data Preservation**: Heroes and statistics are preserved even when sessions are deleted
+- **Flexible Filtering**: View data by specific session or across all sessions
 
 ### Personality Quiz & Assessment
 
@@ -99,6 +110,7 @@ The application supports multiple languages through the `[locale]` parameter (e.
   - Answer questions to determine your superhero traits
   - Upload a photo for AI transformation
   - Get your personalized superhero identity
+  - Session selection modal (when multiple sessions are active)
 
 - **`/[locale]/personalities`**: Personality Types
   - View all available personality types
@@ -110,12 +122,14 @@ The application supports multiple languages through the `[locale]` parameter (e.
   - Interactive cards showing personality types and traits
   - Generated names and AI-created images
   - Quick access to print individual results
+  - Session selection modal for data filtering
 
 - **`/[locale]/generated-heroes`**: Hero Gallery
   - Browse complete list of generated heroes
   - Pagination for easy navigation
   - Delete unwanted entries
   - Print individual hero results
+  - Session filtering dropdown for admin use
 
 - **`/[locale]/overview`**: Hero Overview
   - Real-time display of the 8 latest heroes in a grid layout
@@ -123,6 +137,14 @@ The application supports multiple languages through the `[locale]` parameter (e.
   - Interactive pie chart showing type distribution
   - Color-based statistics with percentages
   - Automatic updates every 20 seconds
+  - Session selection modal for filtering data by location/event
+
+- **`/[locale]/sessions`**: Session Management (Admin)
+  - Create and manage sessions for different locations or events
+  - Set session names, descriptions, start/end dates
+  - Activate or deactivate sessions as needed
+  - Delete old sessions while preserving hero data
+  - View session statistics (hero count, stats count)
 
 - **`/[locale]/stats`**: Statistics Dashboard
   - View today's hero generation statistics
@@ -141,33 +163,79 @@ The application supports multiple languages through the `[locale]` parameter (e.
     - `heroScore`: Hero score (0-10)
     - `gender`: (optional) 'male' or 'female'
 
+## API Routes
+
+The application provides several API endpoints for data management and AI integration:
+
+### Session API
+- **`GET /api/sessions`**: Retrieve all sessions or filter by active status (`?active=true`)
+- **`POST /api/sessions`**: Create a new session with name, description, and date range
+- **`PUT /api/sessions`**: Update an existing session (name, dates, active status)
+- **`DELETE /api/sessions?id={sessionId}`**: Delete a session (preserves associated heroes/stats)
+
+### Hero Data
+- **`GET /api/latest-heroes`**: Retrieve recent heroes with optional session filtering (`?sessionId={id}`)
+- **`POST /api/latest-heroes`**: Save a new hero with session association
+- **`GET /api/generated-heroes`**: Paginated hero list with session filtering
+- **`GET /api/hero-stats`**: Get statistics with optional session filtering (`?sessionId={id}`)
+- **`POST /api/hero-stats`**: Record hero generation statistics
+
+### AI Services
+- **`POST /api/hero-image`**: Generate superhero images using Leonardo AI
+- **`POST /api/hero-name`**: Generate superhero names using Google Gemini AI
+- **`GET /api/hero-image/[id]`**: Serve generated images with optimization
+
+### Session URL Parameters
+
+Many pages support session-based filtering through URL parameters:
+
+- **`?sessionId={id}`**: Filter data to specific session
+- **Example**: `/en/overview?sessionId=abc123` shows only data from session "abc123"
+- **All Sessions**: When no sessionId is provided or `sessionId=null`, shows data from all sessions
+
 ## Database Setup
 
 The application uses PostgreSQL with Prisma ORM for data persistence. The database stores hero statistics and latest generated heroes.
 
 ### Database Schema
 
-The database includes two main models:
+The database includes three main models:
+
+- **Session**: Manages different events, locations, or time periods
+  - Session metadata (name, description, dates)
+  - Active/inactive status
+  - Relationships to heroes and stats
 
 - **HeroStats**: Tracks hero generation statistics
   - Color distributions
   - Creation timestamps
-  
+  - Optional session association
+
 - **LatestHero**: Stores recently generated heroes
   - User information
   - Personality details
   - Image references
   - Color scores
   - Timestamps
+  - Optional session association
+
+### Session-Based Data Organization
+
+The application organizes data using an optional session system:
+
+- **Heroes and Statistics**: Can be associated with specific sessions or remain session-independent
+- **Multi-Location Support**: Different physical locations can use different active sessions
+- **Data Persistence**: When sessions are deleted, associated heroes and stats remain in the database
+- **Admin Flexibility**: Admins can view data by session or across all sessions using "All Sessions" filter
 
 ### Data Retention Policy
 
-The application implements a 30-day data retention policy:
+The application implements different retention policies for different data types:
 
-- All generated hero data in Prisma database is automatically deleted after 30 days
-- Associated hero images in Leonardo.ai are also removed after 30 days
-- This cleanup process runs daily using Netlify Edge Functions
-- Users are notified about this retention period in their confirmation email
+- **Heroes and Images**: Generated hero data and Leonardo.ai images are deleted after 30 days
+- **Sessions**: Old sessions (ended >30 days ago) are automatically deleted after 30 days
+- **Data Preservation**: When sessions are deleted, associated heroes and stats are preserved
+- **Cleanup Process**: Automated cleanup runs daily using Netlify Edge Functions
 
 ### Development Database Setup
 
