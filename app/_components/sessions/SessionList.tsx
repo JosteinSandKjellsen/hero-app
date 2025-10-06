@@ -28,6 +28,24 @@ export function SessionList({ sessions, onSessionUpdated, onSessionDeleted }: Se
   const [editingSession, setEditingSession] = useState<Session | null>(null);
   const t = useTranslations('sessions.list');
 
+  // Helper function to get session status based on time
+  const getSessionStatus = (session: Session): { status: string; className: string } => {
+    const now = new Date();
+    const startDate = new Date(session.startDate);
+    const endDate = session.endDate ? new Date(session.endDate) : null;
+    
+    if (!session.active) {
+      return { status: t('inactive'), className: 'text-gray-500' };
+    }
+    if (now < startDate) {
+      return { status: t('scheduled'), className: 'text-blue-600' };
+    }
+    if (endDate && now > endDate) {
+      return { status: t('expired'), className: 'text-red-600' };
+    }
+    return { status: t('active'), className: 'text-green-600' };
+  };
+
   const handleToggleActive = async (session: Session): Promise<void> => {
     try {
       const response = await fetch('/api/sessions', {
@@ -104,12 +122,16 @@ export function SessionList({ sessions, onSessionUpdated, onSessionDeleted }: Se
                   <h3 className="text-lg font-bangers text-white">{session.name}</h3>
                   <span
                     className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      session.active
+                      getSessionStatus(session).className === 'text-green-600'
                         ? 'bg-green-500/20 text-green-200 border border-green-500/30'
+                        : getSessionStatus(session).className === 'text-blue-600'
+                        ? 'bg-blue-500/20 text-blue-200 border border-blue-500/30'
+                        : getSessionStatus(session).className === 'text-red-600'
+                        ? 'bg-red-500/20 text-red-200 border border-red-500/30'
                         : 'bg-gray-500/20 text-gray-200 border border-gray-500/30'
                     }`}
                   >
-                    {session.active ? t('active') : t('inactive')}
+                    {getSessionStatus(session).status}
                   </span>
                 </div>
                 {session.description && (

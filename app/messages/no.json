@@ -509,6 +509,8 @@
       "noSessions": "Ingen økter funnet. Opprett din første økt for å komme i gang.",
       "active": "Aktiv",
       "inactive": "Inaktiv",
+      "scheduled": "Planlagt",
+      "expired": "Utløpt",
       "startDate": "Start",
       "endDate": "Slutt",
       "stats": "Statistikk",

@@ -40,7 +40,27 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const url = new URL(request.url);
     const activeOnly = url.searchParams.get('active') === 'true';
 
-    const where = activeOnly ? { active: true } : {};
+    let where = {};
+    
+    if (activeOnly) {
+      const now = new Date();
+      where = {
+        active: true,
+        startDate: {
+          lte: now // Session has started
+        },
+        OR: [
+          {
+            endDate: {
+              gte: now // Session hasn't ended
+            }
+          },
+          {
+            endDate: null // Sessions without end date are considered ongoing
+          }
+        ]
+      };
+    }
 
     const sessions = await prisma.session.findMany({
       where,

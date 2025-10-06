@@ -12,6 +12,18 @@ interface Session {
   active: boolean;
 }
 
+// Helper function to check if a session is currently active based on time
+const isSessionCurrentlyActive = (session: Session): boolean => {
+  const now = new Date();
+  const startDate = new Date(session.startDate);
+  const endDate = session.endDate ? new Date(session.endDate) : null;
+  
+  // Session must be marked as active and within time window
+  return session.active && 
+         now >= startDate && 
+         (endDate === null || now <= endDate);
+};
+
 export function useSessionSelection(forceModal = false): {
   activeSessions: Session[];
   selectedSessionId: string | null;
@@ -46,13 +58,17 @@ export function useSessionSelection(forceModal = false): {
       if (!response.ok) throw new Error('Failed to fetch sessions');
       const sessions = await response.json();
       
-      setActiveSessions(sessions);
+      // Additional client-side filtering for time-based active sessions
+      // This provides a safety net in case of clock differences between server and client
+      const currentlyActiveSessions = sessions.filter(isSessionCurrentlyActive);
+      
+      setActiveSessions(currentlyActiveSessions);
       
       // Check if we already have a session from URL
       const urlSessionId = searchParams.get('sessionId');
       console.log('URL session ID:', urlSessionId);
       
-      if (urlSessionId && sessions.find((s: Session) => s.id === urlSessionId)) {
+      if (urlSessionId && currentlyActiveSessions.find((s: Session) => s.id === urlSessionId)) {
         // Valid session in URL, use it and don't show modal
         console.log('Found valid session in URL, using it:', urlSessionId);
         setSelectedSessionId(urlSessionId);
@@ -61,14 +77,14 @@ export function useSessionSelection(forceModal = false): {
       }
       
       // Auto-select logic based on requirements
-      if (sessions.length === 0) {
+      if (currentlyActiveSessions.length === 0) {
         // No active sessions - use "all" (for admin views)
         console.log('No active sessions, using null');
         setSelectedSessionId(null);
         setShowSessionModal(false);
-      } else if (sessions.length === 1 && !forceModal) {
+      } else if (currentlyActiveSessions.length === 1 && !forceModal) {
         // Only one active session - auto-select it and update URL (unless forceModal is true)
-        const sessionId = sessions[0].id;
+        const sessionId = currentlyActiveSessions[0].id;
         console.log('Only one session, auto-selecting:', sessionId);
         setSelectedSessionId(sessionId);
         setShowSessionModal(false);

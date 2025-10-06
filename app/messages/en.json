@@ -509,6 +509,8 @@
       "noSessions": "No sessions found. Create your first session to get started.",
       "active": "Active",
       "inactive": "Inactive",
+      "scheduled": "Scheduled",
+      "expired": "Expired",
       "startDate": "Start",
       "endDate": "End",
       "stats": "Stats",
