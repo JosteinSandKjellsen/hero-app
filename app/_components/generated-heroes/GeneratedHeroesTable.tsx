@@ -275,7 +275,7 @@ export function GeneratedHeroesTable(): JSX.Element {
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
                       {t('session')}
                     </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-40">
                       {t('color')}
                     </th>
                     <th scope="col" className="relative px-6 py-3 w-24">

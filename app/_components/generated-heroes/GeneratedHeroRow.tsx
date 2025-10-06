@@ -180,11 +180,11 @@ export function GeneratedHeroRow({ hero, onDelete, onPrinted, onCarouselChange }
         {hero.session?.name || ''}
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
-        <div className={`inline-flex items-center px-3 py-1 rounded-full ${heroColors[hero.color]?.bg || 'bg-blue'}`}>
-          <div className="w-4 h-4 mr-2">
+        <div className={`inline-flex items-center px-2 py-1 rounded-full ${heroColors[hero.color]?.bg || 'bg-blue'}`}>
+          <div className="w-3 h-3 mr-1.5">
             {getHeroCardIcon(hero.color)}
           </div>
-          <span className="text-sm font-medium text-white capitalize">
+          <span className="text-xs font-medium text-white capitalize">
             {hero.color}
           </span>
         </div>
