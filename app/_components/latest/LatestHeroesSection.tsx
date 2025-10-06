@@ -3,6 +3,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { HeroCarousel } from './HeroCarousel';
 import { HeroColor } from '@/app/_lib/types/api';
+
+interface LatestHeroesSectionProps {
+  selectedSessionId: string | null;
+}
+
 interface LatestHero {
   id: number;
   name: string;
@@ -18,24 +23,37 @@ interface LatestHero {
 
 const POLL_INTERVAL = 60000; // 1 minute in milliseconds
 
-export function LatestHeroesSection(): JSX.Element {
+export function LatestHeroesSection({ selectedSessionId }: LatestHeroesSectionProps): JSX.Element {
   const [heroes, setHeroes] = useState<LatestHero[]>([]);
 
   const fetchHeroes = useCallback(async (): Promise<void> => {
     try {
-      const response = await fetch('/api/latest-heroes');
+      const params = new URLSearchParams();
+      if (selectedSessionId) {
+        params.set('sessionId', selectedSessionId);
+      }
+      
+      const response = await fetch(`/api/latest-heroes?${params.toString()}`);
       if (!response.ok) throw new Error('Failed to fetch heroes');
       const data = await response.json();
       setHeroes(data);
     } catch (error) {
       console.error('Error fetching heroes:', error);
     }
-  }, []);
+  }, [selectedSessionId]);
 
   // Initial fetch
   useEffect(() => {
     fetchHeroes();
   }, [fetchHeroes]);
+
+  // Force re-fetch when session changes
+  useEffect(() => {
+    if (selectedSessionId !== null) {
+      setHeroes([]); // Clear current heroes to show fresh data
+      fetchHeroes();
+    }
+  }, [selectedSessionId, fetchHeroes]);
 
   // Set up polling
   useEffect(() => {
@@ -44,9 +62,12 @@ export function LatestHeroesSection(): JSX.Element {
   }, [fetchHeroes]);
 
   return (
-    <div className="relative w-full min-h-screen flex items-center justify-center py-8 md:py-16">
+    <div className="relative w-full min-h-screen flex flex-col items-center justify-center py-8 md:py-16">
       <div className="w-full max-w-screen-2xl mx-auto px-4">
-        <HeroCarousel initialHeroes={heroes} />
+        <HeroCarousel 
+          key={selectedSessionId || 'all'} 
+          initialHeroes={heroes} 
+        />
       </div>
     </div>
   );

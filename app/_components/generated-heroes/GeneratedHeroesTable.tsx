@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { GeneratedHeroRow } from './GeneratedHeroRow';
+import { SessionFilter } from '../sessions/SessionFilter';
 import { getHeroCardIcon } from '@/app/_lib/utils/heroCardIcons';
 import { heroColors } from '@/app/_lib/constants/colors';
 import { HeroColor } from '@/app/_lib/types/api';
@@ -27,15 +28,26 @@ export function GeneratedHeroesTable(): JSX.Element {
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
   const t = useTranslations('generatedHeroes.table');
 
   const handlePageChange = (newPage: number): void => {
     setCurrentPage(newPage);
   };
 
+  const handleSessionChange = (sessionId: string | null): void => {
+    setSelectedSessionId(sessionId);
+    setCurrentPage(1); // Reset to first page when changing session
+  };
+
   const fetchHeroes = useCallback(async () => {
     try {
-      const response = await fetch(`/api/generated-heroes?page=${currentPage}`);
+      const params = new URLSearchParams({ page: currentPage.toString() });
+      if (selectedSessionId) {
+        params.set('sessionId', selectedSessionId);
+      }
+      
+      const response = await fetch(`/api/generated-heroes?${params.toString()}`);
       if (!response.ok) throw new Error('Failed to fetch heroes');
       
       const data = await response.json();
@@ -48,7 +60,7 @@ export function GeneratedHeroesTable(): JSX.Element {
     } finally {
       setIsLoading(false);
     }
-  }, [t, currentPage]);
+  }, [t, currentPage, selectedSessionId]);
 
   // Initial fetch
   useEffect(() => {
@@ -121,6 +133,13 @@ export function GeneratedHeroesTable(): JSX.Element {
 
   return (
     <div className="flex flex-col">
+      {/* Session Filter */}
+      <SessionFilter
+        selectedSessionId={selectedSessionId}
+        onSessionChange={handleSessionChange}
+        showInactive={true}
+      />
+      
       <div>
         {/* Mobile view */}
         <div className="block sm:hidden">

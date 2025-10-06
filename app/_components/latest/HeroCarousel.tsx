@@ -121,9 +121,9 @@ export function HeroCarousel({ initialHeroes }: HeroCarouselProps): JSX.Element 
     heroesRef.current = heroes;
   }, [heroes]);
 
-  // Initialize with heroes - only on first load
+  // Initialize with heroes - reset when component is completely remounted (via key prop)
   useEffect(() => {
-    if (initialHeroes.length > 0 && heroes.length === 0 && !initializedRef.current) {
+    if (initialHeroes.length > 0) {
       setHeroes(initialHeroes);
       
       // Initialize the carousel with sequential heroes
@@ -134,9 +134,10 @@ export function HeroCarousel({ initialHeroes }: HeroCarouselProps): JSX.Element 
       
       setCardHeroes(initialCards);
       setCycleStartTime(0); // Reset cycle start time for proper initialization
+      setCurrentRotation(0); // Reset rotation to start position
       initializedRef.current = true;
     }
-  }, [initialHeroes, heroes.length]);
+  }, [initialHeroes]);
   
   // Handle updates to heroes without resetting animation
   useEffect(() => {

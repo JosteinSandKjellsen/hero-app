@@ -7,12 +7,34 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Session {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  startDate   DateTime
+  endDate     DateTime? // Keep nullable for now to avoid migration issues
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  heroes      LatestHero[]
+  stats       HeroStats[]
+
+  @@index([active, startDate])
+  @@index([active, createdAt])
+}
+
 model HeroStats {
   id        Int      @id @default(autoincrement())
   color     String
+  sessionId String?  // Optional - null means "all sessions"
+  session   Session? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
   createdAt DateTime @default(now())
 
-  // Composite index for frequently used filters
+  // New indexes for session filtering
+  @@index([sessionId, color, createdAt])
+  // Keep existing index for backward compatibility
   @@index([color, createdAt])
 }
 
@@ -24,15 +46,19 @@ model LatestHero {
   imageId        String   @unique
   color          String
   gender         String
+  sessionId      String?  // Optional - null means "all sessions"
+  session        Session? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
   colorScores    Json     @default("{}")
   printed        Boolean  @default(false)
   carousel       Boolean  @default(false)
   createdAt      DateTime @default(now())
 
-  // Composite index for pagination with carousel filter
+  // New indexes for session filtering
+  @@index([sessionId, carousel, createdAt])
+  @@index([sessionId, color])
+  @@index([sessionId, createdAt])
+  // Keep existing indexes for backward compatibility
   @@index([carousel, createdAt])
-  // Index for efficient color filtering
   @@index([color])
-  // Keep the original createdAt index for general queries
   @@index([createdAt])
 }

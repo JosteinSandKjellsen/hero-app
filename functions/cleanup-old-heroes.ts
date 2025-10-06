@@ -89,7 +89,7 @@ const handler: Handler = async (event, context) => {
     }
 
     // Delete heroes from database
-    const { count } = await prisma.latestHero.deleteMany({
+    const { count: deletedCount } = await prisma.latestHero.deleteMany({
       where: {
         createdAt: {
           lt: thirtyDaysAgo
@@ -97,9 +97,64 @@ const handler: Handler = async (event, context) => {
       }
     });
 
+    console.log(`Successfully cleaned up ${deletedCount} old heroes`);
+
+    // === SESSION CLEANUP ===
+    console.log('Starting session cleanup...');
+
+    // Find sessions that ended more than 30 days ago
+    const oldSessions = await prisma.session.findMany({
+      where: {
+        endDate: {
+          lt: thirtyDaysAgo
+        }
+      },
+      select: {
+        id: true,
+        name: true,
+        endDate: true,
+        _count: {
+          select: {
+            heroes: true,
+            stats: true
+          }
+        }
+      }
+    });
+
+    console.log(`Found ${oldSessions.length} old sessions to clean up`);
+
+    let sessionCount = 0;
+
+    // Delete sessions only - leave heroes and stats with their original sessionId references
+    for (const session of oldSessions) {
+      try {
+        await prisma.session.delete({
+          where: { id: session.id }
+        });
+
+        sessionCount++;
+        console.log(`Deleted session: ${session.name} (had ${session._count.heroes} heroes, ${session._count.stats} stats)`);
+
+        // Small delay between session deletions to be gentle on database
+        if (oldSessions.indexOf(session) !== oldSessions.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
+
+      } catch (error) {
+        console.error(`Failed to delete session ${session.id} (${session.name}):`, error);
+      }
+    }
+
+    console.log(`Successfully deleted ${sessionCount} old sessions`);
+
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: `Successfully cleaned up ${count} old heroes` }),
+      body: JSON.stringify({ 
+        message: `Cleanup completed successfully - deleted ${deletedCount} old heroes and ${sessionCount} old sessions`,
+        heroesDeleted: deletedCount,
+        sessionsDeleted: sessionCount
+      }),
       headers: { 'Content-Type': 'application/json' }
     };
   } catch (error) {

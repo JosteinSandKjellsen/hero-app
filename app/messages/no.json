@@ -485,5 +485,52 @@
         "target": "gules optimisme"
       }
     }
+  },
+  "sessions": {
+    "title": "Øktadministrasjon",
+    "createSession": "Opprett Ny Økt",
+    "form": {
+      "createTitle": "Opprett Ny Økt",
+      "editTitle": "Rediger Økt",
+      "nameLabel": "Øktnavn",
+      "namePlaceholder": "Skriv inn øktnavn",
+      "descriptionLabel": "Beskrivelse (Valgfritt)",
+      "descriptionPlaceholder": "Skriv inn øktbeskrivelse",
+      "startDateLabel": "Startdato",
+      "endDateLabel": "Sluttdato",
+      "activeLabel": "Aktiv Økt",
+      "cancel": "Avbryt",
+      "create": "Opprett Økt",
+      "update": "Oppdater Økt",
+      "saving": "Lagrer..."
+    },
+    "list": {
+      "noSessions": "Ingen økter funnet. Opprett din første økt for å komme i gang.",
+      "active": "Aktiv",
+      "inactive": "Inaktiv",
+      "startDate": "Start",
+      "endDate": "Slutt",
+      "stats": "Statistikk",
+      "heroes": "helter",
+      "colorChoices": "fargevalg",
+      "quizResponses": "quiz-svar",
+      "edit": "Rediger",
+      "activate": "Aktiver",
+      "deactivate": "Deaktiver"
+    },
+    "selection": {
+      "title": "Velg ditt eventyr!",
+      "description": "Hvilken heroisk lokasjon blir du med på i dag?",
+      "allSessions": "Alle lokasjoner",
+      "viewAllData": "Vis data fra alle lokasjoner",
+      "startDate": "Start",
+      "cancel": "Kanskje senere",
+      "confirm": "Fortsett"
+    },
+    "filter": {
+      "label": "Filtrer etter Økt",
+      "allSessions": "Alle Økter",
+      "inactive": "Inaktiv"
+    }
   }
 }

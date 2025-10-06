@@ -485,5 +485,52 @@
         "target": "yellow's optimism"
       }
     }
+  },
+  "sessions": {
+    "title": "Session Management",
+    "createSession": "Create New Session",
+    "form": {
+      "createTitle": "Create New Session",
+      "editTitle": "Edit Session",
+      "nameLabel": "Session Name",
+      "namePlaceholder": "Enter session name",
+      "descriptionLabel": "Description (Optional)",
+      "descriptionPlaceholder": "Enter session description",
+      "startDateLabel": "Start Date",
+      "endDateLabel": "End Date",
+      "activeLabel": "Active Session",
+      "cancel": "Cancel",
+      "create": "Create Session",
+      "update": "Update Session",
+      "saving": "Saving..."
+    },
+    "list": {
+      "noSessions": "No sessions found. Create your first session to get started.",
+      "active": "Active",
+      "inactive": "Inactive",
+      "startDate": "Start",
+      "endDate": "End",
+      "stats": "Stats",
+      "heroes": "heroes",
+      "colorChoices": "color choices",
+      "quizResponses": "quiz responses",
+      "edit": "Edit",
+      "activate": "Activate",
+      "deactivate": "Deactivate"
+    },
+    "selection": {
+      "title": "Choose Your Adventure!",
+      "description": "Which heroic location are you joining today?",
+      "allSessions": "All Locations",
+      "viewAllData": "View data from all locations",
+      "startDate": "Start",
+      "cancel": "Maybe Later",
+      "confirm": "Continue"
+    },
+    "filter": {
+      "label": "Filter by Session",
+      "allSessions": "All Sessions",
+      "inactive": "Inactive"
+    }
   }
 }

@@ -35,7 +35,11 @@ interface StatsData {
 
 const titleClasses = "text-4xl font-bangers tracking-wider text-white pt-4 text-center drop-shadow-lg";
 
-export function OverviewSection(): JSX.Element {
+interface OverviewSectionProps {
+  selectedSessionId: string | null;
+}
+
+export function OverviewSection({ selectedSessionId }: OverviewSectionProps): JSX.Element {
   const statsT = useTranslations('stats');
   const latestT = useTranslations('latest');
   const [heroes, setHeroes] = useState<LatestHero[]>([]);
@@ -44,7 +48,16 @@ export function OverviewSection(): JSX.Element {
 
   const fetchLatestHeroes = useCallback(async (): Promise<void> => {
     try {
-      const response = await fetch('/api/latest-heroes?includeAll=true&count=8');
+      const params = new URLSearchParams({
+        includeAll: 'true',
+        count: '8'
+      });
+      
+      if (selectedSessionId) {
+        params.set('sessionId', selectedSessionId);
+      }
+      
+      const response = await fetch(`/api/latest-heroes?${params.toString()}`);
       if (!response.ok) throw new Error('Failed to fetch heroes');
       
       const data = await response.json();
@@ -73,23 +86,41 @@ export function OverviewSection(): JSX.Element {
     } catch (error) {
       console.error('Error fetching latest heroes:', error);
     }
-  }, []);
+  }, [selectedSessionId]);
 
   const fetchStats = useCallback(async (): Promise<void> => {
     try {
-      const response = await fetch('/api/hero-stats');
+      const params = new URLSearchParams();
+      if (selectedSessionId) {
+        params.set('sessionId', selectedSessionId);
+      }
+      
+      const response = await fetch(`/api/hero-stats?${params.toString()}`);
       const data = await response.json();
       setStats(data);
     } catch (error) {
       console.error('Failed to fetch stats:', error);
     }
-  }, []);
+    // selectedSessionId is used in the function body, eslint is incorrect
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedSessionId]);
 
   // Initial fetch for both heroes and stats
   useEffect(() => {
     fetchLatestHeroes();
     fetchStats();
   }, [fetchLatestHeroes, fetchStats]);
+
+  // Force re-fetch when session changes
+  useEffect(() => {
+    if (selectedSessionId !== null) {
+      // Clear current heroes to force fresh fetch when session changes
+      setHeroes([]);
+      lastFetchedIdRef.current = null;
+      fetchLatestHeroes();
+      fetchStats();
+    }
+  }, [selectedSessionId, fetchLatestHeroes, fetchStats]);
 
   // Set up polling for heroes (20s) and stats (60s)
   useEffect(() => {

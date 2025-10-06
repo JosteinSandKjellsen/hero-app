@@ -1,4 +1,5 @@
 import { prisma } from '@/app/_lib/prisma';
+import { Prisma } from '@prisma/client';
 import { HeroColor } from '@/app/_lib/types/api';
 
 export interface DailyHero {
@@ -16,18 +17,29 @@ export interface DailyHero {
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
 
-export async function GET(): Promise<Response> {
+export async function GET(request: Request): Promise<Response> {
   try {
+    // Parse query parameters
+    const url = new URL(request.url);
+    const sessionId = url.searchParams.get('sessionId');
+    
     // Get today's date at midnight
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
+    // Build where clause with session filtering
+    const where: Prisma.LatestHeroWhereInput = {
+      createdAt: {
+        gte: today
+      }
+    };
+    
+    if (sessionId && sessionId !== 'all') {
+      where.sessionId = sessionId;
+    }
+
     const dailyHeroes = await prisma.latestHero.findMany({
-      where: {
-        createdAt: {
-          gte: today
-        }
-      },
+      where,
       orderBy: { createdAt: 'desc' },
       select: {
         id: true,
@@ -39,6 +51,12 @@ export async function GET(): Promise<Response> {
         gender: true,
         colorScores: true,
         createdAt: true,
+        sessionId: true,
+        session: {
+          select: {
+            name: true
+          }
+        }
       },
     });
 

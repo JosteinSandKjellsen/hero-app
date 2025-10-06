@@ -63,12 +63,24 @@ export async function GET(request: Request): Promise<Response> {
       // Parse query parameters
       const url = new URL(request.url);
       const includeAll = url.searchParams.get('includeAll') === 'true';
+      const sessionId = url.searchParams.get('sessionId');
       const count = url.searchParams.get('count');
       const take = count ? parseInt(count, 10) : undefined;
 
+      // Build where clause with session filtering
+      const where: Prisma.LatestHeroWhereInput = {};
+      
+      if (!includeAll) {
+        where.carousel = true;
+      }
+      
+      if (sessionId && sessionId !== 'all') {
+        where.sessionId = sessionId;
+      }
+
       // Use the optimized carousel index for filtered queries
       const latestHeroes = await tx.latestHero.findMany({
-        where: includeAll ? undefined : { carousel: true },
+        where,
         orderBy: { createdAt: 'desc' },
         take,
         select: {
@@ -82,6 +94,12 @@ export async function GET(request: Request): Promise<Response> {
           colorScores: true,
           createdAt: true,
           carousel: true,
+          sessionId: true,
+          session: {
+            select: {
+              name: true
+            }
+          }
         },
       });
 
@@ -98,7 +116,7 @@ export async function GET(request: Request): Promise<Response> {
 export async function POST(request: Request): Promise<Response> {
   try {
     const data = await request.json();
-    const { name, userName, personalityType, imageId, color, gender, colorScores } = data;
+    const { name, userName, personalityType, imageId, color, gender, colorScores, sessionId } = data;
 
     // Create the new hero with optimized data access
     const newHero = await prisma.$transaction(async (tx) => {
@@ -121,6 +139,7 @@ export async function POST(request: Request): Promise<Response> {
           color,
           gender,
           colorScores,
+          sessionId: sessionId || null, // null means "all sessions"
           carousel: true, // New heroes are displayed in carousel by default
         },
       });

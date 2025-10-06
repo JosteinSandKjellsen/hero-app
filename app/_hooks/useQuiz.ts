@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { useToast } from './useToast';
+import { useSessionSelection } from './useSessionSelection';
 import { questions } from '../_data/questions';
 import { personalities } from '../_data/personalities';
 import { AppError, ValidationError } from '../_lib/errors';
@@ -38,6 +39,11 @@ interface UseQuizReturn {
   generationStep: GenerationStep;
   retryCount: number;
   maxRetries: number;
+  // Session-related properties
+  activeSessions: Array<{ id: string; name: string; description?: string; startDate: string; endDate?: string; active: boolean }>;
+  selectedSessionId: string | null;
+  showSessionModal: boolean;
+  isLoadingSessions: boolean;
   handleRegistration: (data: UserData) => void;
   handleAnswer: (type: HeroColor) => void;
   handlePhotoTaken: (photo: string | null) => Promise<void>;
@@ -45,6 +51,9 @@ interface UseQuizReturn {
   resetQuiz: () => void;
   handleAcceptImage: () => Promise<void>;
   handleRetryImage: () => Promise<void>;
+  // Session-related methods
+  handleSessionSelected: (sessionId: string | null) => void;
+  resetSessionSelection: () => void;
 }
 
 const delay = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
@@ -54,6 +63,18 @@ export function useQuiz(): UseQuizReturn {
   const locale = useLocale();
   const tErrors = useTranslations('errors');
   const tQuizNav = useTranslations('quiz.navigation');
+  const { showToast } = useToast();
+  
+  // Session selection hook
+  const {
+    activeSessions,
+    selectedSessionId,
+    showSessionModal,
+    isLoading: isLoadingSessions,
+    handleSessionSelected,
+    resetSessionSelection
+  } = useSessionSelection();
+  
   const [userData, setUserData] = useState<UserData | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<QuizResult>(initialResult);
@@ -68,7 +89,6 @@ export function useQuiz(): UseQuizReturn {
   const [retryCount, setRetryCount] = useState(0);
   const [currentPhoto, setCurrentPhoto] = useState<string | null>(null);
   const [isAcceptingImage, setIsAcceptingImage] = useState(false);
-  const { showToast } = useToast();
 
   // Set up browser back navigation handling
   useEffect((): (() => void) => {
@@ -92,8 +112,8 @@ export function useQuiz(): UseQuizReturn {
         
         const shouldExit = window.confirm(confirmMessage);
         if (!shouldExit) {
-          // Push state back to prevent navigation
-          window.history.pushState(null, '', window.location.pathname);
+          // Push state back to prevent navigation, preserving query parameters
+          window.history.pushState(null, '', window.location.pathname + window.location.search);
           return;
         }
         // If user confirms, reset the quiz
@@ -112,7 +132,7 @@ export function useQuiz(): UseQuizReturn {
 
     // Add a history state when quiz has progress to catch back navigation
     if (userData !== null && currentQuestion > 0) {
-      window.history.pushState(null, '', window.location.pathname);
+      window.history.pushState(null, '', window.location.pathname + window.location.search);
     }
 
     window.addEventListener('popstate', handlePopState);
@@ -346,6 +366,12 @@ export function useQuiz(): UseQuizReturn {
   const handleAcceptImage = async (): Promise<void> => {
     if (!photoUrl || !heroName || !userData) return;
     
+    // For quiz users, ensure a session is selected (only if there are active sessions)
+    if (activeSessions.length > 0 && !selectedSessionId) {
+      showToast('Please select a session first');
+      return;
+    }
+    
     setIsAcceptingImage(true);
     
     // Track hero generation statistics and save to latest heroes when user accepts
@@ -378,7 +404,8 @@ export function useQuiz(): UseQuizReturn {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              color: selectedColor
+              color: selectedColor,
+              sessionId: selectedSessionId
             }),
           }),
           // Save to latest heroes
@@ -398,6 +425,7 @@ export function useQuiz(): UseQuizReturn {
               basePrompt: `Generate a ${userData.gender === 'male' ? 'male' : 'female'} superhero with ${selectedColor} color scheme`,
               negativePrompt: null,
               colorScores: scores,
+              sessionId: selectedSessionId
             }),
           })
         ]).catch(error => {
@@ -456,6 +484,11 @@ export function useQuiz(): UseQuizReturn {
     generationStep,
     retryCount,
     maxRetries: MAX_IMAGE_RETRIES,
+    // Session-related properties
+    activeSessions,
+    selectedSessionId,
+    showSessionModal,
+    isLoadingSessions,
     handleRegistration,
     handleAnswer,
     handlePhotoTaken,
@@ -463,5 +496,8 @@ export function useQuiz(): UseQuizReturn {
     resetQuiz,
     handleAcceptImage,
     handleRetryImage,
+    // Session-related methods
+    handleSessionSelected,
+    resetSessionSelection,
   };
 }

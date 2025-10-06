@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/app/_lib/prisma';
+import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { LeonardoAiService } from '@/app/_lib/services/leonardoAi';
 
@@ -22,16 +23,24 @@ export type GeneratedHeroWithId = {
 // GET /api/generated-heroes
 export async function GET(request: Request): Promise<NextResponse> {
   try {
-    // Parse pagination parameters
+    // Parse pagination and filter parameters
     const { searchParams } = new URL(request.url);
     const page = Math.max(1, parseInt(searchParams.get('page') ?? '1'));
+    const sessionId = searchParams.get('sessionId');
     const pageSize = 50;
     const skip = (page - 1) * pageSize;
 
+    // Build where clause with session filtering
+    const where: Prisma.LatestHeroWhereInput = {};
+    if (sessionId && sessionId !== 'all') {
+      where.sessionId = sessionId;
+    }
+
     // Use a single transaction for count and data fetch to ensure consistency
     const [totalCount, generatedHeroes] = await prisma.$transaction([
-      prisma.latestHero.count(),
+      prisma.latestHero.count({ where }),
       prisma.latestHero.findMany({
+        where,
         select: {
           id: true,
           name: true,
@@ -43,7 +52,13 @@ export async function GET(request: Request): Promise<NextResponse> {
           colorScores: true,
           createdAt: true,
           printed: true,
-          carousel: true
+          carousel: true,
+          sessionId: true,
+          session: {
+            select: {
+              name: true
+            }
+          }
         },
         orderBy: {
           createdAt: 'desc'
