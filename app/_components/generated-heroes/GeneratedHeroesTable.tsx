@@ -20,6 +20,10 @@ interface GeneratedHero {
   createdAt: string;
   printed: boolean;
   carousel: boolean;
+  sessionId: string | null;
+  session: {
+    name: string;
+  } | null;
 }
 
 export function GeneratedHeroesTable(): JSX.Element {
@@ -174,6 +178,14 @@ export function GeneratedHeroesTable(): JSX.Element {
                   <span className="font-medium">{t('timeCreated')}: </span>
                   {new Date(hero.createdAt).toLocaleString()}
                 </div>
+                <div className="text-sm text-gray-500">
+                  <span className="font-medium">{t('session')}: </span>
+                  {hero.session?.name || t('noSession')}
+                </div>
+                <div className="text-sm text-gray-500">
+                  <span className="font-medium">{t('session')}: </span>
+                  {hero.session?.name || t('noSession')}
+                </div>
                 <div className="flex justify-end space-x-2 pt-2">
                   <button
                     onClick={async () => {
@@ -265,6 +277,12 @@ export function GeneratedHeroesTable(): JSX.Element {
                       {t('carousel')}
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
+                      {t('session')}
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
+                      {t('color')}
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
                       {t('color')}
                     </th>
                     <th scope="col" className="relative px-6 py-3 w-24">
@@ -296,7 +314,7 @@ export function GeneratedHeroesTable(): JSX.Element {
                   ))}
                   {heroes.length === 0 && (
                     <tr>
-                      <td colSpan={6} className="px-6 py-4 text-center text-sm text-gray-500">
+                      <td colSpan={7} className="px-6 py-4 text-center text-sm text-gray-500">
                         {t('noHeroes')}
                       </td>
                     </tr>

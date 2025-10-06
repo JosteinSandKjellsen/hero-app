@@ -437,6 +437,7 @@
       "userName": "User Name",
       "heroName": "Hero Name",
       "color": "Color",
+      "session": "Session",
       "printed": "Printed",
       "carousel": "Show in carousel",
       "printedAndCarousel": "Status",

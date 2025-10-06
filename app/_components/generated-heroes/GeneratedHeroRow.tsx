@@ -17,6 +17,10 @@ interface GeneratedHeroRowProps {
     createdAt: string;
     printed: boolean;
     carousel: boolean;
+    sessionId: string | null;
+    session: {
+      name: string;
+    } | null;
   };
   onDelete: (id: number) => void;
   onPrinted?: (id: number) => void;
@@ -171,6 +175,9 @@ export function GeneratedHeroRow({ hero, onDelete, onPrinted, onCarouselChange }
           onChange={(e) => handleCarouselChange(e.target.checked)}
           className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 disabled:opacity-50"
         />
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+        {hero.session?.name || t('noSession')}
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
         <div className={`inline-flex items-center px-3 py-1 rounded-full ${heroColors[hero.color]?.bg || 'bg-blue'}`}>

@@ -437,6 +437,7 @@
       "userName": "Brukernavn",
       "heroName": "Heltenavn",
       "color": "Farge",
+      "session": "Økt",
       "printed": "Skrevet ut",
       "carousel": "Vis i karusell",
       "printedAndCarousel": "Status",
