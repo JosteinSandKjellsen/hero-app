@@ -258,9 +258,9 @@ export function GeneratedHeroesTable(): JSX.Element {
         
         {/* Desktop view */}
         <div className="hidden sm:block">
-          <div className="py-2 align-middle inline-block min-w-full">
+          <div className="py-2 align-middle mx-auto max-w-full overflow-x-auto">
             <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-              <table className="min-w-full divide-y divide-gray-200">
+              <table className="min-w-full divide-y divide-gray-200 mx-auto">
                 <thead className="bg-gray-50">
                   <tr>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-44">
@@ -280,9 +280,6 @@ export function GeneratedHeroesTable(): JSX.Element {
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
                       {t('session')}
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
-                      {t('color')}
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
                       {t('color')}
