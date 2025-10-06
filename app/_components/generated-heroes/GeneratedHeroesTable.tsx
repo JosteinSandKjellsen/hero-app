@@ -178,10 +178,12 @@ export function GeneratedHeroesTable(): JSX.Element {
                   <span className="font-medium">{t('timeCreated')}: </span>
                   {new Date(hero.createdAt).toLocaleString()}
                 </div>
-                <div className="text-sm text-gray-500">
-                  <span className="font-medium">{t('session')}: </span>
-                  {hero.session?.name || t('noSession')}
-                </div>
+                {hero.session?.name && (
+                  <div className="text-sm text-gray-500">
+                    <span className="font-medium">{t('session')}: </span>
+                    {hero.session.name}
+                  </div>
+                )}
                 <div className="text-sm text-gray-500">
                   <span className="font-medium">{t('session')}: </span>
                   {hero.session?.name || t('noSession')}

@@ -177,7 +177,7 @@ export function GeneratedHeroRow({ hero, onDelete, onPrinted, onCarouselChange }
         />
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-        {hero.session?.name || t('noSession')}
+        {hero.session?.name || ''}
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
         <div className={`inline-flex items-center px-3 py-1 rounded-full ${heroColors[hero.color]?.bg || 'bg-blue'}`}>
