@@ -178,15 +178,9 @@ export function GeneratedHeroesTable(): JSX.Element {
                   <span className="font-medium">{t('timeCreated')}: </span>
                   {new Date(hero.createdAt).toLocaleString()}
                 </div>
-                {hero.session?.name && (
-                  <div className="text-sm text-gray-500">
-                    <span className="font-medium">{t('session')}: </span>
-                    {hero.session.name}
-                  </div>
-                )}
                 <div className="text-sm text-gray-500">
                   <span className="font-medium">{t('session')}: </span>
-                  {hero.session?.name || t('noSession')}
+                  {hero.session?.name || ''}
                 </div>
                 <div className="flex justify-end space-x-2 pt-2">
                   <button
@@ -313,7 +307,7 @@ export function GeneratedHeroesTable(): JSX.Element {
                   ))}
                   {heroes.length === 0 && (
                     <tr>
-                      <td colSpan={7} className="px-6 py-4 text-center text-sm text-gray-500">
+                      <td colSpan={8} className="px-6 py-4 text-center text-sm text-gray-500">
                         {t('noHeroes')}
                       </td>
                     </tr>
