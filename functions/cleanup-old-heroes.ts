@@ -49,7 +49,7 @@ class LeonardoCleanupService {
   }
 }
 
-const handler: Handler = async (event, context) => {
+const handler: Handler = async (_event, context) => {
   if (!process.env.LEONARDO_API_KEY) {
     throw new Error('LEONARDO_API_KEY is required');
   }

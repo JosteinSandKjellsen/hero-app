@@ -26,12 +26,42 @@
   timeout = 30
 
 [[edge_functions]]
+  function = "rate-limiter"
+  path = "/api/*"
+
+[[edge_functions]]
   function = "generateHeroImage"
   path = "/api/hero-image"
 
 [[edge_functions]]
   function = "generateHeroName"
   path = "/api/hero-name"
+
+# Block common attack patterns
+[[redirects]]
+  from = "/.env"
+  to = "/404"
+  status = 404
+
+[[redirects]]
+  from = "/.env.*"
+  to = "/404"
+  status = 404
+
+[[redirects]]
+  from = "/wp-admin/*"
+  to = "/404"
+  status = 404
+
+[[redirects]]
+  from = "/wp-login.php"
+  to = "/404"
+  status = 404
+
+[[redirects]]
+  from = "/admin.php"
+  to = "/404"
+  status = 404
 
 [scheduled-functions]
   cleanup-old-heroes = "@daily"
@@ -55,6 +85,20 @@
   webp = true
   avif = true
 
+# Enhanced security headers for all pages
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Security headers
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=self, microphone=(), geolocation=(), payment=()"
+    
+    # Content Security Policy
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://cloud.leonardo.ai https://cdn.leonardo.ai; connect-src 'self' https://cloud.leonardo.ai https://accounts.zoho.eu https://mail.zoho.eu; font-src 'self'"
+
 # Cache control for static assets
 [[headers]]
   for = "/static/*"
@@ -73,12 +117,13 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-# API headers
+# API headers with CORS restrictions
 [[headers]]
   for = "/api/*"
   [headers.values]
-    "Access-Control-Allow-Origin" = "*"
-    "Access-Control-Allow-Headers" = "Content-Type"
-    "Access-Control-Allow-Methods" = "GET, POST, OPTIONS"
+    "Access-Control-Allow-Origin" = "https://yourdomain.com"
+    "Access-Control-Allow-Headers" = "Content-Type, Authorization"
+    "Access-Control-Allow-Methods" = "GET, POST, PUT, DELETE, OPTIONS"
     "Content-Type" = "application/json"
     "X-Content-Type-Options" = "nosniff"
+    "X-Frame-Options" = "DENY"

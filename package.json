@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "NODE_NO_WARNINGS=1 next dev",
-    "build": "NODE_NO_WARNINGS=1 prisma generate --no-engine && NODE_NO_WARNINGS=1 next build",
+    "audit": "npm audit --audit-level=moderate",
+    "security-check": "npm run audit && npm run type-check",
+    "build": "npm run security-check && NODE_NO_WARNINGS=1 prisma generate --no-engine && NODE_NO_WARNINGS=1 next build",
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",

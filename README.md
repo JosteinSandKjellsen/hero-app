@@ -168,12 +168,14 @@ The application supports multiple languages through the `[locale]` parameter (e.
 The application provides several API endpoints for data management and AI integration:
 
 ### Session API
+
 - **`GET /api/sessions`**: Retrieve all sessions or filter by active status (`?active=true`)
 - **`POST /api/sessions`**: Create a new session with name, description, and date range
 - **`PUT /api/sessions`**: Update an existing session (name, dates, active status)
 - **`DELETE /api/sessions?id={sessionId}`**: Delete a session (preserves associated heroes/stats)
 
 ### Hero Data
+
 - **`GET /api/latest-heroes`**: Retrieve recent heroes with optional session filtering (`?sessionId={id}`)
 - **`POST /api/latest-heroes`**: Save a new hero with session association
 - **`GET /api/generated-heroes`**: Paginated hero list with session filtering
@@ -181,6 +183,7 @@ The application provides several API endpoints for data management and AI integr
 - **`POST /api/hero-stats`**: Record hero generation statistics
 
 ### AI Services
+
 - **`POST /api/hero-image`**: Generate superhero images using Leonardo AI
 - **`POST /api/hero-name`**: Generate superhero names using Google Gemini AI
 - **`GET /api/hero-image/[id]`**: Serve generated images with optimization
