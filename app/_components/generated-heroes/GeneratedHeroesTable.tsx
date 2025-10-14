@@ -223,7 +223,11 @@ export function GeneratedHeroesTable(): JSX.Element {
                         console.error('Failed to mark hero as printed:', error);
                       }
                     }}
-                    className={`p-2 ${hero.printed ? heroColors['green'].text : heroColors['blue'].text} hover:opacity-80 rounded-full hover:bg-gray-50 transition-all duration-200 relative`}
+                    className={`inline-flex items-center justify-center p-2 rounded-full border-2 transition-all duration-200 hover:scale-105 ${
+                      hero.printed 
+                        ? 'text-green-600 border-green-600 bg-green-50 hover:bg-green-100' 
+                        : 'text-blue-600 border-blue-600 bg-blue-50 hover:bg-blue-100'
+                    }`}
                     title={hero.printed ? t('printAgain') : t('printHero')}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -232,7 +236,7 @@ export function GeneratedHeroesTable(): JSX.Element {
                   </button>
                   <button
                     onClick={() => handleDelete(hero.id)}
-                    className={`p-2 ${heroColors['red'].text} hover:opacity-80 rounded-full hover:bg-gray-50 transition-all duration-200`}
+                    className="inline-flex items-center justify-center p-2 rounded-full border-2 border-red-600 text-red-600 bg-red-50 hover:bg-red-100 transition-all duration-200 hover:scale-105"
                     title={t('deleteHero')}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -252,34 +256,35 @@ export function GeneratedHeroesTable(): JSX.Element {
         
         {/* Desktop view */}
         <div className="hidden sm:block">
-          <div className="py-2 align-middle mx-auto max-w-full overflow-x-auto">
-            <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-              <table className="min-w-full divide-y divide-gray-200 mx-auto">
+          <div className="py-2 align-middle mx-auto max-w-full">
+            <div className="shadow border-b border-gray-200 sm:rounded-lg">
+              <table className="w-full table-fixed divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-44">
+                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[18%]">
                       {t('timeCreated')}
                     </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-40">
+                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[15%]">
                       {t('userName')}
                     </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-40">
+                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[12%]">
                       {t('heroName')}
                     </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">
+                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[8%]">
                       {t('printed')}
                     </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">
+                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[8%]">
                       {t('carousel')}
                     </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
+                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[15%]">
                       {t('session')}
                     </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-40">
+                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[12%]">
                       {t('color')}
                     </th>
-                    <th scope="col" className="relative px-6 py-3 w-24">
+                    <th scope="col" className="relative px-4 py-3 w-[12%]">
                       <span className="sr-only">{t('actions')}</span>
+                      <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</span>
                     </th>
                   </tr>
                 </thead>

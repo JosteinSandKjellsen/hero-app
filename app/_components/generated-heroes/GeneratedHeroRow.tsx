@@ -148,16 +148,16 @@ export function GeneratedHeroRow({ hero, onDelete, onPrinted, onCarouselChange }
 
   return (
     <tr className="border-b border-gray-200 hover:bg-gray-50">
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+      <td className="px-4 py-3 text-sm text-gray-500">
         {formattedDate}
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+      <td className="px-4 py-3 text-sm text-gray-900 truncate">
         {hero.userName || t('emptyUserName')}
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+      <td className="px-4 py-3 text-sm text-gray-900 truncate" title={hero.name}>
         {hero.name}
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
+      <td className="px-4 py-3 text-sm text-center">
         {hero.printed && (
           <div className="flex items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-500" viewBox="0 0 20 20" fill="currentColor">
@@ -166,7 +166,7 @@ export function GeneratedHeroRow({ hero, onDelete, onPrinted, onCarouselChange }
           </div>
         )}
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
+      <td className="px-4 py-3 text-sm text-center">
         <input
           type="checkbox"
           id={`carousel-${hero.id}`}
@@ -176,10 +176,10 @@ export function GeneratedHeroRow({ hero, onDelete, onPrinted, onCarouselChange }
           className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 disabled:opacity-50"
         />
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+      <td className="px-4 py-3 text-sm text-gray-900 truncate">
         {hero.session?.name || ''}
       </td>
-      <td className="px-6 py-4 whitespace-nowrap">
+      <td className="px-4 py-3">
         <div className={`inline-flex items-center px-2 py-1 rounded-full ${heroColors[hero.color]?.bg || 'bg-blue'}`}>
           <div className="w-3 h-3 mr-1.5">
             {getHeroCardIcon(hero.color)}
@@ -189,30 +189,36 @@ export function GeneratedHeroRow({ hero, onDelete, onPrinted, onCarouselChange }
           </span>
         </div>
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+      <td className="px-4 py-3 text-right text-sm font-medium">
+        <div className="flex items-center justify-end space-x-1">
           <button
             onClick={handlePrint}
-            className={`p-2 ${hero.printed ? heroColors['green'].text : heroColors['blue'].text} hover:opacity-80 mr-2 rounded-full hover:bg-gray-50 transition-all duration-200 relative`}
+            className={`inline-flex items-center justify-center p-1.5 rounded-full border-2 transition-all duration-200 hover:scale-105 ${
+              hero.printed 
+                ? 'text-green-600 border-green-600 bg-green-50 hover:bg-green-100' 
+                : 'text-blue-600 border-blue-600 bg-blue-50 hover:bg-blue-100'
+            }`}
             title={hero.printed ? t('printAgain') : t('printHero')}
             aria-label={hero.printed ? t('printAgain') : t('printHero')}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clipRule="evenodd" />
-          </svg>
-        </button>
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clipRule="evenodd" />
+            </svg>
+          </button>
           <button
             onClick={handleDelete}
             disabled={isDeleting}
-            className={`p-2 ${heroColors['red'].text} hover:opacity-80 rounded-full hover:bg-gray-50 transition-all duration-200 ${
+            className={`inline-flex items-center justify-center p-1.5 rounded-full border-2 border-red-600 text-red-600 bg-red-50 hover:bg-red-100 transition-all duration-200 hover:scale-105 ${
               isDeleting ? 'opacity-50 cursor-not-allowed' : ''
             }`}
             title={t('deleteHero')}
             aria-label={isDeleting ? `${t('deleteHero')} ${t('inProgress')}` : t('deleteHero')}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
-          </svg>
-        </button>
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
+          </button>
+        </div>
       </td>
     </tr>
   );
