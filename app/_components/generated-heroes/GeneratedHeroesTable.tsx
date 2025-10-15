@@ -51,7 +51,9 @@ export function GeneratedHeroesTable(): JSX.Element {
         params.set('sessionId', selectedSessionId);
       }
       
-      const response = await fetch(`/api/generated-heroes?${params.toString()}`);
+      const response = await fetch(`/api/generated-heroes?${params.toString()}`, {
+        credentials: 'include',
+      });
       if (!response.ok) throw new Error('Failed to fetch heroes');
       
       const data = await response.json();
@@ -203,6 +205,7 @@ export function GeneratedHeroesTable(): JSX.Element {
                       try {
                         const response = await fetch('/api/hero-printed', {
                           method: 'POST',
+                          credentials: 'include',
                           headers: {
                             'Content-Type': 'application/json',
                           },

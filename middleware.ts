@@ -1,10 +1,26 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import createI18nMiddleware from 'next-intl/middleware';
+import { jwtVerify } from 'jose';
+import { validateAndGetSecurityConfig } from '@/app/_lib/config/security';
 
 // Simple in-memory store for rate limiting
 // Note: This will reset on server restart, but provides basic protection
 const rateLimits = new Map<string, { count: number; timestamp: number }>();
+
+// Validate security config and get JWT secret
+let JWT_SECRET: Uint8Array;
+try {
+  const { jwtSecret } = validateAndGetSecurityConfig();
+  JWT_SECRET = jwtSecret;
+} catch (error) {
+  console.error('[SECURITY] Failed to load security configuration in middleware:', error);
+  throw error;
+}
+
+// Protected routes (without locale prefix)
+const PROTECTED_ROUTES = ['/sessions', '/generated-heroes'];
+const PROTECTED_API_ROUTES = ['/api/sessions/manage', '/api/generated-heroes'];
 
 // Rate limit configuration
 const RATE_LIMIT = {
@@ -22,15 +38,45 @@ const cleanup = () => {
   });
 };
 
+// Check authentication
+async function checkAuth(request: NextRequest): Promise<boolean> {
+  const token = request.cookies.get('admin-token')?.value;
+  
+  if (!token) {
+    return false;
+  }
+
+  try {
+    await jwtVerify(token, JWT_SECRET);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 // Rate limiting middleware
 const rateLimit = (request: NextRequest) => {
+  const pathname = request.nextUrl.pathname;
+  
   // Only rate limit API routes
-  if (!request.nextUrl.pathname.startsWith('/api')) {
+  if (!pathname.startsWith('/api')) {
+    return null;
+  }
+
+  // Exclude public read-only endpoints from rate limiting
+  // These are safe to call frequently
+  const publicReadOnlyEndpoints = [
+    '/api/sessions',  // Public session listing
+    '/api/hero-carousel',
+    '/api/latest-heroes',
+  ];
+  
+  if (publicReadOnlyEndpoints.some(endpoint => pathname.startsWith(endpoint))) {
     return null;
   }
 
   const ip = request.ip ?? 'anonymous';
-  const key = `${ip}-${request.nextUrl.pathname}`;
+  const key = `${ip}-${pathname}`;
   const now = Date.now();
 
   cleanup();
@@ -76,13 +122,65 @@ const i18nMiddleware = createI18nMiddleware({
 
 // Combined middleware
 export default async function middleware(request: NextRequest) {
-  // Check rate limit first
+  const pathname = request.nextUrl.pathname;
+
+  // API routes should not be processed by i18n middleware
+  if (pathname.startsWith('/api')) {
+    // Check rate limit for API routes
+    const rateLimitResponse = rateLimit(request);
+    if (rateLimitResponse) {
+      return rateLimitResponse;
+    }
+
+    // Check if accessing protected API routes (skip admin login/logout)
+    if (!pathname.startsWith('/api/admin/')) {
+      const isProtectedApiRoute = PROTECTED_API_ROUTES.some(route => 
+        pathname.startsWith(route)
+      );
+
+      if (isProtectedApiRoute) {
+        const isAuthenticated = await checkAuth(request);
+        if (!isAuthenticated) {
+          return NextResponse.json(
+            { error: 'Unauthorized' },
+            { status: 401 }
+          );
+        }
+      }
+    }
+
+    // Let API routes pass through without i18n processing
+    return NextResponse.next();
+  }
+
+  // Check if accessing protected page routes (with locale)
+  if (!pathname.includes('/admin-login')) {
+    const isProtectedPageRoute = PROTECTED_ROUTES.some(route => {
+      // Check if pathname matches /[locale]/protected-route pattern
+      const localePattern = /^\/(en|no)/;
+      const withoutLocale = pathname.replace(localePattern, '');
+      return withoutLocale.startsWith(route);
+    });
+
+    if (isProtectedPageRoute) {
+      const isAuthenticated = await checkAuth(request);
+      if (!isAuthenticated) {
+        // Extract locale from pathname
+        const locale = pathname.match(/^\/(en|no)/)?.[1] || 'en';
+        const loginUrl = new URL(`/${locale}/admin-login`, request.url);
+        loginUrl.searchParams.set('redirect', pathname);
+        return NextResponse.redirect(loginUrl);
+      }
+    }
+  }
+
+  // Check rate limit for non-API routes
   const rateLimitResponse = rateLimit(request);
   if (rateLimitResponse) {
     return rateLimitResponse;
   }
 
-  // Then handle internationalization
+  // Handle internationalization for page routes
   return i18nMiddleware(request);
 }
 
@@ -90,6 +188,5 @@ export const config = {
   // Match all pathnames except for
   // - ... files in the public folder
   // - ... files with extensions (e.g. favicon.ico)
-  // - ... files in the api folder
-  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)']
+  matcher: ['/((?!_next|_vercel|.*\\..*).*)']
 };

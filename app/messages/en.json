@@ -487,6 +487,14 @@
       }
     }
   },
+  "admin": {
+    "loginTitle": "Admin Login",
+    "username": "Username",
+    "password": "Password",
+    "login": "Login",
+    "logout": "Logout",
+    "loggingIn": "Logging in..."
+  },
   "sessions": {
     "title": "Session Management",
     "createSession": "Create New Session",

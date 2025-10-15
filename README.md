@@ -313,6 +313,39 @@ The application implements different retention policies for different data types
 
 Note: These API keys are used server-side only and are not exposed to the client browser.
 
+## Admin Authentication
+
+The application uses session-based authentication to protect admin routes:
+
+### Protected Routes
+
+- `/[locale]/sessions` - Session management (admin only)
+- `/[locale]/generated-heroes` - Hero gallery with delete actions (admin only)
+- `/api/sessions/*` - Session API endpoints
+- `/api/generated-heroes/*` - Hero data API endpoints
+
+All other pages remain publicly accessible.
+
+### Quick Setup for Local Development
+
+1. Run the setup script:
+
+   ```bash
+   ./scripts/setup-auth.sh
+   ```
+
+   Or manually add to `.env.local`:
+
+   ```bash
+   ADMIN_USERNAME=admin
+   ADMIN_PASSWORD=your-secure-password
+   JWT_SECRET=$(openssl rand -base64 32)
+   ```
+
+2. Start the dev server and visit `/en/admin-login` to log in
+
+For detailed authentication setup and configuration, see [docs/AUTHENTICATION.md](docs/AUTHENTICATION.md).
+
 ## Development
 
 1. Install dependencies:
@@ -321,13 +354,21 @@ Note: These API keys are used server-side only and are not exposed to the client
    npm install
    ```
 
-2. Start the development server:
+2. Set up authentication (see Admin Authentication section above)
+
+3. Start the development server:
 
    ```bash
    npm run dev
    ```
 
 The application will be available at [http://localhost:3000](http://localhost:3000).
+
+### Testing Protected Routes Locally
+
+- Visit [http://localhost:3000/en/sessions](http://localhost:3000/en/sessions) - redirects to login
+- Visit [http://localhost:3000/en/admin-login](http://localhost:3000/en/admin-login) - login page
+- Use the credentials from your `.env.local` file
 
 ## Deployment to Netlify
 

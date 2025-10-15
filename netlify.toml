@@ -118,6 +118,8 @@
     Cache-Control = "public, max-age=31536000, immutable"
 
 # API headers with CORS restrictions
+# ⚠️ UPDATE THIS: Replace "https://yourdomain.com" with your actual domain
+# Or remove the Access-Control-Allow-Origin line entirely if you don't need CORS for external API access
 [[headers]]
   for = "/api/*"
   [headers.values]

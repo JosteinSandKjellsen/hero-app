@@ -36,9 +36,7 @@ export function useSessionSelection(forceModal = false): {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [activeSessions, setActiveSessions] = useState<Session[]>([]);
-  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(
-    searchParams.get('sessionId') || null
-  );
+  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
   const [showSessionModal, setShowSessionModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -54,8 +52,14 @@ export function useSessionSelection(forceModal = false): {
 
   const fetchActiveSessions = useCallback(async (): Promise<void> => {
     try {
+      // Public endpoint - no authentication required
       const response = await fetch('/api/sessions?active=true');
-      if (!response.ok) throw new Error('Failed to fetch sessions');
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Failed to fetch sessions. Status:', response.status, 'Response:', errorText);
+        throw new Error(`Failed to fetch sessions (${response.status})`);
+      }
       const sessions = await response.json();
       
       // Additional client-side filtering for time-based active sessions
@@ -68,15 +72,26 @@ export function useSessionSelection(forceModal = false): {
       const urlSessionId = searchParams.get('sessionId');
       console.log('URL session ID:', urlSessionId);
       
-      if (urlSessionId && currentlyActiveSessions.find((s: Session) => s.id === urlSessionId)) {
-        // Valid session in URL, use it and don't show modal
-        console.log('Found valid session in URL, using it:', urlSessionId);
-        setSelectedSessionId(urlSessionId);
-        setShowSessionModal(false);
-        return;
+      if (urlSessionId) {
+        // Check if the URL session ID is valid (exists in active sessions)
+        const isValidSession = currentlyActiveSessions.find((s: Session) => s.id === urlSessionId);
+        
+        if (isValidSession) {
+          // Valid session in URL, use it and don't show modal
+          console.log('Found valid session in URL, using it:', urlSessionId);
+          setSelectedSessionId(urlSessionId);
+          setShowSessionModal(false);
+          return;
+        } else {
+          // Invalid session ID in URL - clear it immediately
+          console.log('Invalid session ID in URL, clearing:', urlSessionId);
+          setSelectedSessionId(null);
+          updateUrlWithSession(null);
+          // Fall through to auto-select logic below
+        }
       }
       
-      // Auto-select logic based on requirements
+      // Auto-select logic based on requirements (skip if we just found a valid URL session)
       if (currentlyActiveSessions.length === 0) {
         // No active sessions - use "all" (for admin views)
         console.log('No active sessions, using null');
@@ -91,14 +106,14 @@ export function useSessionSelection(forceModal = false): {
         updateUrlWithSession(sessionId);
       } else {
         // Multiple sessions or forceModal - show modal for user choice only if no URL session
-        if (!urlSessionId) {
-          console.log('Multiple sessions or forceModal, showing modal');
-          setShowSessionModal(true);
-        }
+        console.log('Multiple sessions or forceModal, showing modal');
+        setShowSessionModal(true);
       }
     } catch (error) {
-      console.error('Error fetching active sessions:', error);
+      // Only log error if it's not an auth issue (already handled above)
+      console.warn('Error fetching active sessions (may be unauthenticated):', error);
       // Default to "all" on error
+      setActiveSessions([]);
       setSelectedSessionId(null);
       setShowSessionModal(false);
     } finally {

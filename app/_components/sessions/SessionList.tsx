@@ -46,16 +46,15 @@ export function SessionList({ sessions, onSessionUpdated, onSessionDeleted }: Se
     return { status: t('active'), className: 'text-green-600' };
   };
 
-  const handleToggleActive = async (session: Session): Promise<void> => {
+  const handleToggleActive = async (sessionId: string, currentActive: boolean): Promise<void> => {
     try {
-      const response = await fetch('/api/sessions', {
+      const response = await fetch('/api/sessions/manage', {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
-          id: session.id,
-          active: !session.active,
+          id: sessionId,
+          active: !currentActive,
         }),
       });
 
@@ -64,10 +63,12 @@ export function SessionList({ sessions, onSessionUpdated, onSessionDeleted }: Se
       }
 
       const updatedSession = await response.json();
+      // Find the original session to preserve _count data
+      const originalSession = sessions.find(s => s.id === sessionId);
       // Merge the updated data with existing count data
       onSessionUpdated({
         ...updatedSession,
-        _count: session._count
+        _count: originalSession?._count || { heroes: 0, stats: 0 }
       });
     } catch (error) {
       console.error('Error updating session:', error);
@@ -156,7 +157,7 @@ export function SessionList({ sessions, onSessionUpdated, onSessionDeleted }: Se
                   {t('edit')}
                 </button>
                 <button
-                  onClick={() => handleToggleActive(session)}
+                  onClick={() => handleToggleActive(session.id, session.active)}
                   className={`px-3 py-1 text-sm rounded transition-colors ${
                     session.active
                       ? 'bg-red-600 hover:bg-red-700 text-white'

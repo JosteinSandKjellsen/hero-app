@@ -47,12 +47,13 @@ export function SessionForm({ onSessionCreated, onCancel, onSessionDeleted, edit
       ...formData,
       startDate: new Date(formData.startDate).toISOString(),
       endDate: new Date(formData.endDate).toISOString(),
-    };      const url = '/api/sessions';
+    };      const url = '/api/sessions/manage';
       const method = editSession ? 'PUT' : 'POST';
       const body = editSession ? { ...payload, id: editSession.id } : payload;
 
       const response = await fetch(url, {
         method,
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -93,8 +94,9 @@ export function SessionForm({ onSessionCreated, onCancel, onSessionDeleted, edit
     setError(null);
     
     try {
-      const response = await fetch(`/api/sessions?id=${editSession.id}`, {
+      const response = await fetch(`/api/sessions/manage?id=${editSession.id}`, {
         method: 'DELETE',
+        credentials: 'include',
       });
       
       if (!response.ok) {

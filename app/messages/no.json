@@ -487,6 +487,14 @@
       }
     }
   },
+  "admin": {
+    "loginTitle": "Admin Innlogging",
+    "username": "Brukernavn",
+    "password": "Passord",
+    "login": "Logg inn",
+    "logout": "Logg ut",
+    "loggingIn": "Logger inn..."
+  },
   "sessions": {
     "title": "Øktadministrasjon",
     "createSession": "Opprett Ny Økt",

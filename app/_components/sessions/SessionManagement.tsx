@@ -26,7 +26,9 @@ export function SessionManagement(): JSX.Element {
   const t = useTranslations('sessions');
 
   const fetchSessions = useCallback(async (): Promise<void> => {
+    setIsLoading(true);
     try {
+      // Use public endpoint for fetching
       const response = await fetch('/api/sessions');
       if (!response.ok) throw new Error('Failed to fetch sessions');
       const data = await response.json();

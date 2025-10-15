@@ -122,6 +122,7 @@ export function GeneratedHeroRow({ hero, onDelete, onPrinted, onCarouselChange }
       setIsDeleting(true);
       const response = await fetch('/api/generated-heroes', {
         method: 'DELETE',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
