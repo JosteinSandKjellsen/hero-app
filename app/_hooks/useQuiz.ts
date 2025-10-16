@@ -395,8 +395,10 @@ export function useQuiz(): UseQuizReturn {
       
       if (!imageId) {
         console.error('Could not extract generation ID from URL:', photoUrl);
+        showToast('Failed to save hero: Invalid image ID');
       } else {
-        await Promise.all([
+        // Track stats and save hero
+        const [statsResponse, heroResponse] = await Promise.all([
           // Track stats
           fetch(`${window.location.origin}/api/hero-stats`, {
             method: 'POST',
@@ -421,21 +423,32 @@ export function useQuiz(): UseQuizReturn {
               imageId,
               color: selectedColor,
               gender: userData.gender,
-              promptStyle: 'default',
-              basePrompt: `Generate a ${userData.gender === 'male' ? 'male' : 'female'} superhero with ${selectedColor} color scheme`,
-              negativePrompt: null,
               colorScores: scores,
               sessionId: selectedSessionId
             }),
           })
-        ]).catch(error => {
-          // Log but don't fail if stats tracking or saving fails
-          console.error('Failed to track hero statistics or save to latest heroes:', error);
-        });
+        ]);
+
+        // Check responses
+        if (!heroResponse.ok) {
+          const errorText = await heroResponse.text();
+          console.error('Failed to save hero:', errorText);
+          
+          if (heroResponse.status === 409) {
+            console.warn('Hero already saved (duplicate imageId)');
+            // Continue anyway - hero is already in database
+          } else {
+            throw new Error(`Failed to save hero: ${errorText}`);
+          }
+        }
+
+        if (!statsResponse.ok) {
+          console.error('Failed to track stats, but continuing...');
+        }
       }
     } catch (error) {
-      // Log but don't fail if stats tracking or saving fails
       console.error('Failed to track hero statistics or save to latest heroes:', error);
+      showToast('Warning: Hero may not have been saved properly');
     }
     
     setShowImagePreview(false);

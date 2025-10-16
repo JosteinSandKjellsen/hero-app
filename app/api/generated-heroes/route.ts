@@ -26,51 +26,66 @@ export async function GET(request: Request): Promise<NextResponse> {
     const pageSize = 50;
     const skip = (page - 1) * pageSize;
 
-    // Build where clause with session filtering
-    const where: Prisma.LatestHeroWhereInput = {};
-    if (sessionId && sessionId !== 'all') {
-      where.sessionId = sessionId;
-    }
+    // Use raw SQL to bypass Prisma bugs completely
+    const sessionFilter = (sessionId && sessionId !== 'all') 
+      ? `WHERE "sessionId" = '${sessionId}'` 
+      : '';
 
-    // Use a single transaction for count and data fetch to ensure consistency
-    const [totalCount, generatedHeroes] = await prisma.$transaction([
-      prisma.latestHero.count({ where }),
-      prisma.latestHero.findMany({
-        where,
-        select: {
-          id: true,
-          name: true,
-          userName: true,
-          imageId: true,
-          color: true,
-          gender: true,
-          personalityType: true,
-          colorScores: true,
-          createdAt: true,
-          printed: true,
-          carousel: true,
-          sessionId: true,
-          session: {
-            select: {
-              name: true
-            }
-          }
-        },
-        orderBy: {
-          createdAt: 'desc'
-        },
-        skip,
-        take: pageSize
-      })
+    const [countResult, generatedHeroes] = await Promise.all([
+      prisma.$queryRaw<Array<{ count: bigint }>>`
+        SELECT COUNT(*)::int as count 
+        FROM "LatestHero" 
+        ${sessionFilter ? Prisma.raw(sessionFilter) : Prisma.empty}
+      `,
+      prisma.$queryRaw<Array<{
+        id: number;
+        name: string;
+        userName: string | null;
+        imageId: string;
+        color: string;
+        gender: string;
+        personalityType: string;
+        colorScores: Record<string, number>;
+        createdAt: Date;
+        printed: boolean;
+        carousel: boolean;
+        sessionId: string | null;
+      }>>`
+        SELECT 
+          id, name, "userName", "imageId", color, gender, 
+          "personalityType", "colorScores", "createdAt", 
+          printed, carousel, "sessionId"
+        FROM "LatestHero"
+        ${sessionFilter ? Prisma.raw(sessionFilter) : Prisma.empty}
+        ORDER BY "createdAt" DESC
+        LIMIT ${pageSize} OFFSET ${skip}
+      `
     ]);
+
+    const totalCount = Number(countResult[0].count);
+
+    // Get unique session IDs from the heroes
+    const sessionIds = Array.from(new Set(generatedHeroes.map(h => h.sessionId).filter((id): id is string => id !== null)));
+    
+    // Fetch sessions separately
+    const sessions = sessionIds.length > 0 
+      ? await prisma.session.findMany({
+          where: { id: { in: sessionIds } },
+          select: { id: true, name: true }
+        })
+      : [];
+    
+    // Create a session lookup map
+    const sessionMap = new Map(sessions.map(s => [s.id, s.name]));
 
     // Calculate pagination values
     const totalPages = Math.ceil(totalCount / pageSize);
 
-    // Ensure dates are serializable
+    // Ensure dates are serializable and add session names
     const serializedHeroes = generatedHeroes.map((hero) => ({
       ...hero,
-      createdAt: hero.createdAt.toISOString()
+      createdAt: hero.createdAt.toISOString(),
+      session: hero.sessionId ? { name: sessionMap.get(hero.sessionId) || null } : null
     }));
 
     return NextResponse.json({
@@ -79,6 +94,13 @@ export async function GET(request: Request): Promise<NextResponse> {
         currentPage: page,
         totalPages,
         totalItems: totalCount
+      }
+    }, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+        'Surrogate-Control': 'no-store'
       }
     });
   } catch (error) {

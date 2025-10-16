@@ -50,9 +50,16 @@ export function GeneratedHeroesTable(): JSX.Element {
       if (selectedSessionId) {
         params.set('sessionId', selectedSessionId);
       }
+      // Add timestamp to prevent caching
+      params.set('_t', Date.now().toString());
       
       const response = await fetch(`/api/generated-heroes?${params.toString()}`, {
         credentials: 'include',
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        }
       });
       if (!response.ok) {
         const errorText = await response.text();

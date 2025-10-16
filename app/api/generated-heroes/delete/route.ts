@@ -20,48 +20,41 @@ export async function DELETE(request: Request): Promise<NextResponse> {
     // Validate input
     const validatedData = DeleteHeroSchema.parse(data);
     
-    // Get hero details and perform deletion in a single transaction
-    await prisma.$transaction(async (prisma) => {
-      const hero = await prisma.latestHero.findUnique({
-        where: { id: validatedData.id },
-        select: { 
-          imageId: true,
-          color: true,
-          createdAt: true
-        }
-      });
+    // Get hero details using raw SQL to bypass Prisma bug
+    const heroes: Array<{ imageId: string; color: string; createdAt: Date }> = await prisma.$queryRaw`
+      SELECT "imageId", color, "createdAt"
+      FROM "LatestHero"
+      WHERE id = ${validatedData.id}
+    `;
 
-      if (!hero) {
-        throw new Error('Hero not found');
-      }
+    if (heroes.length === 0) {
+      return NextResponse.json(
+        { error: 'Hero not found' },
+        { status: 404 }
+      );
+    }
 
-      // Initialize Leonardo service and delete images
-      const leonardoService = new LeonardoAiService();
-      try {
-        await Promise.all([
-          leonardoService.deleteImage(hero.imageId, 'generated'),
-          leonardoService.deleteImage(hero.imageId, 'initial')
-        ]);
-      } catch (error) {
-        console.error('Error deleting Leonardo images:', error);
-        // Continue with database deletion even if image deletion fails
-      }
+    const hero = heroes[0];
 
-      // Delete from both tables
-      await Promise.all([
-        prisma.latestHero.delete({
-          where: { id: validatedData.id }
-        }),
-        prisma.heroStats.deleteMany({
-          where: {
-            AND: [
-              { color: hero.color },
-              { createdAt: hero.createdAt }
-            ]
-          }
-        })
-      ]);
-    });
+    // Initialize Leonardo service and delete images
+    // Continue with database deletion even if Leonardo deletion fails
+    const leonardoService = new LeonardoAiService();
+    await Promise.allSettled([
+      leonardoService.deleteImage(hero.imageId, 'generated'),
+      leonardoService.deleteImage(hero.imageId, 'initial')
+    ]);
+
+    // Delete from database using raw SQL to bypass Prisma bug
+    await prisma.$executeRaw`
+      DELETE FROM "LatestHero" WHERE id = ${validatedData.id}
+    `;
+
+    // Delete related stats
+    await prisma.$executeRaw`
+      DELETE FROM "HeroStats" 
+      WHERE color = ${hero.color} 
+      AND "createdAt" = ${hero.createdAt}
+    `;
 
     return NextResponse.json({ success: true });
   } catch (error) {
