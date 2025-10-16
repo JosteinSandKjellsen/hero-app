@@ -113,14 +113,11 @@ export function GeneratedHeroRow({ hero, onDelete, onPrinted, onCarouselChange }
   };
 
   const handleDelete = async (): Promise<void> => {
-    if (isDeleting) return;
-
-    const confirmDelete = window.confirm(t('deleteConfirm'));
-    if (!confirmDelete) return;
+    if (!window.confirm(t('confirmDelete'))) return;
     
+    setIsDeleting(true);
     try {
-      setIsDeleting(true);
-      const response = await fetch('/api/generated-heroes', {
+      const response = await fetch('/api/generated-heroes/delete', {
         method: 'DELETE',
         credentials: 'include',
         headers: {
@@ -131,14 +128,13 @@ export function GeneratedHeroRow({ hero, onDelete, onPrinted, onCarouselChange }
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || t('deleteError'));
+        throw new Error(errorData.error || 'Failed to delete hero');
       }
 
-      // Optimistic update
       onDelete(hero.id);
     } catch (error) {
       console.error('Error deleting hero:', error);
-      alert(error instanceof Error ? error.message : t('deleteError'));
+      alert(t('deleteError'));
     } finally {
       setIsDeleting(false);
     }

@@ -54,7 +54,11 @@ export function GeneratedHeroesTable(): JSX.Element {
       const response = await fetch(`/api/generated-heroes?${params.toString()}`, {
         credentials: 'include',
       });
-      if (!response.ok) throw new Error('Failed to fetch heroes');
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Failed to fetch heroes. Status:', response.status, 'Response:', errorText);
+        throw new Error(`Failed to fetch heroes (${response.status})`);
+      }
       
       const data = await response.json();
       setHeroes(data.heroes);

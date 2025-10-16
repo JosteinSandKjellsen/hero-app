@@ -20,7 +20,7 @@ try {
 
 // Protected routes (without locale prefix)
 const PROTECTED_ROUTES = ['/sessions', '/generated-heroes'];
-const PROTECTED_API_ROUTES = ['/api/sessions/manage', '/api/generated-heroes'];
+const PROTECTED_API_ROUTES = ['/api/sessions/manage', '/api/generated-heroes/delete'];
 
 // Rate limit configuration
 const RATE_LIMIT = {
@@ -67,6 +67,7 @@ const rateLimit = (request: NextRequest) => {
   // These are safe to call frequently
   const publicReadOnlyEndpoints = [
     '/api/sessions',  // Public session listing
+    '/api/generated-heroes',  // Admin view with polling
     '/api/hero-carousel',
     '/api/latest-heroes',
   ];
