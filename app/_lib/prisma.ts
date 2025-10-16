@@ -12,6 +12,8 @@ const prismaClientSingleton = (): PrismaClient => {
     log: process.env.NODE_ENV === 'development' 
       ? ['error', 'warn'] // Log only errors and warnings in development
       : ['error'], // Log only errors in production
+    // Disable query result caching for real-time data
+    datasourceUrl: process.env.DATABASE_URL,
   });
 };
 

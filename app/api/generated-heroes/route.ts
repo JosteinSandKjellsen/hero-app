@@ -4,6 +4,9 @@ import { Prisma } from '@prisma/client';
 
 // Force dynamic rendering since we use request.url for query params
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+export const fetchCache = 'force-no-store';
+export const runtime = 'nodejs';
 
 export type GeneratedHeroWithId = {
   id: number;
@@ -19,6 +22,8 @@ export type GeneratedHeroWithId = {
 // GET /api/generated-heroes
 export async function GET(request: Request): Promise<NextResponse> {
   try {
+    const startTime = Date.now();
+    
     // Parse pagination and filter parameters
     const { searchParams } = new URL(request.url);
     const page = Math.max(1, parseInt(searchParams.get('page') ?? '1'));
@@ -30,6 +35,14 @@ export async function GET(request: Request): Promise<NextResponse> {
     const sessionFilter = (sessionId && sessionId !== 'all') 
       ? `WHERE "sessionId" = '${sessionId}'` 
       : '';
+
+    console.log('[Generated Heroes API] Query started:', { 
+      timestamp: new Date().toISOString(),
+      page, 
+      sessionId, 
+      skip, 
+      pageSize 
+    });
 
     const [countResult, generatedHeroes] = await Promise.all([
       prisma.$queryRaw<Array<{ count: bigint }>>`
@@ -63,6 +76,14 @@ export async function GET(request: Request): Promise<NextResponse> {
     ]);
 
     const totalCount = Number(countResult[0].count);
+
+    console.log('[Generated Heroes API] Query results:', {
+      totalCount,
+      heroesReturned: generatedHeroes.length,
+      firstHeroId: generatedHeroes[0]?.id,
+      lastHeroId: generatedHeroes[generatedHeroes.length - 1]?.id,
+      queryTime: Date.now() - startTime + 'ms'
+    });
 
     // Get unique session IDs from the heroes
     const sessionIds = Array.from(new Set(generatedHeroes.map(h => h.sessionId).filter((id): id is string => id !== null)));
