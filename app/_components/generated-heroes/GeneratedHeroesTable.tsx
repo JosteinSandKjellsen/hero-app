@@ -61,6 +61,13 @@ export function GeneratedHeroesTable(): JSX.Element {
           'Pragma': 'no-cache'
         }
       });
+      
+      // Handle rate limiting gracefully
+      if (response.status === 429) {
+        console.warn('Rate limited on generated heroes fetch, will retry on next interval');
+        return;
+      }
+      
       if (!response.ok) {
         const errorText = await response.text();
         console.error('Failed to fetch heroes. Status:', response.status, 'Response:', errorText);

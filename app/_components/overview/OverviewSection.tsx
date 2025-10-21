@@ -58,6 +58,13 @@ export function OverviewSection({ selectedSessionId }: OverviewSectionProps): JS
       }
       
       const response = await fetch(`/api/latest-heroes?${params.toString()}`);
+      
+      // Handle rate limiting gracefully
+      if (response.status === 429) {
+        console.warn('Rate limited on heroes fetch, will retry on next interval');
+        return;
+      }
+      
       if (!response.ok) throw new Error('Failed to fetch heroes');
       
       const data = await response.json();
@@ -96,10 +103,22 @@ export function OverviewSection({ selectedSessionId }: OverviewSectionProps): JS
       }
       
       const response = await fetch(`/api/hero-stats?${params.toString()}`);
+      
+      // Handle rate limiting gracefully
+      if (response.status === 429) {
+        console.warn('Rate limited on stats fetch, will retry on next interval');
+        return;
+      }
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch stats: ${response.status}`);
+      }
+      
       const data = await response.json();
       setStats(data);
     } catch (error) {
       console.error('Failed to fetch stats:', error);
+      // Keep existing stats on error instead of clearing
     }
     // selectedSessionId is used in the function body, eslint is incorrect
     // eslint-disable-next-line react-hooks/exhaustive-deps

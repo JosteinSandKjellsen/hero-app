@@ -70,6 +70,7 @@ const rateLimit = (request: NextRequest) => {
     '/api/generated-heroes',  // Admin view with polling
     '/api/hero-carousel',
     '/api/latest-heroes',
+    '/api/hero-stats',  // Overview page polling
   ];
   
   if (publicReadOnlyEndpoints.some(endpoint => pathname.startsWith(endpoint))) {
