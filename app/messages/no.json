@@ -411,7 +411,8 @@
     "overview": "Siste Helter"
   },
   "personalitiesPage": {
-    "title": "Heltepersonligheter"
+    "title": "Heltepersonligheter",
+    "takeTest": "Ta testen!"
   },
   "generatedHeroes": {
     "title": "Genererte Helter",

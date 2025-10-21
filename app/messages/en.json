@@ -411,7 +411,8 @@
     "overview": "Latest Heroes"
   },
   "personalitiesPage": {
-    "title": "Hero Personalities"
+    "title": "Hero Personalities",
+    "takeTest": "Take the test!"
   },
   "generatedHeroes": {
     "title": "Generated Heroes",
