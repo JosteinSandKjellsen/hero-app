@@ -70,7 +70,6 @@ export function useSessionSelection(forceModal = false): {
       
       // Check if we already have a session from URL
       const urlSessionId = searchParams.get('sessionId');
-      console.log('URL session ID:', urlSessionId);
       
       if (urlSessionId) {
         // Check if the URL session ID is valid (exists in active sessions)
@@ -78,13 +77,11 @@ export function useSessionSelection(forceModal = false): {
         
         if (isValidSession) {
           // Valid session in URL, use it and don't show modal
-          console.log('Found valid session in URL, using it:', urlSessionId);
           setSelectedSessionId(urlSessionId);
           setShowSessionModal(false);
           return;
         } else {
           // Invalid session ID in URL - clear it immediately
-          console.log('Invalid session ID in URL, clearing:', urlSessionId);
           setSelectedSessionId(null);
           updateUrlWithSession(null);
           // Fall through to auto-select logic below
@@ -94,19 +91,16 @@ export function useSessionSelection(forceModal = false): {
       // Auto-select logic based on requirements (skip if we just found a valid URL session)
       if (currentlyActiveSessions.length === 0) {
         // No active sessions - use "all" (for admin views)
-        console.log('No active sessions, using null');
         setSelectedSessionId(null);
         setShowSessionModal(false);
       } else if (currentlyActiveSessions.length === 1 && !forceModal) {
         // Only one active session - auto-select it and update URL (unless forceModal is true)
         const sessionId = currentlyActiveSessions[0].id;
-        console.log('Only one session, auto-selecting:', sessionId);
         setSelectedSessionId(sessionId);
         setShowSessionModal(false);
         updateUrlWithSession(sessionId);
       } else {
         // Multiple sessions or forceModal - show modal for user choice only if no URL session
-        console.log('Multiple sessions or forceModal, showing modal');
         setShowSessionModal(true);
       }
     } catch (error) {
@@ -126,15 +120,9 @@ export function useSessionSelection(forceModal = false): {
   }, [fetchActiveSessions]);
 
   const handleSessionSelected = useCallback((sessionId: string | null): void => {
-    console.log('Session selected:', sessionId);
     setSelectedSessionId(sessionId);
     setShowSessionModal(false);
     updateUrlWithSession(sessionId);
-    
-    // Force a small delay to ensure URL is updated before any re-renders
-    setTimeout(() => {
-      console.log('Session selection complete, URL updated');
-    }, 100);
   }, [updateUrlWithSession]);
 
   const resetSessionSelection = useCallback((): void => {

@@ -405,22 +405,6 @@
     "invalidPhotoFormat": "Invalid photo format",
     "missingUserData": "User data is missing"
   },
-  "stats": {
-    "title": "Hero Stats",
-    "total": {
-      "title": "Total Heroes Today",
-      "loading": "Loading stats..."
-    },
-    "distribution": {
-      "title": "Distribution by Type"
-    },
-    "colors": {
-      "red": "Red",
-      "yellow": "Yellow",
-      "green": "Green",
-      "blue": "Blue"
-    }
-  },
   "latest": {
     "title": "Latest Heroes",
     "heroes": "Latest Heroes",

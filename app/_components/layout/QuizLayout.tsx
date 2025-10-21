@@ -51,12 +51,11 @@ export function QuizLayout({ children, showBackground = false, variant = 'quiz' 
       <main 
         className={`relative z-10 flex-1 pb-4 px-4 sm:px-6 lg:px-8 overflow-x-hidden ${
           variant === 'registration' ? 'flex flex-col items-center'
-          : variant === 'stats' ? '' 
           : 'flex flex-col md:justify-center'
         } transition-opacity duration-200`}
         style={{ opacity: visible ? 1 : 0 }}
       >
-        <div className={`mx-auto w-full ${variant === 'stats' ? 'max-w-6xl' : 'max-w-3xl'}`}>
+        <div className={`mx-auto w-full max-w-3xl`}>
           {children}
         </div>
       </main>

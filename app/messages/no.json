@@ -405,22 +405,6 @@
     "invalidPhotoFormat": "Ugyldig bildeformat",
     "missingUserData": "Brukerdata mangler"
   },
-  "stats": {
-    "title": "Helt-statistikk",
-    "total": {
-      "title": "Totalt Antall Helter I Dag",
-      "loading": "Laster statistikk..."
-    },
-    "distribution": {
-      "title": "Fordeling etter Type"
-    },
-    "colors": {
-      "red": "Rød",
-      "yellow": "Gul",
-      "green": "Grønn",
-      "blue": "Blå"
-    }
-  },
   "latest": {
     "title": "Siste Helter",
     "heroes": "Siste Helter",

@@ -55,14 +55,7 @@ View the three most recently generated superheroes on the `/latest` page. This f
 
 ### Statistics & Analytics
 
-Access today's hero generation statistics on the `/stats` page to see:
-
-- Total heroes generated for the current day
-- Real-time distribution of personality types
-- Popular hero colors and traits for the day
-- Insights into personality matching patterns
-- Trend analysis and popularity metrics
-- Color distribution visualization
+Access hero generation statistics on the `/overview` page to view heroes from all sessions with filtering capabilities.
 
 ### Generated Heroes Gallery
 
@@ -145,12 +138,6 @@ The application supports multiple languages through the `[locale]` parameter (e.
   - Activate or deactivate sessions as needed
   - Delete old sessions while preserving hero data
   - View session statistics (hero count, stats count)
-
-- **`/[locale]/stats`**: Statistics Dashboard
-  - View today's hero generation statistics
-  - See personality type distribution
-  - Track popular hero colors and traits
-  - Real-time insights into matching patterns
 
 - **`/[locale]/print`**: Print View
   - Printer-friendly display of hero results

@@ -31,7 +31,6 @@ function HomeContent(): JSX.Element {
     maxRetries,
     // Session-related properties
     activeSessions,
-    selectedSessionId,
     showSessionModal,
     isLoadingSessions,
     handleRegistration,
@@ -88,11 +87,6 @@ function HomeContent(): JSX.Element {
       onSessionSelected={handleSessionSelected}
     />
   );
-
-  // Add debug info for session selection (can be removed in production)
-  if (process.env.NODE_ENV === 'development' && selectedSessionId) {
-    console.log('Current session:', selectedSessionId);
-  }
 
   // Improve the registration page handling to prevent any blinking effects
   if (!userData) {

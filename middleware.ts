@@ -125,6 +125,12 @@ const i18nMiddleware = createI18nMiddleware({
 export default async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
+  // Redirect /stats to /overview (with locale support)
+  if (pathname.match(/^\/(en|no)\/stats$/)) {
+    const locale = pathname.match(/^\/(en|no)/)?.[1] || 'en';
+    return NextResponse.redirect(new URL(`/${locale}/overview`, request.url));
+  }
+
   // API routes should not be processed by i18n middleware
   if (pathname.startsWith('/api')) {
     // Check rate limit for API routes
