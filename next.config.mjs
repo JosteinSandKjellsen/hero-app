@@ -4,16 +4,14 @@ const withNextIntl = createNextIntlPlugin('./app/i18n/request.ts');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  serverExternalPackages: ['node:buffer', 'punycode'],
   experimental: {
-    serverComponentsExternalPackages: ['node:buffer', 'punycode'],
     serverActions: {
       bodySizeLimit: '10mb',
     },
   },
   compress: true, // Enable compression for non-edge routes
   poweredByHeader: false, // Remove X-Powered-By header for security
-  optimizeFonts: true, // Enable font optimization
-  swcMinify: true, // Use SWC for minification
   headers: async () => [
     {
       source: '/:path*',

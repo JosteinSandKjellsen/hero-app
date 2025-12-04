@@ -17,11 +17,12 @@ async function getMessages(locale: string): Promise<AbstractIntlMessages> {
 
 export default async function LocaleLayout({
   children,
-  params: { locale },
+  params,
 }: {
   children: React.ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }): Promise<React.JSX.Element> {
+  const { locale } = await params;
   if (!locales.includes(locale as Locale)) notFound();
 
   const messages = await getMessages(locale);

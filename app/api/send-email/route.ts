@@ -40,7 +40,7 @@ function checkRateLimit(ip: string): boolean {
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     // Get client IP for rate limiting
-    const forwardedFor = headers().get('x-forwarded-for');
+    const forwardedFor = request.headers.get('x-forwarded-for');
     const ip = forwardedFor ? forwardedFor.split(',')[0] : 'unknown';
 
     if (!checkRateLimit(ip)) {

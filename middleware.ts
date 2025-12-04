@@ -77,7 +77,8 @@ const rateLimit = (request: NextRequest) => {
     return null;
   }
 
-  const ip = request.ip ?? 'anonymous';
+  const forwardedFor = request.headers.get('x-forwarded-for');
+  const ip = forwardedFor ? forwardedFor.split(',')[0] : 'anonymous';
   const key = `${ip}-${pathname}`;
   const now = Date.now();
 

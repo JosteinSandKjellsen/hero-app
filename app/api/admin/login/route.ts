@@ -44,8 +44,10 @@ function constantTimeCompare(a: string, b: string): boolean {
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     // Get client identifier for rate limiting
+    const forwardedFor = request.headers.get('x-forwarded-for');
+    const ip = forwardedFor ? forwardedFor.split(',')[0] : undefined;
     const identifier = getClientIdentifier(
-      request.ip,
+      ip,
       request.headers.get('user-agent') || undefined
     );
 
