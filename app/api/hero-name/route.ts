@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenAI, ThinkingLevel } from '@google/genai';
 import { defaultHeroNames, type HeroColor } from '../../_lib/constants/defaultNames';
 import { getGeminiApiKey } from '../../_lib/config/env';
 
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         contents: prompt,
         config: {
           thinkingConfig: {
-            thinkingLevel: 'minimal', // Minimal thinking for faster creative responses
+            thinkingLevel: ThinkingLevel.MINIMAL, // Minimal thinking for faster creative responses
           },
           maxOutputTokens: 50, // Increased to allow for thinking tokens + name output
         }
