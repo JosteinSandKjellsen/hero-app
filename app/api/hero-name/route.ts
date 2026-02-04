@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 import { defaultHeroNames, type HeroColor } from '../../_lib/constants/defaultNames';
 import { getGeminiApiKey } from '../../_lib/config/env';
 
@@ -39,18 +39,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const validatedData = requestSchema.parse(body);
 
     try {
-      const genAI = new GoogleGenerativeAI(getGeminiApiKey());
-      
-      // Initialize model with maximum creativity settings
-      const model = genAI.getGenerativeModel({ 
-        model: 'gemini-2.0-flash',
-        generationConfig: {
-          temperature: 1.0,    // Maximum creativity
-          topP: 0.95,         // Very diverse sampling
-          topK: 40,           // Consider more token options
-          maxOutputTokens: 20  // Keep names concise
-        }
-      });
+      const ai = new GoogleGenAI({ apiKey: getGeminiApiKey() });
 
       // Structured prompt to prevent injection and encourage unique names
       const prompt = [
@@ -78,12 +67,33 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         '- Return ONLY the name, nothing else'
       ].join('\n');
 
-      const result = await model.generateContent(prompt);
-      const response = result.response;
-      const text = response.text();
+      console.log('[HeroName] Calling Gemini API with model: gemini-3-flash-preview');
+      
+      const result = await ai.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: prompt,
+        config: {
+          thinkingConfig: {
+            thinkingLevel: 'minimal', // Minimal thinking for faster creative responses
+          },
+          maxOutputTokens: 50, // Increased to allow for thinking tokens + name output
+        }
+      });
+
+      console.log('[HeroName] Gemini API response received:', {
+        hasResult: !!result,
+        candidates: result?.candidates?.length,
+        finishReason: result?.candidates?.[0]?.finishReason,
+        usageMetadata: result?.usageMetadata,
+      });
+
+      // Access text from candidates array (Gemini 3 response structure)
+      const candidate = result?.candidates?.[0];
+      const parts = candidate?.content?.parts;
+      const text = parts?.[0]?.text || result.text;
 
       if (!text) {
-        console.error('[HeroName] Generation returned empty result');
+        console.error('[HeroName] Generation returned empty result. Finish reason:', candidate?.finishReason);
         return NextResponse.json({ name: getRandomDefaultName() });
       }
 

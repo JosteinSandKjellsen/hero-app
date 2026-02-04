@@ -14,7 +14,7 @@ try {
   const { jwtSecret } = validateAndGetSecurityConfig();
   JWT_SECRET = jwtSecret;
 } catch (error) {
-  console.error('[SECURITY] Failed to load security configuration in middleware:', error);
+  console.error('[SECURITY] Failed to load security configuration in proxy:', error);
   throw error;
 }
 
@@ -54,7 +54,7 @@ async function checkAuth(request: NextRequest): Promise<boolean> {
   }
 }
 
-// Rate limiting middleware
+// Rate limiting proxy
 const rateLimit = (request: NextRequest) => {
   const pathname = request.nextUrl.pathname;
   
@@ -123,8 +123,8 @@ const i18nMiddleware = createI18nMiddleware({
   }
 });
 
-// Combined middleware
-export default async function middleware(request: NextRequest) {
+// Combined proxy
+export default async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // Redirect /stats to /overview (with locale support)
